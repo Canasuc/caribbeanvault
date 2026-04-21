@@ -4,12 +4,14 @@ import { useState } from "react";
 import Footer from "@/components/Footer";
 import { LogoNavy } from "@/components/Logo";
 import Image from "next/image"
+import NewsboardWidget from "@/components/NewsboardWidget";
 
 const NAV_LINKS = [
-  { label: "La plateforme", href: "#plateforme" },
-  { label: "Nos actifs", href: "#actifs" },
-  { label: "Simulateur", href: "/simulateur" },
-  { label: "Contact", href: "#contact" },
+{ label: "La plateforme", href: "#plateforme" },
+{ label: "Nos actifs", href: "#actifs" },
+{ label: "Actualites", href: "/actualites" },
+{ label: "Simulateur", href: "/simulateur" },
+{ label: "Contact", href: "#contact" },
 ];
 
 const STATS = [
@@ -180,9 +182,9 @@ export default function HomePage() {
           </div>
 
           {/* Grille des actifs avec photos */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px", alignItems: "stretch" }}>
             {ASSETS.map((a, i) => (
-              <Link key={i} href={a.href} style={{ textDecoration: "none" }}
+              <Link key={i} href={a.href} style={{ textDecoration: "none", display: "flex" }}
                 onMouseEnter={() => setHoveredAsset(i)}
                 onMouseLeave={() => setHoveredAsset(null)}
               >
@@ -193,6 +195,9 @@ export default function HomePage() {
                   transform: hoveredAsset === i ? "translateY(-3px)" : "none",
                   background: "white",
                   boxShadow: hoveredAsset === i ? "0 8px 24px rgba(0,0,0,.08)" : "none",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
                 }}>
                   {/* Photo */}
                   <div style={{ position: "relative", height: "200px", overflow: "hidden" }}>
@@ -352,6 +357,23 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+
+{/* NEWSBOARD */}
+<section style={{ padding: "56px 24px", background: "#F8F6F1", borderTop: "0.5px solid #E8E2D6" }}>
+  <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+      <div>
+        <div style={{ color: "#D4884A", fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px" }}>Actualites</div>
+        <h2 style={{ color: "#1A2E4A", fontSize: "22px", fontWeight: 800, margin: 0 }}>Les dernieres nouvelles</h2>
+      </div>
+      <Link href="/actualites" style={{ color: "#1A2E4A", fontSize: "12px", fontWeight: 600, textDecoration: "none", border: "0.5px solid #E8E2D6", padding: "8px 16px", borderRadius: "8px", background: "white" }}>
+        Toutes les actualites →
+      </Link>
+    </div>
+    <NewsboardWidget />
+  </div>
+</section>
 
 <Footer />
 
