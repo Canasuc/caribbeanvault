@@ -187,7 +187,7 @@ export default function AgriculturePage() {
             {["Nos parcelles", "Notre engagement", "Simulateur"].map(l => (
               <span key={l} style={{ color: C.menthe, fontSize: "11px", cursor: "pointer", fontFamily: "system-ui", opacity: .8 }}>{l}</span>
             ))}
-            <Link href="#famille" style={{
+            <Link href="/kyc" style={{
               background: C.feuille, color: "white", padding: "8px 18px",
               borderRadius: "2px", fontSize: "11px", fontWeight: 700,
               textDecoration: "none", letterSpacing: ".05em", fontFamily: "system-ui",

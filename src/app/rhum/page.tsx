@@ -174,7 +174,7 @@ export default function RhumPage() {
 ].map(l => (
   <a key={l.label} href={l.href} style={{ color: C.menthe, fontSize: "11px", cursor: "pointer", fontFamily: "system-ui", opacity: .8, textDecoration: "none" }}>{l.label}</a>
 ))}
-            <Link href="#portefeuille" style={{
+            <Link href="/kyc" style={{
               background: C.or, color: C.noir, padding: "8px 18px",
               borderRadius: "2px", fontSize: "11px", fontWeight: 700,
               textDecoration: "none", letterSpacing: ".08em",

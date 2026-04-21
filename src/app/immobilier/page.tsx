@@ -113,7 +113,7 @@ export default function ImmobilierPage() {
     {l.label}
   </Link>
 ))}
-            <Link href="#rejoindre" style={{ background: C.turquoise, color: "white", padding: "8px 18px", borderRadius: "8px", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
+            <Link href="/kyc" style={{ background: C.turquoise, color: "white", padding: "8px 18px", borderRadius: "8px", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
               Rejoindre la famille
             </Link>
           </div>

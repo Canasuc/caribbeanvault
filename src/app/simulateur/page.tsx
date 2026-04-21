@@ -341,7 +341,7 @@ useEffect(() => {
                 {a.icon} {a.label.split(" ")[0]}
               </Link>
             ))}
-            <Link href="/#contact" style={{ background: C.navy, color: "white", padding: "7px 16px", borderRadius: "3px", fontSize: "11px", fontWeight: 600, textDecoration: "none" }}>
+            <Link href="/kyc" style={{ background: C.navy, color: "white", padding: "7px 16px", borderRadius: "3px", fontSize: "11px", fontWeight: 600, textDecoration: "none" }}>
               Rejoindre →
             </Link>
           </div>

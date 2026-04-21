@@ -189,7 +189,7 @@ export default function ArtPage() {
             {["Les œuvres", "Les artistes", "Le cercle"].map(l => (
               <span key={l} style={{ color: C.texteSec, fontSize: "11px", cursor: "pointer", fontFamily: "system-ui", letterSpacing: ".05em" }}>{l}</span>
             ))}
-            <Link href="#cercle" style={{
+            <Link href="/kyc" style={{
               background: "transparent", color: C.or, border: `0.5px solid ${C.or}`,
               padding: "7px 18px", borderRadius: "2px", fontSize: "11px",
               fontWeight: 400, textDecoration: "none", letterSpacing: ".15em",

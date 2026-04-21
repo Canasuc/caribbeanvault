@@ -11,7 +11,7 @@ const NAV_LINKS = [
 { label: "Nos actifs", href: "#actifs" },
 { label: "Actualites", href: "/actualites" },
 { label: "Simulateur", href: "/simulateur" },
-{ label: "Contact", href: "#contact" },
+{ label: "Contact", href: "/contact" },
 ];
 
 const STATS = [
@@ -102,7 +102,7 @@ export default function HomePage() {
                 {l.label}
               </Link>
             ))}
-            <Link href="#contact" style={{
+            <Link href="/kyc" style={{
               background: "#1A2E4A", color: "white", padding: "8px 18px",
               borderRadius: "3px", fontSize: "12px", fontWeight: 600,
               textDecoration: "none", letterSpacing: ".05em",
@@ -334,29 +334,15 @@ export default function HomePage() {
           <p style={{ color: "#B8C4D4", fontSize: "14px", lineHeight: 1.8, margin: "0 0 36px" }}>
             Accédez en avant-première aux actifs disponibles, aux événements exclusifs et à la communauté des investisseurs caribéens. Dès 100€, depuis n'importe où dans le monde.
           </p>
-          <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "24px" }}>
-            <input
-              type="email"
-              placeholder="Votre adresse email"
-              style={{
-                padding: "12px 18px", borderRadius: "3px", border: "1px solid #3A4E6A",
-                background: "#253D5E", color: "white", fontSize: "13px",
-                width: "260px", outline: "none",
-              }}
-            />
-            <button style={{
-              background: "#D4884A", color: "white", border: "none",
-              padding: "12px 24px", borderRadius: "3px", fontSize: "13px",
-              fontWeight: 700, cursor: "pointer", letterSpacing: ".05em",
-            }}>
-              Rejoindre la famille →
-            </button>
-          </div>
-          <p style={{ color: "#4A5568", fontSize: "11px" }}>
-            Gratuit · Aucun engagement · Désabonnement en 1 clic
-          </p>
-        </div>
-      </section>
+<Link href="/kyc" style={{ display: "block", background: "#D4884A", color: "white", padding: "13px 24px", borderRadius: "3px", fontSize: "13px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}>
+    Rejoindre la famille →
+  </Link>
+  <p style={{ color: "#B8C4D4", fontSize: "11px", marginTop: "12px" }}>
+    {"Gratuit · Aucun engagement · Désabonnement en 1 clic"}
+  </p>
+</div>
+</section>
+
 
 
 {/* NEWSBOARD */}

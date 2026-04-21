@@ -47,17 +47,33 @@ const CONTACTS_DIRECTS = [
 ];
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ prenom: "", nom: "", email: "", sujet: "", message: "" });
-  const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
+const [form, setForm] = useState({ prenom: "", nom: "", email: "", sujet: "", message: "", consentement: false });
+const [sent, setSent] = useState(false);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
 
-  const handleSubmit = async () => {
-    if (!form.email || !form.message || !form.sujet) return;
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setSent(true);
+const handleSubmit = async () => {
+  if (!form.email || !form.message || !form.sujet || !form.consentement) return;
+  setLoading(true);
+  setError("");
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setSent(true);
+    } else {
+      setError(data.error || "Une erreur est survenue.");
+    }
+  } catch {
+    setError("Erreur de connexion. Vérifiez votre connexion internet.");
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.beige, minHeight: "100vh" }}>
@@ -98,7 +114,7 @@ export default function ContactPage() {
                   Merci pour votre message. Notre équipe vous répondra dans les 48 heures ouvrées.
                 </p>
                 <button
-                  onClick={() => { setSent(false); setForm({ prenom: "", nom: "", email: "", sujet: "", message: "" }); }}
+                  onClick={() => { setSent(false); setForm({ prenom: "", nom: "", email: "", sujet: "", message: "" , consentement: false }); }}
                   style={{ marginTop: "16px", background: C.navy, color: "white", border: "none", padding: "10px 20px", borderRadius: "5px", fontSize: "12px", cursor: "pointer" }}
                 >
                   Envoyer un autre message
@@ -140,10 +156,27 @@ export default function ContactPage() {
                     placeholder="Décrivez votre demande en détail..." rows={5}
                     style={{ width: "100%", padding: "10px 12px", border: `1px solid ${C.beigeB}`, borderRadius: "6px", fontSize: "13px", outline: "none", boxSizing: "border-box", resize: "vertical", fontFamily: "inherit", color: C.texte }} />
                 </div>
+<div style={{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "12px", background: "#F0FDF4", borderRadius: "8px", border: "1px solid #BBF7D0" }}>
+  <input
+    type="checkbox"
+    checked={form.consentement}
+    onChange={e => setForm({ ...form, consentement: e.target.checked })}
+    style={{ marginTop: "2px", accentColor: "#0F6E56", flexShrink: 0 }}
+  />
+  <span style={{ color: C.texteSec, fontSize: "11px", lineHeight: 1.6 }}>
+    J'accepte que mes données soient traitées conformément à la{" "}
+    <Link href="/confidentialite" style={{ color: C.navy, fontWeight: 600 }}>politique de confidentialité</Link>. *
+  </span>
+</div>
 
+{error && (
+  <div style={{ background: "#FEE2E2", borderRadius: "8px", padding: "10px 14px", color: "#DC2626", fontSize: "12px" }}>
+    ❌ {error}
+  </div>
+)}
                 <button
                   onClick={handleSubmit}
-                  disabled={loading || !form.email || !form.message || !form.sujet}
+                  disabled={loading || !form.email || !form.message || !form.sujet  || !form.consentement}
                   style={{
                     background: loading || !form.email || !form.message || !form.sujet ? "#9CA3AF" : C.navy,
                     color: "white", border: "none", padding: "12px",
