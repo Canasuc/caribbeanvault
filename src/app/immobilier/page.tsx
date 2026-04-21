@@ -104,9 +104,15 @@ export default function ImmobilierPage() {
             <LogoTurquoise size={0.85} />
           </Link>
           <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-            {["Notre selection", "Par region", "Simulateur"].map(l => (
-              <span key={l} style={{ color: C.texteSec, fontSize: "12px", cursor: "pointer" }}>{l}</span>
-            ))}
+            {[
+  { label: "Notre selection", href: "#selection" },
+  { label: "Par region", href: "#regions" },
+  { label: "Simulateur", href: "/simulateur" },
+].map(l => (
+  <Link key={l.label} href={l.href} style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>
+    {l.label}
+  </Link>
+))}
             <Link href="#rejoindre" style={{ background: C.turquoise, color: "white", padding: "8px 18px", borderRadius: "8px", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
               Rejoindre la famille
             </Link>
