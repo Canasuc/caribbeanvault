@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { use } from "react";
-import { notFound } from "next/navigation";
 import { DISTILLERIES, getDistillerie } from "@/lib/distilleries";
 import Footer from "@/components/Footer";
 import { LogoEmeraude } from "@/components/Logo";
@@ -24,10 +23,27 @@ export default function DistilleriePage({ params }: { params: Promise<{ slug: st
   const { slug } = use(params);
   const d = getDistillerie(slug);
 
+  // Vérification AVANT tout accès à d
+  if (!d) {
+    return (
+      <main style={{ fontFamily: "system-ui", background: "#F7F5F0", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "48px", marginBottom: "16px" }}>🥃</div>
+          <h1 style={{ color: "#2C1810", fontSize: "24px", fontWeight: 700, marginBottom: "8px" }}>Distillerie introuvable</h1>
+          <p style={{ color: "#6B7280", fontSize: "14px", marginBottom: "20px" }}>Cette distillerie n'existe pas dans notre selection.</p>
+          <Link href="/distilleries" style={{ background: "#0F3D2A", color: "#C8992A", padding: "12px 24px", borderRadius: "3px", fontSize: "13px", fontWeight: 700, textDecoration: "none" }}>
+            Voir toutes les distilleries
+          </Link>
+        </div>
+      </main>
+    );
+  }
+ // Distilleries de la même île pour la section "Aussi sur..."
+  // A partir d'ici d est garanti défini
+  const memeIle = DISTILLERIES.filter(x => x.ile === d.ile && x.slug !== d.slug).slice(0, 3);
 
+ 
 
-  // Distilleries de la même île pour la section "Aussi sur..."
-  const memeIle = d ? DISTILLERIES.filter(x => x.ile === d!.ile && x.slug !== d!.slug).slice(0, 3) : [];
 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.creme, minHeight: "100vh" }}>
