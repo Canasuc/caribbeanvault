@@ -27,7 +27,7 @@ export default function DistilleriePage({ params }: { params: Promise<{ slug: st
 
 
   // Distilleries de la même île pour la section "Aussi sur..."
-  const memeIle = DISTILLERIES.filter(x => x.ile === d.ile && x.slug !== d.slug).slice(0, 3);
+  const memeIle = d ? DISTILLERIES.filter(x => x.ile === d.ile && x.slug !== d.slug).slice(0, 3);
 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.creme, minHeight: "100vh" }}>
