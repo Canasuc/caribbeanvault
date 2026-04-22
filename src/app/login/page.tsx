@@ -1,8 +1,10 @@
 "use client";
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { LogoNavy } from "@/components/Logo";
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
