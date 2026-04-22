@@ -124,7 +124,7 @@ export default function KYCPage() {
             <div style={{ width: "64px", height: "64px", background: C.vertL, borderRadius: "50%", margin: "0 auto 24px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px" }}>✓</div>
             <h1 style={{ color: C.texte, fontSize: "24px", fontWeight: 800, margin: "0 0 12px" }}>Demande enregistrée !</h1>
             <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.8, margin: "0 0 28px" }}>
-              Merci pour votre intérêt pour CaribbeanVault. Notre équipe vous contactera sous 48h pour finaliser votre inscription et vous donner accès aux actifs disponibles.
+              Merci pour votre inscription ! Un lien de connexion sécurisé vient d'être envoyé à votre adresse email. Cliquez dessus pour accéder à votre espace investisseur.
             </p>
             <div style={{ background: C.sableL, borderRadius: "10px", padding: "16px", marginBottom: "24px", textAlign: "left" }}>
               <div style={{ color: C.sable, fontSize: "11px", fontWeight: 700, marginBottom: "8px" }}>Prochaines étapes</div>

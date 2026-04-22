@@ -124,23 +124,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Insérer dans Supabase
-    const { error } = await supabase
-      .from("investisseurs")
-      .insert([data]);
+// Insérer dans Supabase
+const { error } = await supabase
+  .from("investisseurs")
+  .insert([data]);
 
-    if (error) {
-      console.error("Supabase error:", error.message);
-      return NextResponse.json(
-        { error: "Erreur lors de l'enregistrement. Réessayez." },
-        { status: 500 }
-      );
-    }
+if (error) {
+  console.error("Supabase error:", error.message);
+  return NextResponse.json(
+    { error: "Erreur lors de l'enregistrement. Réessayez." },
+    { status: 500 }
+  );
+}
 
-    return NextResponse.json(
-      { success: true, message: "Votre demande a bien été enregistrée. Nous vous contacterons sous 48h." },
-      { status: 201 }
-    );
+// Envoyer le magic link automatiquement
+const { error: authError } = await supabase.auth.signInWithOtp({
+  email: data.email,
+  options: {
+    emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://caribbeanvault.geccostrategy.com"}/dashboard`,
+  },
+});
+
+if (authError) {
+  console.error("Auth error:", authError.message);
+}
+
+return NextResponse.json(
+  { 
+    success: true, 
+    message: "Votre demande a bien été enregistrée. Un lien de connexion vous a été envoyé par email." 
+  },
+  { status: 201 }
+);
 
   } catch (err) {
     console.error("KYC error:", err);
