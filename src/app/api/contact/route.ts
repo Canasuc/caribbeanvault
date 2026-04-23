@@ -1,15 +1,9 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createHash } from "crypto";
-export const dynamic = "force-dynamic"
-export const revalidate = 0;
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!,
-  { auth: { persistSession: false } }
-);
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
@@ -37,8 +31,14 @@ function sanitize(str: string, maxLen: number): string {
   return str.trim().slice(0, maxLen).replace(/[<>]/g, "");
 }
 
-
 export async function POST(request: NextRequest) {
+  // Initialisation INSIDE la fonction
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY!,
+    { auth: { persistSession: false } }
+  );
+
   try {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
     const ipHash = hashIP(ip);
