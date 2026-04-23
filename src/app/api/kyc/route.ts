@@ -40,9 +40,7 @@ function sanitize(str: string, maxLen: number): string {
   return str.trim().slice(0, maxLen).replace(/[<>]/g, "");
 }
 
-// Pas de cache sur cette route
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+
 
 export async function POST(request: NextRequest) {
   try {
