@@ -35,7 +35,8 @@ export async function proxy(request: NextRequest) {
   if (isPublic) return NextResponse.next();
 
   // Vérifier le cookie de session Supabase
-  const token = request.cookies.get("sb-zkhiifvnvhcopdbapvav-auth-token");
+  const cookies = request.cookies.getAll();
+const token = cookies.find(c => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"));
 
   if (!token) {
     const loginUrl = new URL("/login", request.url);
