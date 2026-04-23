@@ -1,15 +1,10 @@
 "use client";
 export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { LogoNavy } from "@/components/Logo";
-
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 const C = {
   navy:     "#1A2E4A",
@@ -36,6 +31,12 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
+    // Initialisation Supabase INSIDE la fonction
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -44,7 +45,7 @@ export default function LoginPage() {
     });
 
     if (error) {
-      setError("Erreur lors de l'envoi. Vérifiez votre email et réessayez.");
+      setError("Erreur lors de l'envoi. Verifiez votre email et reessayez.");
     } else {
       setSent(true);
     }
@@ -61,7 +62,7 @@ export default function LoginPage() {
             <LogoNavy size={0.85} />
           </Link>
           <Link href="/kyc" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>
-            Pas encore de compte ? S'inscrire →
+            Pas encore de compte ? S'inscrire
           </Link>
         </div>
       </nav>
@@ -72,16 +73,15 @@ export default function LoginPage() {
 
           {!sent ? (
             <div style={{ background: "white", borderRadius: "16px", border: `0.5px solid ${C.grisBord}`, padding: "40px 32px" }}>
-              {/* Icone */}
               <div style={{ textAlign: "center", marginBottom: "28px" }}>
                 <div style={{ width: "56px", height: "56px", background: "#EEF2FF", borderRadius: "14px", margin: "0 auto 16px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>
                   🔐
                 </div>
                 <h1 style={{ color: C.texte, fontSize: "22px", fontWeight: 800, margin: "0 0 8px" }}>
-                  Accès investisseur
+                  Acces investisseur
                 </h1>
                 <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.7, margin: 0 }}>
-                  Entrez votre email pour recevoir un lien de connexion sécurisé. Aucun mot de passe requis.
+                  Entrez votre email pour recevoir un lien de connexion securise. Aucun mot de passe requis.
                 </p>
               </div>
 
@@ -124,7 +124,7 @@ export default function LoginPage() {
                     transition: "background .15s",
                   }}
                 >
-                  {loading ? "Envoi en cours..." : "Recevoir mon lien de connexion →"}
+                  {loading ? "Envoi en cours..." : "Recevoir mon lien de connexion"}
                 </button>
               </form>
 
@@ -132,14 +132,14 @@ export default function LoginPage() {
                 <p style={{ color: C.texteTert, fontSize: "11px", lineHeight: 1.6, margin: 0 }}>
                   Pas encore de compte ?{" "}
                   <Link href="/kyc" style={{ color: C.sable, fontWeight: 600, textDecoration: "none" }}>
-                    Rejoindre CaribbeanVault →
+                    Rejoindre CaribbeanVault
                   </Link>
                 </p>
               </div>
 
               <div style={{ marginTop: "20px", padding: "12px", background: C.creme, borderRadius: "8px", textAlign: "center" }}>
                 <p style={{ color: C.texteTert, fontSize: "10px", margin: 0, lineHeight: 1.6 }}>
-                  🔒 Connexion sécurisée · Lien valable 24h · RGPD conforme
+                  {"Connexion securisee - Lien valable 24h - RGPD conforme"}
                 </p>
               </div>
             </div>
@@ -150,30 +150,30 @@ export default function LoginPage() {
                 ✉️
               </div>
               <h2 style={{ color: C.texte, fontSize: "20px", fontWeight: 800, margin: "0 0 12px" }}>
-                Vérifiez votre email !
+                Verifiez votre email !
               </h2>
               <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.8, margin: "0 0 8px" }}>
-                Un lien de connexion a été envoyé à
+                Un lien de connexion a ete envoye a
               </p>
               <p style={{ color: C.navy, fontSize: "14px", fontWeight: 700, margin: "0 0 20px" }}>
                 {email}
               </p>
               <p style={{ color: C.texteSec, fontSize: "12px", lineHeight: 1.7, margin: "0 0 24px" }}>
-                Cliquez sur le lien dans l'email pour accéder à votre espace investisseur. Le lien est valable 24h.
+                Cliquez sur le lien dans l'email pour acceder a votre espace investisseur. Le lien est valable 24h.
               </p>
               <div style={{ background: "#FFFBEB", borderRadius: "8px", padding: "12px", marginBottom: "20px" }}>
                 <p style={{ color: "#92400E", fontSize: "11px", margin: 0, lineHeight: 1.6 }}>
-                  Vous ne voyez pas l'email ? Vérifiez votre dossier spam ou{" "}
+                  Vous ne voyez pas l'email ? Verifiez votre dossier spam ou{" "}
                   <button
                     onClick={() => setSent(false)}
                     style={{ color: C.sable, fontWeight: 600, background: "none", border: "none", cursor: "pointer", fontSize: "11px", padding: 0 }}
                   >
-                    réessayez avec un autre email
+                    reessayez avec un autre email
                   </button>.
                 </p>
               </div>
               <Link href="/" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>
-                ← Retour à l'accueil
+                Retour a l'accueil
               </Link>
             </div>
           )}
