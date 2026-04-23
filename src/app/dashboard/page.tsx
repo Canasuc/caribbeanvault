@@ -1,8 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-export const metadata = {
-  robots: "noindex, nofollow",
-};
+
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
