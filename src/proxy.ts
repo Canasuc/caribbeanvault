@@ -11,6 +11,7 @@ const PUBLIC_ROUTES = [
   "/simulateur",
   "/kyc",
   "/login",
+  "/dashboard",
   "/contact",
   "/mentions-legales",
   "/cgu",
