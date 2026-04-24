@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import { LogoNavy } from "@/components/Logo";
 
 const C = {
@@ -32,15 +32,15 @@ export default function LoginPage() {
     setError("");
 
     // Initialisation Supabase INSIDE la fonction
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 

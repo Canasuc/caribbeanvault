@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import { LogoNavy } from "@/components/Logo";
 import Footer from "@/components/Footer";
 
@@ -38,7 +38,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function loadData() {
-      const supabase = createClient(
+      const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
@@ -68,7 +68,7 @@ export default function DashboardPage() {
   }, []);
 
   async function handleSignOut() {
-    const supabase = createClient(
+    const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );

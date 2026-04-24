@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-// Pages publiques — accessibles sans connexion
 const PUBLIC_ROUTES = [
   "/",
   "/rhum",
@@ -11,17 +11,16 @@ const PUBLIC_ROUTES = [
   "/simulateur",
   "/kyc",
   "/login",
-  "/dashboard",
   "/contact",
   "/mentions-legales",
   "/cgu",
   "/confidentialite",
+  "/auth/callback",
 ];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Toujours autoriser les assets et API
   if (
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/api/") ||
@@ -31,21 +30,38 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Vérifier si la route est publique
   const isPublic = PUBLIC_ROUTES.some(route => pathname === route);
   if (isPublic) return NextResponse.next();
 
-  // Vérifier le cookie de session Supabase
-  const cookies = request.cookies.getAll();
-const token = cookies.find(c => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"));
+  let response = NextResponse.next({ request });
 
-  if (!token) {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value);
+            response.cookies.set(name, value, options);
+          });
+        },
+      },
+    }
+  );
+
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
