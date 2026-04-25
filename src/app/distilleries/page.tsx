@@ -35,9 +35,9 @@ export default function DistilleriesPage() {
       {/* ── NAVBAR ── */}
       <nav style={{ background: C.noir, borderBottom: `0.5px solid ${C.foret}`, padding: "0 24px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "60px" }}>
-          <Link href="/" style={{ textDecoration: "none" }}>
-          <LogoEmeraude size={0.7} />
-          </Link>
+<Link href="/" style={{ textDecoration: "none" }}>
+  <LogoEmeraude size={0.7} />
+</Link>
           <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
             <Link href="/rhum" style={{ color: C.menthe, fontSize: "11px", textDecoration: "none", opacity: .8 }}>← Retour Rhum AOC</Link>
             <Link href="/rhum#selection" style={{ background: C.or, color: C.noir, padding: "7px 16px", borderRadius: "2px", fontSize: "11px", fontWeight: 700, textDecoration: "none" }}>

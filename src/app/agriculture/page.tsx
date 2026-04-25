@@ -180,10 +180,9 @@ export default function AgriculturePage() {
       {/* ── NAVBAR ── */}
       <nav style={{ background: C.foret, borderBottom: `0.5px solid ${C.vert}`, padding: "0 24px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "60px" }}>
-          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ color: C.paille, fontSize: "10px", letterSpacing: ".15em", opacity: .7 }}>←</span>
-            <LogoEmeraude size={0.7} />
-          </Link>
+<Link href="/" style={{ textDecoration: "none" }}>
+  <LogoEmeraude size={0.7} />
+</Link>
           <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
             {["Nos parcelles", "Notre engagement", "Simulateur"].map(l => (
               <span key={l} style={{ color: C.menthe, fontSize: "11px", cursor: "pointer", fontFamily: "system-ui", opacity: .8 }}>{l}</span>

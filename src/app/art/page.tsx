@@ -182,10 +182,9 @@ export default function ArtPage() {
       {/* NAVBAR */}
       <nav style={{ background: `${C.nuit}F0`, backdropFilter: "blur(8px)", borderBottom: `0.5px solid ${C.prune}`, padding: "0 24px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "60px" }}>
-          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ color: C.or, fontSize: "10px", letterSpacing: ".15em", opacity: .7 }}>←</span>
-            <LogoNuit size={0.45} />
-          </Link>
+<Link href="/" style={{ textDecoration: "none" }}>
+  <LogoNuit size={0.45} />
+</Link>
           <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
             {["Les oeuvres", "Les artistes", "Le cercle"].map(l => (
               <span key={l} style={{ color: C.texteSec, fontSize: "11px", cursor: "pointer", fontFamily: "system-ui", letterSpacing: ".05em" }}>{l}</span>
