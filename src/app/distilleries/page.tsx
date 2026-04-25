@@ -38,12 +38,15 @@ export default function DistilleriesPage() {
 <Link href="/" style={{ textDecoration: "none" }}>
   <LogoEmeraude size={0.7} />
 </Link>
-          <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-            <Link href="/rhum" style={{ color: C.menthe, fontSize: "11px", textDecoration: "none", opacity: .8 }}>← Retour Rhum AOC</Link>
-            <Link href="/rhum#selection" style={{ background: C.or, color: C.noir, padding: "7px 16px", borderRadius: "2px", fontSize: "11px", fontWeight: 700, textDecoration: "none" }}>
-              Voir les fûts →
-            </Link>
-          </div>
+<div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+  <Link href="/rhum" style={{ color: C.menthe, fontSize: "11px", textDecoration: "none", opacity: .8 }}>← Retour Rhum AOC</Link>
+  <NavbarAuth
+    buttonBg="#C8992A"
+    buttonColor="#0D2018"
+    textColor="#9FE1CB"
+    borderColor="rgba(200,153,42,.3)"
+  />
+</div>
         </div>
       </nav>
 
