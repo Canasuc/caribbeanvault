@@ -122,7 +122,7 @@ const BIENS_LEAFLET = PARCELLES.map(p => ({
   tokensDispo: p.tokensDispo, tokensTotal: p.tokensTotal,
   statut: p.statut, couleur: p.couleur,
   adresse: p.lieu,
-  lat: p.lat, lng: p.lng,
+  coordonnees: { lat: p.lat, lng: p.lng },
 }));
 
 export default function AgriculturePage() {
@@ -267,8 +267,14 @@ export default function AgriculturePage() {
               const pct = Math.round(((p.tokens - p.disponibles) / p.tokens) * 100);
               const complet = p.disponibles === 0;
               return (
-                <div key={p.id} onMouseEnter={() => setHovered(p.id)} onMouseLeave={() => setHovered(null)}
-                  style={{ background: C.blanc, borderRadius: "4px", overflow: "hidden", border: hovered === p.id ? `1.5px solid ${C.feuille}` : `1px solid #D5CCBA`, transition: "all .2s", opacity: complet ? .65 : 1, transform: hovered === p.id && !complet ? "translateY(-3px)" : "none", borderLeft: `3px solid ${p.tagColor}` }}>
+<div key={p.id} onMouseEnter={() => setHovered(p.id)} onMouseLeave={() => setHovered(null)}
+  style={{ background: C.blanc, borderRadius: "4px", overflow: "hidden",
+    borderTop: hovered === p.id ? `1.5px solid ${C.feuille}` : `1px solid #D5CCBA`,
+    borderRight: hovered === p.id ? `1.5px solid ${C.feuille}` : `1px solid #D5CCBA`,
+    borderBottom: hovered === p.id ? `1.5px solid ${C.feuille}` : `1px solid #D5CCBA`,
+    borderLeft: `3px solid ${p.tagColor}`,
+    transition: "all .2s", opacity: complet ? .65 : 1,
+    transform: hovered === p.id && !complet ? "translateY(-3px)" : "none" }}>
                   <div style={{ background: C.foret, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       <span style={{ fontSize: "20px" }}>{p.icone}</span>
