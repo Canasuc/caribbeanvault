@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@fontsource/playfair-display/400-italic.css";
@@ -6,9 +6,15 @@ import "@fontsource/playfair-display/700-italic.css";
 import "@fontsource/cinzel/400.css";
 import "@fontsource/cinzel/600.css";
 
+
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 export const metadata: Metadata = {
   metadataBase: new URL("https://caribbeanvault.geccostrategy.com"),
   title: {
