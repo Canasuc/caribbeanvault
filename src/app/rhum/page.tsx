@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import Link from "next/link";
 import { useState } from "react";
 import Footer from "@/components/Footer";
@@ -6,6 +7,7 @@ import Image from "next/image";
 import { LogoEmeraude } from "@/components/Logo";
 import NavbarAuth from "@/components/NavbarAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+
 
 const C = {
   noir:    "#0D2018",
@@ -20,6 +22,66 @@ const C = {
   gris:    "#6B7280",
   menthe:  "#9FE1CB",
 };
+
+// ── DONNÉES TERRITOIRES ────────────────────────────────────────────────────────
+// Structure extensible pour futurs pays anglophones/hispanophones
+const TERRITOIRES = [
+  {
+    id: "guadeloupe",
+    nom: "Guadeloupe",
+    pays: "France (DOM)",
+    drapeau: "🇬🇵",
+    couleur: "#0F5240",
+    accentColor: "#C8992A",
+    region: "Antilles françaises",
+    langue: "fr",
+    // Données sectorielles
+    surfaceCanne: "12 000 ha",
+    productionHAP: "~70 000 HAP/an",
+    nbDistilleries: 6,
+    aocDepuis: "1996",
+    exportPrincipal: "France métropole, Europe",
+    prixMoyenFut: "28-125€/token",
+    rendementMoyen: "9-14%/an",
+    certification: "AOC Rhum Agricole Guadeloupe",
+    subventions: "FEADER + POSEI UE",
+    avantages: [
+      "Seule AOC rhum agricole Guadeloupe au monde",
+      "Sol volcanique unique — Basse-Terre",
+      "Calcaire exceptionnel — Marie-Galante",
+      "Distilleries familiales 3e-5e génération",
+    ],
+    particularites: "Marie-Galante produit des rhums à 59°+ sur terroir calcaire unique. Basse-Terre bénéficie du volcan de la Soufrière.",
+    distilleries: ["Damoiseau", "Père Labat", "Bologne", "Bielle", "Longueteau", "Reimonenq"],
+  },
+  {
+    id: "martinique",
+    nom: "Martinique",
+    pays: "France (DOM)",
+    drapeau: "🇲🇶",
+    couleur: "#1A2E4A",
+    accentColor: "#C8992A",
+    region: "Antilles françaises",
+    langue: "fr",
+    surfaceCanne: "4 500 ha",
+    productionHAP: "~90 000 HAP/an",
+    nbDistilleries: 7,
+    aocDepuis: "1996",
+    exportPrincipal: "France, USA, Japon, UK",
+    prixMoyenFut: "35-420€/token",
+    rendementMoyen: "10-18%/an",
+    certification: "AOC Rhum Agricole Martinique",
+    subventions: "FEADER + POSEI UE",
+    avantages: [
+      "AOC la plus stricte — qualité supérieure garantie",
+      "Distilleries historiques (1660, 1749, 1765)",
+      "Techniques de finition uniques (Sauternes, Cognac)",
+      "Marché premium — prix record aux enchères",
+    ],
+    particularites: "La Martinique est la référence mondiale du rhum agricole. Ses millésimes s'échangent jusqu'à 5 000€ la bouteille.",
+    distilleries: ["Clément", "Trois Rivières", "HSE", "Saint James", "La Mauny", "Depaz", "J.M."],
+  },
+];
 
 const FUTS = [
   { id: 1, distillerie: "Damoiseau", ile: "Guadeloupe", annee: 2019, type: "Rhum Agricole AOC Blanc", baril: "Fut de chene americain 180L", tokens: 100, disponibles: 34, prixToken: 48, rendementEst: "9-12%/an", maturite: "2029", statut: "En levee", millesime: false },
@@ -97,11 +159,148 @@ function DistillerieCard({ d, ile }: { d: typeof DISTILLERIES_GUADELOUPE[0]; ile
   );
 }
 
+// ── COMPOSANT CARTE TERRITOIRE ────────────────────────────────────────────────
+function TerritoireCard({
+  territoire,
+  selected,
+  onClick,
+  isMobile,
+}: {
+  territoire: typeof TERRITOIRES[0];
+  selected: boolean;
+  onClick: () => void;
+  isMobile: boolean;
+}) {
+  const futsTerriroire = FUTS.filter(f => f.ile === territoire.nom);
+  const futsDispos = futsTerriroire.filter(f => f.disponibles > 0).length;
+
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: selected ? territoire.couleur : `${territoire.couleur}30`,
+        borderRadius: "6px",
+        padding: isMobile ? "16px" : "24px",
+        cursor: "pointer",
+        border: selected ? `2px solid ${C.or}` : `1px solid ${C.or}20`,
+        transition: "all .25s",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Effet brillance sélectionné */}
+      {selected && (
+        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 30% 30%, ${C.or}15 0%, transparent 60%)`, pointerEvents: "none" }} />
+      )}
+
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <span style={{ fontSize: "20px" }}>{territoire.drapeau}</span>
+            <div style={{ color: selected ? C.or : C.orClair, fontSize: isMobile ? "16px" : "20px", fontWeight: 700, fontFamily: "Georgia, serif" }}>
+              {territoire.nom}
+            </div>
+          </div>
+          <div style={{ color: selected ? C.menthe : `${C.menthe}70`, fontSize: "10px", letterSpacing: ".1em", textTransform: "uppercase" }}>
+            {territoire.pays} · {territoire.region}
+          </div>
+        </div>
+
+      </div>
+
+      {/* Stats clés */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px", marginBottom: "14px" }}>
+        {[
+          { label: "Surface canne", val: territoire.surfaceCanne },
+          { label: "Production", val: territoire.productionHAP },
+          { label: "Distilleries", val: `${territoire.nbDistilleries} partenaires` },
+          { label: "AOC depuis", val: territoire.aocDepuis },
+        ].map((s, i) => (
+          <div key={i} style={{ background: "rgba(0,0,0,.2)", borderRadius: "4px", padding: "8px 10px" }}>
+            <div style={{ color: `${C.menthe}80`, fontSize: "9px", textTransform: "uppercase", letterSpacing: ".08em", marginBottom: "2px" }}>{s.label}</div>
+            <div style={{ color: selected ? C.orClair : C.menthe, fontSize: "12px", fontWeight: 700 }}>{s.val}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Certification + subventions */}
+      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "12px" }}>
+        <span style={{ background: `${C.or}25`, color: C.or, fontSize: "9px", fontWeight: 700, padding: "2px 8px", borderRadius: "2px" }}>
+          {territoire.certification}
+        </span>
+        <span style={{ background: "rgba(255,255,255,.1)", color: C.menthe, fontSize: "9px", padding: "2px 8px", borderRadius: "2px" }}>
+          {territoire.subventions}
+        </span>
+      </div>
+
+      {/* Avantages (uniquement si sélectionné ou desktop) */}
+      {(selected || !isMobile) && (
+        <div style={{ marginBottom: "12px" }}>
+          {territoire.avantages.slice(0, selected ? 4 : 2).map((a, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "6px", marginBottom: "4px" }}>
+              <span style={{ color: C.or, fontSize: "10px", flexShrink: 0, marginTop: "1px" }}>✓</span>
+              <span style={{ color: selected ? C.menthe : `${C.menthe}80`, fontSize: "11px" }}>{a}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Particularités (sélectionné uniquement) */}
+      {selected && (
+        <div style={{ background: "rgba(0,0,0,.25)", borderRadius: "4px", padding: "10px 12px", marginBottom: "12px" }}>
+          <div style={{ color: C.orClair, fontSize: "11px", lineHeight: 1.7 }}>{territoire.particularites}</div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `0.5px solid ${C.or}20`, paddingTop: "10px" }}>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <div>
+            <div style={{ color: `${C.menthe}60`, fontSize: "9px" }}>Rendement moy.</div>
+            <div style={{ color: C.or, fontSize: "12px", fontWeight: 700 }}>{territoire.rendementMoyen}</div>
+          </div>
+          <div>
+            <div style={{ color: `${C.menthe}60`, fontSize: "9px" }}>Futs dispos</div>
+            <div style={{ color: C.or, fontSize: "12px", fontWeight: 700 }}>{futsDispos}/{futsTerriroire.length}</div>
+          </div>
+        </div>
+<div style={{ color: C.or, fontSize: "11px", fontWeight: 700 }}>
+  {selected ? "Voir la selection ↓" : "Explorer →"}
+</div>
+      </div>
+    </div>
+  );
+}
+
 export default function RhumPage() {
   const [filtre, setFiltre] = useState<"tous" | "guadeloupe" | "martinique" | "millesime">("tous");
+  const [territoireActif, setTerritoireActif] = useState<string | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const { isMobile, isTablet } = useBreakpoint();
+
+  // Sélection territoire → met à jour le filtre ET scroll vers la sélection
+  const handleTerritoire = (id: string) => {
+    if (territoireActif === id) {
+      // Désélection → remet "tous"
+      setTerritoireActif(null);
+      setFiltre("tous");
+    } else {
+      setTerritoireActif(id);
+      setFiltre(id as typeof filtre);
+      setTimeout(() => {
+        document.getElementById("selection")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  };
+
+  // Filtre manuel (boutons) → désélectionne le territoire
+  const handleFiltre = (f: typeof filtre) => {
+    setFiltre(f);
+    if (f === "tous" || f === "millesime") setTerritoireActif(null);
+    else setTerritoireActif(f);
+  };
 
   const futsFiltres = FUTS.filter(f => {
     if (filtre === "guadeloupe") return f.ile === "Guadeloupe";
@@ -113,6 +312,7 @@ export default function RhumPage() {
   const colsFuts = isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(3, 1fr)";
   const colsGP = isMobile ? "repeat(3, 1fr)" : "repeat(6, 1fr)";
   const colsMQ = isMobile ? "repeat(4, 1fr)" : "repeat(7, 1fr)";
+  const colsTerritoires = isMobile ? "1fr" : "repeat(2, 1fr)";
 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.creme, minHeight: "100vh" }}>
@@ -123,18 +323,14 @@ export default function RhumPage() {
           <Link href="/" style={{ textDecoration: "none" }}>
             <LogoEmeraude size={isMobile ? 0.6 : 0.7} />
           </Link>
-
-          {/* Desktop */}
           {!isMobile && (
             <div style={{ display: "flex", gap: isTablet ? "16px" : "24px", alignItems: "center" }}>
-              {[{ label: "Notre selection", href: "#selection" }, { label: "Comment ca marche", href: "#processus" }, { label: "Distilleries", href: "/distilleries" }].map(l => (
+              {[{ label: "Territoires", href: "#territoires" }, { label: "Notre selection", href: "#selection" }, { label: "Comment ca marche", href: "#processus" }, { label: "Distilleries", href: "/distilleries" }].map(l => (
                 <a key={l.label} href={l.href} style={{ color: C.menthe, fontSize: "11px", cursor: "pointer", opacity: .8, textDecoration: "none" }}>{l.label}</a>
               ))}
               <NavbarAuth buttonBg="#C8992A" buttonColor="#0D2018" textColor="#9FE1CB" borderColor="rgba(200,153,42,.3)" />
             </div>
           )}
-
-          {/* Mobile */}
           {isMobile && (
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <NavbarAuth buttonBg="#C8992A" buttonColor="#0D2018" textColor="#9FE1CB" borderColor="rgba(200,153,42,.3)" />
@@ -144,11 +340,9 @@ export default function RhumPage() {
             </div>
           )}
         </div>
-
-        {/* Menu mobile */}
         {isMobile && menuOpen && (
           <div style={{ background: C.foret, borderTop: `0.5px solid ${C.vert}30`, padding: "8px 16px" }}>
-            {[{ label: "Notre selection", href: "#selection" }, { label: "Comment ca marche", href: "#processus" }, { label: "Distilleries", href: "/distilleries" }].map(l => (
+            {[{ label: "Territoires", href: "#territoires" }, { label: "Notre selection", href: "#selection" }, { label: "Comment ca marche", href: "#processus" }, { label: "Distilleries", href: "/distilleries" }].map(l => (
               <a key={l.label} href={l.href} onClick={() => setMenuOpen(false)} style={{ display: "block", color: C.menthe, fontSize: "14px", textDecoration: "none", padding: "12px 0", borderBottom: `0.5px solid ${C.vert}30` }}>{l.label}</a>
             ))}
           </div>
@@ -162,7 +356,6 @@ export default function RhumPage() {
         {!isMobile && [...Array(8)].map((_, i) => (
           <div key={i} style={{ position: "absolute", width: `${80 + i * 20}px`, height: `${80 + i * 20}px`, border: `1px solid ${C.or}${i % 2 === 0 ? "18" : "0C"}`, borderRadius: "50%", top: `${-20 + i * 15}%`, right: `${-5 + i * 3}%`, pointerEvents: "none" }} />
         ))}
-
         <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "48px 16px 40px" : "80px 24px 64px", position: "relative" }}>
           <div style={{ display: "flex", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
             <span style={{ background: C.or, color: C.noir, fontSize: "9px", fontWeight: 700, padding: "3px 12px", borderRadius: "1px", letterSpacing: ".2em", textTransform: "uppercase" }}>AOC Certifie</span>
@@ -178,16 +371,14 @@ export default function RhumPage() {
             Investissez dans des futs de rhum agricole AOC selectionnes par nos experts. Chaque fut vieillit en chai et genere un rendement historique de 8 a 15% par an.
           </p>
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            <Link href="#selection" style={{ background: C.or, color: C.noir, padding: isMobile ? "11px 20px" : "13px 28px", borderRadius: "2px", fontSize: "13px", fontWeight: 700, textDecoration: "none", letterSpacing: ".08em" }}>
-              Voir les futs disponibles
-            </Link>
+            <a href="#territoires" style={{ background: C.or, color: C.noir, padding: isMobile ? "11px 20px" : "13px 28px", borderRadius: "2px", fontSize: "13px", fontWeight: 700, textDecoration: "none", letterSpacing: ".08em" }}>
+              Explorer les territoires
+            </a>
             <Link href="/simulateur" style={{ background: "transparent", color: C.orClair, border: `1px solid ${C.vert}`, padding: isMobile ? "11px 20px" : "13px 28px", borderRadius: "2px", fontSize: "13px", textDecoration: "none" }}>
               Simuler mon rendement →
             </Link>
           </div>
         </div>
-
-        {/* Stats bar */}
         <div style={{ background: C.foret, borderTop: `1px solid ${C.vert}30` }}>
           <div style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)" }}>
             {STATS.map((s, i) => (
@@ -211,8 +402,6 @@ export default function RhumPage() {
             </h2>
             {!isMobile && <p style={{ color: C.menthe, fontSize: "13px", opacity: .7, margin: 0 }}>Guadeloupe & Martinique · AOC Certifiees · Selection exclusive CaribbeanVault</p>}
           </div>
-
-          {/* Guadeloupe */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
             <div style={{ flex: 1, height: "0.5px", background: `${C.or}30` }} />
             <span style={{ color: C.or, fontSize: "9px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase" }}>Guadeloupe</span>
@@ -221,8 +410,6 @@ export default function RhumPage() {
           <div style={{ display: "grid", gridTemplateColumns: colsGP, gap: "2px", marginBottom: "16px" }}>
             {DISTILLERIES_GUADELOUPE.map((d, i) => <DistillerieCard key={i} d={d} ile="Guadeloupe" />)}
           </div>
-
-          {/* Martinique */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
             <div style={{ flex: 1, height: "0.5px", background: `${C.or}30` }} />
             <span style={{ color: C.or, fontSize: "9px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase" }}>Martinique</span>
@@ -231,7 +418,6 @@ export default function RhumPage() {
           <div style={{ display: "grid", gridTemplateColumns: colsMQ, gap: "2px", marginBottom: "28px" }}>
             {DISTILLERIES_MARTINIQUE.map((d, i) => <DistillerieCard key={i} d={d} ile="Martinique" />)}
           </div>
-
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: C.or }} />
@@ -244,23 +430,146 @@ export default function RhumPage() {
         </div>
       </section>
 
+      {/* ── TERRITOIRES ─────────────────────────────────────────────────────── */}
+      <section id="territoires" style={{ background: C.foret, padding: isMobile ? "48px 16px" : "72px 24px" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "36px" }}>
+            <div style={{ color: C.or, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px" }}>
+              Geographie du rhum AOC
+            </div>
+            <h2 style={{ color: C.orPale, fontSize: isMobile ? "22px" : "28px", fontWeight: 300, fontFamily: "Georgia, serif", margin: "0 0 10px" }}>
+              Explorez nos territoires
+            </h2>
+            <p style={{ color: C.menthe, fontSize: "13px", opacity: .8, margin: 0 }}>
+              Cliquez sur un territoire pour filtrer les futs disponibles et decouvrir ses specificites
+            </p>
+          </div>
+
+          {/* Cartes territoires */}
+          <div style={{ display: "grid", gridTemplateColumns: colsTerritoires, gap: "16px", marginBottom: "28px" }}>
+            {TERRITOIRES.map(t => (
+              <TerritoireCard
+                key={t.id}
+                territoire={t}
+                selected={territoireActif === t.id}
+                onClick={() => handleTerritoire(t.id)}
+                isMobile={isMobile}
+              />
+            ))}
+          </div>
+
+          {/* Comparaison rapide */}
+          {!isMobile && (
+            <div style={{ background: "rgba(0,0,0,.3)", borderRadius: "6px", padding: "20px 24px" }}>
+              <div style={{ color: C.or, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>
+                Comparaison rapide
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr repeat(2, 1fr)", gap: "0" }}>
+                {/* Headers */}
+                <div />
+                {TERRITOIRES.map(t => (
+                  <div key={t.id} style={{ textAlign: "center", padding: "8px", color: C.or, fontSize: "12px", fontWeight: 700, borderBottom: `0.5px solid ${C.or}20` }}>
+                    {t.drapeau} {t.nom}
+                  </div>
+                ))}
+               {/* Lignes de comparaison */}
+                {[
+                  { label: "Surface canne", key: "surfaceCanne" },
+                  { label: "Production", key: "productionHAP" },
+                  { label: "Distilleries", key: "nbDistilleries" },
+                  { label: "Rendement moyen", key: "rendementMoyen" },
+                  { label: "Export principal", key: "exportPrincipal" },
+                  { label: "Subventions", key: "subventions" },
+                ].map((row, i) => (
+                  <React.Fragment key={`row-${i}`}>
+                    <div style={{ padding: "10px 0", color: `${C.menthe}80`, fontSize: "11px", borderBottom: `0.5px solid ${C.or}10` }}>
+                      {row.label}
+                    </div>
+                    {TERRITOIRES.map(t => (
+                      <div key={`${t.id}-${i}`} style={{ textAlign: "center", padding: "10px 8px", color: C.menthe, fontSize: "11px", borderBottom: `0.5px solid ${C.or}10` }}>
+                        {String((t as any)[row.key])}
+                      </div>
+                    ))}
+                  </React.Fragment>
+                                  ))}
+              </div>
+            </div>
+          )}
+
+
+          {/* Badge "bientôt disponible" pour futurs pays */}
+          <div style={{ marginTop: "20px", display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "center" }}>
+            <div style={{ color: C.menthe, fontSize: "11px", opacity: .5, marginRight: "8px", lineHeight: "28px" }}>Prochainement :</div>
+            {[
+              { flag: "🇯🇲", nom: "Jamaica" },
+              { flag: "🇹🇹", nom: "Trinidad" },
+              { flag: "🇨🇺", nom: "Cuba" },
+              { flag: "🇩🇴", nom: "Dominican Rep." },
+              { flag: "🇧🇧", nom: "Barbados" },
+            ].map((pays, i) => (
+              <div key={i} style={{ background: "rgba(255,255,255,.06)", border: `0.5px solid ${C.or}20`, borderRadius: "20px", padding: "4px 12px", fontSize: "11px", color: `${C.menthe}50`, display: "flex", alignItems: "center", gap: "6px" }}>
+                <span>{pays.flag}</span>
+                <span>{pays.nom}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* SELECTION DE FUTS */}
       <section id="selection" style={{ padding: isMobile ? "48px 16px" : "72px 24px" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ marginBottom: "28px" }}>
             <div style={{ color: C.or, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "8px" }}>Notre selection</div>
-            <h2 style={{ color: C.texte, fontSize: isMobile ? "22px" : "28px", fontWeight: 700, margin: "0 0 16px", fontFamily: "Georgia, serif" }}>
+            <h2 style={{ color: C.texte, fontSize: isMobile ? "22px" : "28px", fontWeight: 700, margin: "0 0 6px", fontFamily: "Georgia, serif" }}>
               {"Futs disponibles a l'investissement"}
             </h2>
+            {/* Indicateur territoire actif */}
+            {territoireActif && (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: `${C.foret}`, border: `1px solid ${C.or}40`, borderRadius: "4px", padding: "6px 12px", marginBottom: "12px" }}>
+                <span style={{ color: C.or, fontSize: "12px" }}>
+                  {TERRITOIRES.find(t => t.id === territoireActif)?.drapeau}
+                </span>
+                <span style={{ color: C.menthe, fontSize: "11px" }}>
+                  Filtre : {TERRITOIRES.find(t => t.id === territoireActif)?.nom}
+                </span>
+                <button onClick={() => { setTerritoireActif(null); setFiltre("tous"); }}
+                  style={{ background: "none", border: "none", color: `${C.menthe}60`, cursor: "pointer", fontSize: "14px", lineHeight: 1, padding: "0 2px" }}>
+                  ×
+                </button>
+              </div>
+            )}
             {/* Filtres */}
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {[{ key: "tous", label: "Tous" }, { key: "guadeloupe", label: "Guadeloupe" }, { key: "martinique", label: "Martinique" }, { key: "millesime", label: "Millesimes" }].map(f => (
-                <button key={f.key} onClick={() => setFiltre(f.key as typeof filtre)} style={{ padding: "7px 14px", borderRadius: "2px", cursor: "pointer", fontSize: "11px", fontWeight: 600, border: filtre === f.key ? `1.5px solid ${C.or}` : `1px solid #D1C5B0`, background: filtre === f.key ? C.foret : "white", color: filtre === f.key ? C.or : C.gris, transition: "all .15s" }}>
+              {[{ key: "tous", label: "Tous" }, { key: "guadeloupe", label: "🇬🇵 Guadeloupe" }, { key: "martinique", label: "🇲🇶 Martinique" }, { key: "millesime", label: "★ Millesimes" }].map(f => (
+                <button key={f.key} onClick={() => handleFiltre(f.key as typeof filtre)} style={{ padding: "7px 14px", borderRadius: "2px", cursor: "pointer", fontSize: "11px", fontWeight: 600, border: filtre === f.key ? `1.5px solid ${C.or}` : `1px solid #D1C5B0`, background: filtre === f.key ? C.foret : "white", color: filtre === f.key ? C.or : C.gris, transition: "all .15s" }}>
                   {f.label}
                 </button>
               ))}
             </div>
           </div>
+
+          {/* Résumé territoire si sélectionné */}
+          {territoireActif && (
+            <div style={{ background: TERRITOIRES.find(t => t.id === territoireActif)?.couleur, borderRadius: "6px", padding: "16px 20px", marginBottom: "20px", display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" }}>
+              <div>
+                <div style={{ color: C.or, fontSize: "10px", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: "2px" }}>Certification</div>
+                <div style={{ color: C.menthe, fontSize: "12px", fontWeight: 600 }}>{TERRITOIRES.find(t => t.id === territoireActif)?.certification}</div>
+              </div>
+              <div>
+                <div style={{ color: C.or, fontSize: "10px", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: "2px" }}>Rendement</div>
+                <div style={{ color: C.menthe, fontSize: "12px", fontWeight: 600 }}>{TERRITOIRES.find(t => t.id === territoireActif)?.rendementMoyen}</div>
+              </div>
+              <div>
+                <div style={{ color: C.or, fontSize: "10px", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: "2px" }}>Subventions</div>
+                <div style={{ color: C.menthe, fontSize: "12px", fontWeight: 600 }}>{TERRITOIRES.find(t => t.id === territoireActif)?.subventions}</div>
+              </div>
+              <div style={{ marginLeft: "auto" }}>
+                <div style={{ color: C.or, fontSize: "20px", fontWeight: 700 }}>{futsFiltres.length}</div>
+                <div style={{ color: C.menthe, fontSize: "10px" }}>futs disponibles</div>
+              </div>
+            </div>
+          )}
 
           <div style={{ display: "grid", gridTemplateColumns: colsFuts, gap: "16px" }}>
             {futsFiltres.map(fut => {
@@ -271,7 +580,6 @@ export default function RhumPage() {
                   onMouseEnter={() => setHovered(fut.id)}
                   onMouseLeave={() => setHovered(null)}
                   style={{ background: "white", borderRadius: "6px", overflow: "hidden", border: hovered === fut.id ? `1.5px solid ${C.or}` : "1px solid #E8E2D6", transition: "all .2s", opacity: complet ? .65 : 1 }}>
-
                   <div style={{ background: fut.millesime ? C.foret : C.emeraude, padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
                       <div style={{ color: C.or, fontSize: "11px", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase" }}>{fut.distillerie}</div>
@@ -282,7 +590,6 @@ export default function RhumPage() {
                       {fut.millesime && <span style={{ background: C.or, color: C.noir, fontSize: "8px", fontWeight: 700, padding: "1px 6px", borderRadius: "1px", textTransform: "uppercase" }}>★ Millesime</span>}
                     </div>
                   </div>
-
                   <div style={{ padding: "14px 16px" }}>
                     <div style={{ color: C.texte, fontSize: "13px", fontWeight: 600, marginBottom: "4px" }}>{fut.type}</div>
                     <div style={{ color: C.gris, fontSize: "11px", marginBottom: "12px" }}>{fut.baril}</div>
@@ -317,6 +624,17 @@ export default function RhumPage() {
               );
             })}
           </div>
+
+          {futsFiltres.length === 0 && (
+            <div style={{ textAlign: "center", padding: "48px 20px", background: "white", borderRadius: "8px", border: "1px solid #E8E2D6" }}>
+              <div style={{ fontSize: "32px", marginBottom: "12px" }}>🥃</div>
+              <div style={{ color: C.texte, fontSize: "15px", fontWeight: 600, marginBottom: "6px" }}>Aucun fut disponible pour ce filtre</div>
+              <button onClick={() => { setFiltre("tous"); setTerritoireActif(null); }}
+                style={{ background: C.foret, color: C.or, border: "none", padding: "10px 20px", borderRadius: "4px", fontSize: "12px", cursor: "pointer", marginTop: "8px" }}>
+                Voir tous les futs
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -332,7 +650,7 @@ export default function RhumPage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: "2px" }}>
             {ETAPES.map((e, i) => (
-              <div key={i} style={{ background: i % 2 === 0 ? C.foret : C.emeraude, padding: isMobile ? "20px 14px" : "28px 20px", position: "relative" }}>
+              <div key={i} style={{ background: i % 2 === 0 ? C.foret : C.emeraude, padding: isMobile ? "20px 14px" : "28px 20px" }}>
                 <div style={{ color: C.or, fontSize: isMobile ? "24px" : "32px", fontFamily: "Georgia, serif", fontWeight: 300, opacity: .5, marginBottom: "10px" }}>{e.num}</div>
                 <div style={{ color: C.or, fontSize: "11px", fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", marginBottom: "8px" }}>{e.titre}</div>
                 <div style={{ color: C.menthe, fontSize: "11px", lineHeight: 1.7, opacity: .85 }}>{e.desc}</div>
@@ -342,7 +660,7 @@ export default function RhumPage() {
         </div>
       </section>
 
-      {/* REJOINDRE LA FAMILLE */}
+      {/* REJOINDRE */}
       <section id="portefeuille" style={{ background: C.foret, padding: isMobile ? "48px 16px" : "72px 24px", position: "relative", overflow: "hidden" }}>
         <Image src="/images/recolte.jpg" alt="Recolte de canne a sucre" fill style={{ objectFit: "cover", opacity: 0.15 }} />
         <div style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center", position: "relative" }}>
