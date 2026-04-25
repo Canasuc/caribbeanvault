@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { LogoTurquoise } from "@/components/Logo";
 import Footer from "@/components/Footer";
 import { BIENS, REGIONS, PROCESSUS_ONBOARDING, TYPES_BAIL, FISCALITE, getBienSlug } from "@/lib/biens";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const CarteLeaflet = dynamic(() => import("@/components/CarteLeaflet"), {
   ssr: false,
@@ -113,9 +114,12 @@ export default function ImmobilierPage() {
     {l.label}
   </Link>
 ))}
-            <Link href="/kyc" style={{ background: C.turquoise, color: "white", padding: "8px 18px", borderRadius: "8px", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
-              Rejoindre la famille
-            </Link>
+<NavbarAuth
+  buttonBg="#0891B2"
+  buttonColor="white"
+  textColor="#4B5563"
+  borderColor="#E5E7EB"
+/>
           </div>
         </div>
       </nav>

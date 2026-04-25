@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { LogoNavy } from "@/components/Logo";
 import Footer from "@/components/Footer";
 import type { NewsItem } from "@/app/api/news/route";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const C = {
   navy:     "#1A2E4A",
@@ -130,11 +131,17 @@ export default function ActualitesPage() {
           <Link href="/" style={{ textDecoration: "none" }}>
             <LogoNavy size={0.85} />
           </Link>
-          <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-            <Link href="/" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>← Accueil</Link>
-            <Link href="/immobilier" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>Immobilier</Link>
-            <Link href="/rhum" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>Rhum AOC</Link>
-          </div>
+<div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+  <Link href="/" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>← Accueil</Link>
+  <Link href="/immobilier" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>Immobilier</Link>
+  <Link href="/rhum" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>Rhum AOC</Link>
+  <NavbarAuth
+    buttonBg="#1A2E4A"
+    buttonColor="white"
+    textColor="#4A5568"
+    borderColor="#E8E2D6"
+  />
+</div>
         </div>
       </nav>
 

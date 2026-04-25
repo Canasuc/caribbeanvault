@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Footer from "@/components/Footer";
 import { LogoEmeraude } from "@/components/Logo";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const C = {
   noir:     "#0D1A08",
@@ -187,13 +188,12 @@ export default function AgriculturePage() {
             {["Nos parcelles", "Notre engagement", "Simulateur"].map(l => (
               <span key={l} style={{ color: C.menthe, fontSize: "11px", cursor: "pointer", fontFamily: "system-ui", opacity: .8 }}>{l}</span>
             ))}
-            <Link href="/kyc" style={{
-              background: C.feuille, color: "white", padding: "8px 18px",
-              borderRadius: "2px", fontSize: "11px", fontWeight: 700,
-              textDecoration: "none", letterSpacing: ".05em", fontFamily: "system-ui",
-            }}>
-              Rejoindre la famille →
-            </Link>
+<NavbarAuth 
+  buttonBg="#C8992A"
+  buttonColor="#0D2018"
+  textColor="#9FE1CB"
+  borderColor="rgba(200,153,42,.3)"
+/>
           </div>
         </div>
       </nav>
@@ -474,43 +474,34 @@ export default function AgriculturePage() {
       </section>
 
       {/* ── REJOINDRE LA FAMILLE ── */}
-      <section id="famille" style={{ background: C.foret, padding: "72px 24px" }}>
-        <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "center" }}>
-          {/* Décor feuilles CSS */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "24px" }}>
-            {["🌿", "🍃", "🌾", "🍃", "🌿"].map((e, i) => (
-              <span key={i} style={{ fontSize: "20px", opacity: .6 + i * .08 }}>{e}</span>
-            ))}
-          </div>
-
-          <div style={{ color: C.paille, fontSize: "10px", fontWeight: 700, letterSpacing: ".25em", textTransform: "uppercase", marginBottom: "16px", fontFamily: "system-ui" }}>
-            Accès privilégié
-          </div>
-          <h2 style={{ color: C.terreB, fontSize: "26px", fontWeight: 300, lineHeight: 1.3, margin: "0 0 14px" }}>
-            Rejoignez la famille CaribbeanVault
-          </h2>
-          <p style={{ color: C.menthe, fontSize: "14px", lineHeight: 1.8, margin: "0 0 32px", fontFamily: "system-ui", opacity: .9 }}>
-            Accédez en avant-première aux nouvelles parcelles, aux rapports de récolte exclusifs et aux visites de terrain. Une communauté d'investisseurs engagés pour un terroir caribéen vivant.
-          </p>
-          <div style={{ background: `${C.noir}60`, borderRadius: "4px", border: `1px solid ${C.feuille}40`, padding: "24px", marginBottom: "16px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-              <input type="text" placeholder="Prénom" style={{ padding: "11px 14px", background: `${C.noir}80`, border: `0.5px solid ${C.vert}`, borderRadius: "2px", color: C.terreB, fontSize: "13px", outline: "none", fontFamily: "system-ui" }} />
-              <input type="text" placeholder="Nom" style={{ padding: "11px 14px", background: `${C.noir}80`, border: `0.5px solid ${C.vert}`, borderRadius: "2px", color: C.terreB, fontSize: "13px", outline: "none", fontFamily: "system-ui" }} />
-            </div>
-            <input type="email" placeholder="Votre adresse email" style={{ width: "100%", padding: "11px 14px", background: `${C.noir}80`, border: `0.5px solid ${C.vert}`, borderRadius: "2px", color: C.terreB, fontSize: "13px", outline: "none", marginBottom: "10px", boxSizing: "border-box", fontFamily: "system-ui" }} />
-            <button style={{
-              width: "100%", background: C.feuille, color: "white", border: "none",
-              padding: "13px", borderRadius: "2px", fontSize: "13px", fontWeight: 700,
-              cursor: "pointer", letterSpacing: ".05em", fontFamily: "system-ui",
-            }}>
-              Rejoindre la famille CaribbeanVault
-            </button>
-          </div>
-          <p style={{ color: `${C.menthe}50`, fontSize: "10px", fontFamily: "system-ui", letterSpacing: ".05em" }}>
-            Gratuit · Aucun engagement · Désabonnement en 1 clic
-          </p>
-        </div>
-      </section>
+<section id="famille" style={{ background: C.foret, padding: "72px 24px" }}>
+  <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "center" }}>
+    <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "24px" }}>
+      {["🌿", "🍃", "🌾", "🍃", "🌿"].map((e, i) => (
+        <span key={i} style={{ fontSize: "20px", opacity: .6 + i * .08 }}>{e}</span>
+      ))}
+    </div>
+    <div style={{ color: C.paille, fontSize: "10px", fontWeight: 700, letterSpacing: ".25em", textTransform: "uppercase", marginBottom: "16px", fontFamily: "system-ui" }}>
+      Acces privilegie
+    </div>
+    <h2 style={{ color: C.terreB, fontSize: "26px", fontWeight: 300, lineHeight: 1.3, margin: "0 0 14px" }}>
+      Rejoignez la famille CaribbeanVault
+    </h2>
+    <p style={{ color: C.menthe, fontSize: "14px", lineHeight: 1.8, margin: "0 0 32px", fontFamily: "system-ui", opacity: .9 }}>
+      Accedez en avant-premiere aux nouvelles parcelles, aux rapports de recolte exclusifs et aux visites de terrain.
+    </p>
+    <Link href="/kyc" style={{
+      display: "inline-block", background: C.feuille, color: "white",
+      padding: "14px 32px", borderRadius: "2px", fontSize: "13px",
+      fontWeight: 700, textDecoration: "none", letterSpacing: ".05em", fontFamily: "system-ui",
+    }}>
+      Rejoindre la famille CaribbeanVault
+    </Link>
+    <p style={{ color: `${C.menthe}50`, fontSize: "10px", fontFamily: "system-ui", letterSpacing: ".05em", marginTop: "16px" }}>
+      {"Gratuit · Aucun engagement"}
+    </p>
+  </div>
+</section>
 
       {/* ── FOOTER ── */}
 <Footer />

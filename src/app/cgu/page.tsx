@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import { LogoNavy } from "@/components/Logo";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const C = {
   navy: "#1A2E4A", sable: "#D4884A",
@@ -27,7 +28,15 @@ export default function CGUPage() {
       <nav style={{ background: C.beige, borderBottom: `0.5px solid ${C.beigeB}`, padding: "0 24px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: "60px" }}>
 <LogoNavy size={0.85} />
-          <Link href="/" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>← Retour à l'accueil</Link>
+          <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+  <Link href="/" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>← Retour</Link>
+  <NavbarAuth
+    buttonBg="#1A2E4A"
+    buttonColor="white"
+    textColor="#4A5568"
+    borderColor="#E8E2D6"
+  />
+</div>
         </div>
       </nav>
 

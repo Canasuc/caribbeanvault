@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 import { LogoNavy } from "@/components/Logo";
+import NavbarAuth from "@/components/NavbarAuth";
 
 
 // ─── Palette Marine & Sable ───────────────────────────────────────────────────
@@ -341,9 +342,12 @@ useEffect(() => {
                 {a.icon} {a.label.split(" ")[0]}
               </Link>
             ))}
-            <Link href="/kyc" style={{ background: C.navy, color: "white", padding: "7px 16px", borderRadius: "3px", fontSize: "11px", fontWeight: 600, textDecoration: "none" }}>
-              Rejoindre →
-            </Link>
+<NavbarAuth 
+  buttonBg="#1A2E4A"
+  buttonColor="white"
+  textColor="#4A5568"
+  borderColor="#E8E2D6"
+/>
           </div>
         </div>
       </nav>

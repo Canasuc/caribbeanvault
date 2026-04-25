@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { LogoNavy } from "@/components/Logo";
 import Footer from "@/components/Footer";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const C = {
   navy:     "#1A2E4A",

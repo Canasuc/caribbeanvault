@@ -4,6 +4,7 @@ import { use } from "react";
 import { DISTILLERIES, getDistillerie } from "@/lib/distilleries";
 import Footer from "@/components/Footer";
 import { LogoEmeraude } from "@/components/Logo";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const C = {
   noir:    "#0D2018",
@@ -56,9 +57,12 @@ export default function DistilleriePage({ params }: { params: Promise<{ slug: st
           </Link>
           <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
             <Link href="/distilleries" style={{ color: C.menthe, fontSize: "11px", textDecoration: "none", opacity: .8 }}>← Toutes les distilleries</Link>
-            <Link href="/rhum#selection" style={{ background: C.or, color: C.noir, padding: "7px 16px", borderRadius: "2px", fontSize: "11px", fontWeight: 700, textDecoration: "none" }}>
-              Voir les fûts →
-            </Link>
+<NavbarAuth
+  buttonBg="#C8992A"
+  buttonColor="#0D2018"
+  textColor="#9FE1CB"
+  borderColor="rgba(200,153,42,.3)"
+/>
           </div>
         </div>
       </nav>

@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { LogoTurquoise } from "@/components/Logo";
 import Footer from "@/components/Footer";
 import { BIENS, getBien, getBienSlug } from "@/lib/biens";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const CarteLeaflet = dynamic(() => import("@/components/CarteLeaflet"), {
   ssr: false,
@@ -76,9 +77,12 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
             <Link href="/immobilier" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>
               ← Tous les biens
             </Link>
-            <Link href="#investir" style={{ background: C.turquoise, color: "white", padding: "8px 18px", borderRadius: "8px", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
-              Investir dans ce bien
-            </Link>
+<NavbarAuth
+  buttonBg="#0891B2"
+  buttonColor="white"
+  textColor="#4B5563"
+  borderColor="#E5E7EB"
+/>
           </div>
         </div>
       </nav>

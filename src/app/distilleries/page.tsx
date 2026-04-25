@@ -5,6 +5,7 @@ import { useState } from "react";
 import { DISTILLERIES } from "@/lib/distilleries";
 import Footer from "@/components/Footer";
 import { LogoEmeraude } from "@/components/Logo";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const C = {
   noir:    "#0D2018",

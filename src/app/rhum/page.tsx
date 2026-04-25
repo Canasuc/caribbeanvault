@@ -4,6 +4,7 @@ import { useState } from "react";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 import { LogoEmeraude } from "@/components/Logo";
+import NavbarAuth from "@/components/NavbarAuth";
 
 
 // ─── Palette Émeraude & Or ────────────────────────────────────────────────────
@@ -174,13 +175,13 @@ export default function RhumPage() {
 ].map(l => (
   <a key={l.label} href={l.href} style={{ color: C.menthe, fontSize: "11px", cursor: "pointer", fontFamily: "system-ui", opacity: .8, textDecoration: "none" }}>{l.label}</a>
 ))}
-            <Link href="/kyc" style={{
-              background: C.or, color: C.noir, padding: "8px 18px",
-              borderRadius: "2px", fontSize: "11px", fontWeight: 700,
-              textDecoration: "none", letterSpacing: ".08em",
-            }}>
-              Rejoindre la famille →
-            </Link>
+
+<NavbarAuth
+  buttonBg="#C8992A"
+  buttonColor="#0D2018"
+  textColor="#9FE1CB"
+  borderColor="rgba(200,153,42,.3)"
+/>
           </div>
         </div>
       </nav>
@@ -593,22 +594,22 @@ export default function RhumPage() {
           <p style={{ color: C.menthe, fontSize: "14px", lineHeight: 1.8, margin: "0 0 32px", opacity: .9 }}>
             Accédez en avant-première aux nouveaux fûts, aux visites de distilleries exclusives et aux millésimes rares avant leur mise en ligne. Un cercle restreint, une communauté d'amateurs exigeants.
           </p>
-          <div style={{ background: `${C.noir}80`, borderRadius: "6px", border: `1px solid ${C.or}30`, padding: "28px", marginBottom: "20px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
-              <input type="text" placeholder="Prénom" style={{ padding: "11px 14px", background: `${C.noir}90`, border: `0.5px solid ${C.vert}`, borderRadius: "2px", color: C.orPale, fontSize: "13px", outline: "none" }} />
-              <input type="text" placeholder="Nom" style={{ padding: "11px 14px", background: `${C.noir}90`, border: `0.5px solid ${C.vert}`, borderRadius: "2px", color: C.orPale, fontSize: "13px", outline: "none" }} />
-            </div>
-            <input type="email" placeholder="Votre adresse email" style={{ width: "100%", padding: "11px 14px", background: `${C.noir}90`, border: `0.5px solid ${C.vert}`, borderRadius: "2px", color: C.orPale, fontSize: "13px", outline: "none", marginBottom: "12px", boxSizing: "border-box" }} />
-            <button style={{
-              width: "100%", background: C.or, color: C.noir, border: "none",
-              padding: "13px", borderRadius: "2px", fontSize: "13px",
-              fontWeight: 700, cursor: "pointer", letterSpacing: ".1em", textTransform: "uppercase",
-            }}>
-              Rejoindre la famille CaribbeanVault
-            </button>
-          </div>
-          <p style={{ color: `${C.menthe}60`, fontSize: "10px", letterSpacing: ".05em" }}>
-            Gratuit · Sélection sur dossier · Aucun engagement d'investissement
+<Link href="/kyc" style={{
+            display: "inline-block",
+            background: C.or,
+            color: C.noir,
+            padding: "14px 32px",
+            borderRadius: "2px",
+            fontSize: "13px",
+            fontWeight: 700,
+            textDecoration: "none",
+            letterSpacing: ".1em",
+            textTransform: "uppercase",
+          }}>
+            Rejoindre la famille CaribbeanVault
+          </Link>
+          <p style={{ color: `${C.menthe}60`, fontSize: "10px", letterSpacing: ".05em", marginTop: "16px" }}>
+            {"Gratuit · Selection sur dossier · Aucun engagement d'investissement"}
           </p>
         </div>
       </section>

@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { LogoNavy } from "@/components/Logo";
 import Image from "next/image"
 import NewsboardWidget from "@/components/NewsboardWidget";
+import NavbarAuth from "@/components/NavbarAuth";
 
 const NAV_LINKS = [
 { label: "La plateforme", href: "#plateforme" },
@@ -102,13 +103,12 @@ export default function HomePage() {
                 {l.label}
               </Link>
             ))}
-            <Link href="/kyc" style={{
-              background: "#1A2E4A", color: "white", padding: "8px 18px",
-              borderRadius: "3px", fontSize: "12px", fontWeight: 600,
-              textDecoration: "none", letterSpacing: ".05em",
-            }}>
-              Rejoindre la famille →
-            </Link>
+<NavbarAuth 
+  buttonBg="#1A2E4A"
+  buttonColor="white"
+  textColor="#4A5568"
+  borderColor="#E8E2D6"
+/>
           </div>
         </div>
       </nav>
