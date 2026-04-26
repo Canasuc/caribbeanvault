@@ -11,9 +11,13 @@ export default function AuthCallback() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        window.location.href = "/dashboard";
+    // Échange le token du hash URL en session active
+    supabase.auth.exchangeCodeForSession(window.location.href).then(({ error }) => {
+      if (error) {
+        console.error("Auth error:", error.message);
+        window.location.href = "/fr/login";
+      } else {
+        window.location.href = "/fr/dashboard";
       }
     });
   }, []);
