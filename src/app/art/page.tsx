@@ -229,8 +229,7 @@ function TerritoireArtCard({
     <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 0%, ${territoire.couleur} 70%)` }} />
   </div>
   {/* Fond coloré */}
-  <div style={{ position: "absolute", inset: 0, background: territoire.couleur, opacity: .9 }} />
-  <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 80% 50%, ${territoire.accentColor}20 0%, transparent 60%)` }} />
+<div style={{ position: "absolute", inset: 0, background: `linear-gradient(to right, ${territoire.couleur}60 0%, ${territoire.couleur} 50%)` }} />
   {/* Gauche */}
   <div style={{ position: "relative", zIndex: 1 }}>
     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
