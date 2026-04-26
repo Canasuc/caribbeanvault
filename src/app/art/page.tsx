@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { LogoNuit } from "@/components/Logo";
 import NavbarAuth from "@/components/NavbarAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+import Image from "next/image";
 
 const C = {
   nuit:     "#0D0518",
@@ -27,6 +28,7 @@ const C = {
 const TERRITOIRES_ART = [
   {
     id: "guadeloupe",
+    carteImg: "/images/carte-guadeloupe.jpg",
     nom: "Guadeloupe",
     pays: "France (DOM)",
     drapeau: "🇬🇵",
@@ -57,6 +59,7 @@ const TERRITOIRES_ART = [
   },
   {
     id: "martinique",
+    carteImg: "/images/carte-martinique.jpg",
     nom: "Martinique",
     pays: "France (DOM)",
     drapeau: "🇲🇶",
@@ -86,6 +89,7 @@ const TERRITOIRES_ART = [
   },
   {
     id: "haiti",
+    carteImg: "/images/carte-haiti.jpg",
     nom: "Haiti",
     pays: "République d'Haïti",
     drapeau: "🇭🇹",
@@ -115,6 +119,7 @@ const TERRITOIRES_ART = [
   },
   {
     id: "diaspora",
+    carteImg: "/images/carte-diaspora.jpg",
     nom: "Art caribéen diaspora",
     pays: "International",
     drapeau: "🌍",
@@ -214,30 +219,34 @@ function TerritoireArtCard({
         transition: "all .2s",
       }}
     >
-      {/* Header cliquable */}
-      <div onClick={onToggle} style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", overflow: "hidden", minHeight: "80px" }}>
-        {/* Fond coloré */}
-        <div style={{ position: "absolute", inset: 0, background: territoire.couleur, opacity: .9 }} />
-        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 80% 50%, ${territoire.accentColor}20 0%, transparent 60%)` }} />
-
-        {/* Gauche */}
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-            <span style={{ fontSize: "22px" }}>{territoire.drapeau}</span>
-            <div style={{ color: "white", fontSize: isMobile ? "16px" : "18px", fontWeight: 700 }}>{territoire.nom}</div>
-          </div>
-          <div style={{ color: "rgba(255,255,255,.65)", fontSize: "10px", letterSpacing: ".1em", textTransform: "uppercase", fontFamily: "system-ui" }}>
-            {territoire.pays} · {territoire.region}
-          </div>
-        </div>
-
-        {/* Droite */}
-        <div style={{ textAlign: "right", position: "relative", zIndex: 1 }}>
-          <div style={{ color: "rgba(255,255,255,.7)", fontSize: "10px", marginBottom: "2px", fontFamily: "system-ui" }}>Vente record</div>
-          <div style={{ color: territoire.accentColor, fontSize: "16px", fontWeight: 800 }}>{territoire.ventesRecord}</div>
-        </div>
-      </div>
-
+{/* Header cliquable */}
+<div onClick={onToggle} style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", overflow: "hidden", minHeight: "80px" }}>
+  {/* Image carte île en fond à gauche */}
+  <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "35%", overflow: "hidden" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <Image src={territoire.carteImg} alt={territoire.nom} fill sizes="200px" style={{ objectFit: "cover", opacity: .35 }} />
+    </div>
+    <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 0%, ${territoire.couleur} 70%)` }} />
+  </div>
+  {/* Fond coloré */}
+  <div style={{ position: "absolute", inset: 0, background: territoire.couleur, opacity: .9 }} />
+  <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 80% 50%, ${territoire.accentColor}20 0%, transparent 60%)` }} />
+  {/* Gauche */}
+  <div style={{ position: "relative", zIndex: 1 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+      <span style={{ fontSize: "22px" }}>{territoire.drapeau}</span>
+      <div style={{ color: "white", fontSize: isMobile ? "16px" : "18px", fontWeight: 700 }}>{territoire.nom}</div>
+    </div>
+    <div style={{ color: "rgba(255,255,255,.65)", fontSize: "10px", letterSpacing: ".1em", textTransform: "uppercase", fontFamily: "system-ui" }}>
+      {territoire.pays} · {territoire.region}
+    </div>
+  </div>
+  {/* Droite */}
+  <div style={{ textAlign: "right", position: "relative", zIndex: 1 }}>
+    <div style={{ color: "rgba(255,255,255,.7)", fontSize: "10px", marginBottom: "2px", fontFamily: "system-ui" }}>Vente record</div>
+    <div style={{ color: territoire.accentColor, fontSize: "16px", fontWeight: 800 }}>{territoire.ventesRecord}</div>
+  </div>
+</div>
       {/* Stats rapides — toujours visibles */}
       <div style={{ padding: "10px 20px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", borderBottom: `0.5px solid ${C.prune}` }}>
         {[
