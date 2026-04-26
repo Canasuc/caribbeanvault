@@ -18,7 +18,7 @@ export default function AdminLogin() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/fr/auth/callback`,
       },
     });
     if (error) setError(error.message);
