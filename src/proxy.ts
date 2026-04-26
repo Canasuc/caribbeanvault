@@ -13,6 +13,8 @@ const PUBLIC_ROUTES = [
   "/simulateur",
   "/kyc",
   "/login",
+  "/admin",
+  "/admin/login",
   "/contact",
   "/mentions-legales",
   "/cgu",
