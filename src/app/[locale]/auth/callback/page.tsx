@@ -13,13 +13,14 @@ export default function AuthCallback() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const hash = window.location.hash;
-    const params = new URLSearchParams(hash.replace("#", ""));
-    const accessToken = params.get("access_token");
-    const refreshToken = params.get("refresh_token");
-
     async function handleSession() {
-      let session = null;
+      // Attendre que Supabase traite le hash
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const hash = window.location.hash;
+      const params = new URLSearchParams(hash.replace("#", ""));
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
 
       if (accessToken && refreshToken) {
         const { data, error } = await supabase.auth.setSession({
@@ -27,19 +28,16 @@ export default function AuthCallback() {
           refresh_token: refreshToken,
         });
         if (error) { window.location.href = "/fr/login"; return; }
-        session = data.session;
+        const email = data.session?.user?.email;
+        window.location.href = email === ADMIN_EMAIL ? "/fr/admin" : "/fr/dashboard";
       } else {
-        const { data } = await supabase.auth.getSession();
-        session = data.session;
-      }
-
-      if (!session) { window.location.href = "/fr/login"; return; }
-
-      // Redirection selon le rôle
-      if (session.user.email === ADMIN_EMAIL) {
-        window.location.href = "/fr/admin";
-      } else {
-        window.location.href = "/fr/dashboard";
+        // Écouter l'événement auth
+        supabase.auth.onAuthStateChange((event, session) => {
+          if (event === "SIGNED_IN" && session) {
+            const email = session.user.email;
+            window.location.href = email === ADMIN_EMAIL ? "/fr/admin" : "/fr/dashboard";
+          }
+        });
       }
     }
 
