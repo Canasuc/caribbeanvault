@@ -69,7 +69,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { router.push("/fr/login"); return; }
+      if (!session) { router.push("/fr/admin/login"); return; }
       if (session.user.email !== ADMIN_EMAIL) { router.push("/fr/dashboard"); return; }
       setAuthorized(true);
       fetchInvestisseurs();
