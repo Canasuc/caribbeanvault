@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { LogoNavy } from "@/components/Logo";
 import Link from "next/link";
 
-const ADMIN_EMAIL = "contact@geccostrategy.com";
+const ADMIN_EMAIL = "axel.Darnis@geccostrategy.com";
 
 const C = {
   navy:    "#1A2E4A",

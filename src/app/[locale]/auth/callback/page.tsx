@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 import { useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 
-const ADMIN_EMAIL = "contact@geccostrategy.com";
+const ADMIN_EMAIL = "axel.darnis@geccostrategy.com";
 
 export default function AuthCallback() {
   useEffect(() => {

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("contact@geccostrategy.com");
+  const [email, setEmail] = useState("axel.darnis@geccostrategy.com");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
