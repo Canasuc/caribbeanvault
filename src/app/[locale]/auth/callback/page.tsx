@@ -11,15 +11,33 @@ export default function AuthCallback() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    // Échange le token du hash URL en session active
-    supabase.auth.exchangeCodeForSession(window.location.href).then(({ error }) => {
-      if (error) {
-        console.error("Auth error:", error.message);
-        window.location.href = "/fr/login";
-      } else {
-        window.location.href = "/fr/dashboard";
-      }
-    });
+    // Récupère les tokens depuis le hash de l'URL
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace("#", ""));
+    const accessToken = params.get("access_token");
+    const refreshToken = params.get("refresh_token");
+
+    if (accessToken && refreshToken) {
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      }).then(({ error }) => {
+        if (error) {
+          console.error("Session error:", error.message);
+          window.location.href = "/fr/login";
+        } else {
+          window.location.href = "/fr/dashboard";
+        }
+      });
+    } else {
+      // Pas de token dans le hash — attendre l'événement auth
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN" && session) {
+          subscription.unsubscribe();
+          window.location.href = "/fr/dashboard";
+        }
+      });
+    }
   }, []);
 
   return (
