@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "plateforme": "The platform",
+    "rhum": "AOC Rum",
+    "immobilier": "Real Estate",
+    "agriculture": "Agriculture",
+    "art": "Creole Art",
+    "simulateur": "Simulator",
+    "connexion": "Login",
+    "login": "Login",
+    "join": "Join us →",
+    "dashboard": "My account →",
+    "logout": "Sign out"
+  },
+  "hero": {
+    "badge": "First Caribbean RWA Platform",
+    "titre1": "Invest in the real assets",
+    "titre2": "of the Caribbean.",
+    "desc": "AOC rum, tokenized real estate, certified harvests, Creole art. Tokenized on XRP Ledger. Accessible from €100, from anywhere in the world.",
+    "cta1": "Discover our assets",
+    "cta2": "Simulate my return"
+  },
+  "stats": {
+    "pays": "Countries & territories",
+    "ticket": "Minimum investment",
+    "rendement": "Historical return",
+    "actifs": "Asset classes"
+  },
+  "assets": {
+    "titre": "Our asset classes",
+    "sous_titre": "4 verticals, one platform",
+    "rendement": "Return",
+    "acces": "Access",
+    "par_an": "/yr",
+    "des": "From ",
+    "explorer": "Explore →",
+    "rhum": {
+      "sub": "Guadeloupe & Martinique",
+      "desc": "Aged rum barrels maturing in ancestral cellars. AOC certified, rare, uncorrelated.",
+      "tag": "AOC Certified"
+    },
+    "immo": {
+      "sub": "Caribbean villas & commercial",
+      "desc": "Tourist villas, commercial premises with lease. Rental income distributed monthly.",
+      "tag": "Monthly income"
+    },
+    "agri": {
+      "sub": "Certified Caribbean terroir",
+      "desc": "IGP banana, Bonifieur coffee, cocoa, Guyanese FSC forest. Financing real harvests.",
+      "tag": "Organic & FSC"
+    },
+    "art": {
+      "sub": "Artworks & music rights",
+      "desc": "Co-own works by recognized Caribbean artists. Automatic royalties on every resale.",
+      "tag": "Perpetual royalties"
+    }
+  },
+  "how": {
+    "titre": "How it works",
+    "sous_titre": "Simple, secure, transparent",
+    "step1_title": "Choose an asset",
+    "step1_desc": "Browse our selection of verified Caribbean assets: rum, real estate, agriculture, art.",
+    "step2_title": "Simulate your return",
+    "step2_desc": "Our simulator calculates your projections in real time across 3 scenarios.",
+    "step3_title": "Invest securely",
+    "step3_desc": "KYC, dedicated SPV, insured assets, XRPL blockchain. Your capital is protected.",
+    "step4_title": "Receive your income",
+    "step4_desc": "Automatic distributions to your wallet. Resell your tokens at any time."
+  },
+  "vision": {
+    "label": "Our vision",
+    "titre": "The Caribbean deserves world-class finance",
+    "desc": "35 countries, 40 million inhabitants, unique assets. CaribbeanVault connects Caribbean producers to a global community of investors.",
+    "lancement": "DOM Launch",
+    "anglophone": "English Caribbean",
+    "expansion": "Expansion",
+    "pays": "Countries covered",
+    "classes": "Asset classes",
+    "ticket": "Minimum ticket",
+    "frais": "Hidden fees"
+  },
+  "cta": {
+    "label": "Join us",
+    "titre": "Join the CaribbeanVault family",
+    "desc": "Get early access to available assets and the Caribbean investor community. From €100, from anywhere in the world.",
+    "bouton": "Join the family →",
+    "gratuit": "Free · No commitment"
+  },
+  "news": {
+    "label": "News",
+    "titre": "Latest updates",
+    "voir_tout": "All news →"
+  },
+  "footer": {
+    "tagline": "The Caribbean, tokenized.",
+    "langues": "Languages"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "plateforme": "La plataforma",
+    "rhum": "Ron AOC",
+    "immobilier": "Inmobiliario",
+    "agriculture": "Agricultura",
+    "art": "Arte Criollo",
+    "simulateur": "Simulador",
+    "connexion": "Iniciar sesión",
+    "login": "Iniciar sesión",
+    "join": "Unirse →",
+    "dashboard": "Mi cuenta →",
+    "logout": "Cerrar sesión"
+  },
+  "hero": {
+    "badge": "Primera plataforma RWA del Caribe",
+    "titre1": "Invierte en los activos reales",
+    "titre2": "del Caribe.",
+    "desc": "Ron AOC, inmuebles tokenizados, cosechas certificadas, arte criollo. Tokenizados en XRP Ledger. Accesibles desde 100€, desde cualquier parte del mundo.",
+    "cta1": "Descubrir los activos",
+    "cta2": "Simular mi rentabilidad"
+  },
+  "stats": {
+    "pays": "Países y territorios",
+    "ticket": "Inversión mínima",
+    "rendement": "Rentabilidad histórica",
+    "actifs": "Clases de activos"
+  },
+  "assets": {
+    "titre": "Nuestras clases de activos",
+    "sous_titre": "4 verticales, una sola plataforma",
+    "rendement": "Rentabilidad",
+    "acces": "Acceso",
+    "par_an": "/año",
+    "des": "Desde ",
+    "explorer": "Explorar →",
+    "rhum": {
+      "sub": "Guadalupe y Martinica",
+      "desc": "Barriles de ron añejo madurando en bodegas ancestrales. AOC certificado, raro, descorrelado.",
+      "tag": "AOC Certificado"
+    },
+    "immo": {
+      "sub": "Villas y locales caribeños",
+      "desc": "Villas turísticas, locales comerciales con contrato. Ingresos por alquiler distribuidos mensualmente.",
+      "tag": "Ingresos mensuales"
+    },
+    "agri": {
+      "sub": "Terroir caribeño certificado",
+      "desc": "Banana IGP, café Bonifieur, cacao, bosque FSC de Guyana. Financiación de cosechas reales.",
+      "tag": "Bio & FSC"
+    },
+    "art": {
+      "sub": "Obras y derechos musicales",
+      "desc": "Co-posee obras de artistas caribeños reconocidos. Regalías automáticas en cada reventa.",
+      "tag": "Regalías perpetuas"
+    }
+  },
+  "how": {
+    "titre": "Cómo funciona",
+    "sous_titre": "Simple, seguro, transparente",
+    "step1_title": "Elige un activo",
+    "step1_desc": "Explora nuestra selección de activos caribeños verificados: ron, inmobiliario, agricultura, arte.",
+    "step2_title": "Simula tu rentabilidad",
+    "step2_desc": "Nuestro simulador calcula tus proyecciones en tiempo real según 3 escenarios.",
+    "step3_title": "Invierte con seguridad",
+    "step3_desc": "KYC, SPV dedicado, activos asegurados, blockchain XRPL. Tu capital está protegido.",
+    "step4_title": "Recibe tus ingresos",
+    "step4_desc": "Distribuciones automáticas a tu wallet. Revende tus tokens cuando quieras."
+  },
+  "vision": {
+    "label": "Nuestra visión",
+    "titre": "El Caribe merece una finanza a su altura",
+    "desc": "35 países, 40 millones de habitantes, activos únicos en el mundo. CaribbeanVault conecta a los productores caribeños con una comunidad global de inversores.",
+    "lancement": "Lanzamiento DOM",
+    "anglophone": "Caribe anglófono",
+    "expansion": "Expansión",
+    "pays": "Países cubiertos",
+    "classes": "Clases de activos",
+    "ticket": "Ticket mínimo",
+    "frais": "Comisiones ocultas"
+  },
+  "cta": {
+    "label": "Únete a nosotros",
+    "titre": "Únete a la familia CaribbeanVault",
+    "desc": "Accede en primicia a los activos disponibles y a la comunidad de inversores caribeños. Desde 100€, desde cualquier parte del mundo.",
+    "bouton": "Unirse a la familia →",
+    "gratuit": "Gratis · Sin compromiso"
+  },
+  "news": {
+    "label": "Noticias",
+    "titre": "Las últimas novedades",
+    "voir_tout": "Todas las noticias →"
+  },
+  "footer": {
+    "tagline": "El Caribe, tokenizado.",
+    "langues": "Idiomas"
+  }
+}

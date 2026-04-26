@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import createMiddleware from "next-intl/middleware";
+import { NextRequest, NextResponse } from "next/server";
+
+const locales = ["fr", "en", "es"];
+const defaultLocale = "fr";
 
 const PUBLIC_ROUTES = [
   "/",
@@ -18,52 +20,36 @@ const PUBLIC_ROUTES = [
   "/auth/callback",
 ];
 
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: "always",
+});
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (
-    pathname.startsWith("/_next/") ||
-    pathname.startsWith("/api/") ||
-    pathname.startsWith("/images/") ||
-    pathname.includes(".")
-  ) {
+  if (pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.includes(".")) {
     return NextResponse.next();
   }
 
-  const isPublic = PUBLIC_ROUTES.some(route => pathname === route);
-  if (isPublic) return NextResponse.next();
+  const intlResponse = intlMiddleware(request);
 
-  let response = NextResponse.next({ request });
+  const pathnameWithoutLocale = pathname.replace(/^\/(fr|en|es)/, "") || "/";
+  const isPublic = PUBLIC_ROUTES.some(r => r === pathnameWithoutLocale);
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            request.cookies.set(name, value);
-            response.cookies.set(name, value, options);
-          });
-        },
-      },
+  if (!isPublic) {
+    const token = request.cookies.get("sb-access-token")?.value ||
+                  request.cookies.get("sb-zkhiifvnvhcopdbapvav-auth-token")?.value;
+    if (!token) {
+      const locale = pathname.match(/^\/(fr|en|es)/)?.[1] || defaultLocale;
+      return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
     }
-  );
-
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
   }
 
-  return response;
+  return intlResponse;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

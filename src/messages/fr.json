@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "plateforme": "La plateforme",
+    "rhum": "Rhum AOC",
+    "immobilier": "Immobilier",
+    "agriculture": "Agriculture",
+    "art": "Art Créole",
+    "simulateur": "Simulateur",
+    "connexion": "Connexion",
+    "login": "Se connecter",
+    "join": "Rejoindre →",
+    "dashboard": "Mon espace →",
+    "logout": "Se déconnecter"
+  },
+  "hero": {
+    "badge": "Première plateforme RWA caribéenne",
+    "titre1": "Investissez dans les vrais actifs",
+    "titre2": "de la Caraïbe.",
+    "desc": "Rhum AOC, immobilier tropical, agriculture certifiée, art créole. Tokenisés sur XRP Ledger. Accessibles dès 100€, depuis n'importe où dans le monde.",
+    "cta1": "Découvrir les actifs",
+    "cta2": "Simuler mon rendement"
+  },
+  "stats": {
+    "pays": "Pays & territoires",
+    "ticket": "Ticket minimum",
+    "rendement": "Rendement historique",
+    "actifs": "Classes d'actifs"
+  },
+  "assets": {
+    "titre": "Nos classes d'actifs",
+    "sous_titre": "4 verticales, une seule plateforme",
+    "rendement": "Rendement",
+    "acces": "Accès",
+    "par_an": "/an",
+    "des": "Dès ",
+    "explorer": "Explorer →",
+    "rhum": {
+      "sub": "Guadeloupe & Martinique",
+      "desc": "Fûts de rhum vieux en vieillissement dans des chais ancestraux. AOC, rare, décorelé.",
+      "tag": "AOC Certifié"
+    },
+    "immo": {
+      "sub": "Villas & locaux caribéens",
+      "desc": "Villas touristiques, locaux commerciaux avec bail. Revenus locatifs distribués mensuellement.",
+      "tag": "Revenus mensuels"
+    },
+    "agri": {
+      "sub": "Terroir caribéen certifié",
+      "desc": "Banane IGP, café Bonifieur, cacao, forêt guyanaise FSC. Financement de récoltes réelles.",
+      "tag": "Bio & FSC"
+    },
+    "art": {
+      "sub": "Œuvres & droits musicaux",
+      "desc": "Co-possédez des œuvres d'artistes caribéens reconnus. Royalties automatiques sur chaque revente.",
+      "tag": "Royalties perpétuelles"
+    }
+  },
+  "how": {
+    "titre": "Comment ça marche",
+    "sous_titre": "Simple, sécurisé, transparent",
+    "step1_title": "Choisissez un actif",
+    "step1_desc": "Parcourez notre sélection d'actifs caribéens vérifiés : rhum, immobilier, agriculture, art.",
+    "step2_title": "Simulez votre rendement",
+    "step2_desc": "Notre simulateur calcule vos projections en temps réel selon 3 scénarios.",
+    "step3_title": "Investissez en toute sécurité",
+    "step3_desc": "KYC, SPV dédiée, actifs assurés, blockchain XRPL. Votre capital est protégé.",
+    "step4_title": "Percevez vos revenus",
+    "step4_desc": "Distributions automatiques sur votre wallet. Revendez vos tokens à tout moment."
+  },
+  "vision": {
+    "label": "Notre vision",
+    "titre": "La Caraïbe mérite une finance à sa hauteur",
+    "desc": "35 pays, 40 millions d'habitants, des actifs uniques au monde. CaribbeanVault connecte les producteurs caribéens à une communauté mondiale d'investisseurs.",
+    "lancement": "Lancement DOM",
+    "anglophone": "Caraïbe anglophone",
+    "expansion": "Expansion",
+    "pays": "Pays couverts",
+    "classes": "Classes d'actifs",
+    "ticket": "Ticket minimum",
+    "frais": "Frais cachés"
+  },
+  "cta": {
+    "label": "Rejoignez-nous",
+    "titre": "Rejoignez la famille CaribbeanVault",
+    "desc": "Accédez en avant-première aux actifs disponibles et à la communauté des investisseurs caribéens. Dès 100€, depuis n'importe où dans le monde.",
+    "bouton": "Rejoindre la famille →",
+    "gratuit": "Gratuit · Aucun engagement"
+  },
+  "news": {
+    "label": "Actualités",
+    "titre": "Les dernières nouvelles",
+    "voir_tout": "Toutes les actualités →"
+  },
+  "footer": {
+    "tagline": "La Caraïbe, tokenisée.",
+    "langues": "Langues"
+  }
+}

@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -15,24 +18,16 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          // Empêche le site d'être intégré dans une iframe (clickjacking)
           { key: "X-Frame-Options", value: "DENY" },
-          // Empêche le navigateur de deviner le type MIME
           { key: "X-Content-Type-Options", value: "nosniff" },
-          // Contrôle les infos envoyées dans le Referer
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Désactive les fonctionnalités sensibles du navigateur
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
-          // Force HTTPS pendant 2 ans
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-          // Empêche XSS via les scripts inline non autorisés
           { key: "X-XSS-Protection", value: "1; mode=block" },
-          // Retire l'en-tête qui révèle la technologie utilisée
           { key: "X-Powered-By", value: "" },
         ],
       },
       {
-        // Headers spécifiques aux routes API — plus stricts
         source: "/api/(.*)",
         headers: [
           { key: "X-Frame-Options", value: "DENY" },
@@ -45,4 +40,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
