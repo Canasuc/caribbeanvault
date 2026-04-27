@@ -8,6 +8,9 @@ import { useTranslations, useLocale } from "next-intl";
 import { LogoNavy } from "@/components/Logo";
 import Footer from "@/components/Footer";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+import { useRouter, usePathname } from "next/navigation";
+
+
 
 const C = {
   navy:     "#1A2E4A",
@@ -24,6 +27,40 @@ const C = {
   vert:     "#0F6E56",
   vertL:    "#E1F5EE",
 };
+
+ const LOCALES = [
+  { code: "fr", label: "FR", flag: "🇫🇷" },
+  { code: "en", label: "EN", flag: "🇬🇧" },
+  { code: "es", label: "ES", flag: "🇪🇸" },
+];
+
+function LanguageSwitcher() {
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  function switchLocale(newLocale: string) {
+    const segments = pathname.split("/");
+    segments[1] = newLocale;
+    router.push(segments.join("/"));
+  }
+
+  return (
+    <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+      {LOCALES.map(l => (
+        <button key={l.code} onClick={() => switchLocale(l.code)} style={{
+          background: locale === l.code ? "#1A2E4A" : "transparent",
+          color: locale === l.code ? "white" : "#6B7280",
+          border: locale === l.code ? "none" : "1px solid #E8E2D6",
+          borderRadius: "4px", padding: "3px 8px", fontSize: "10px", fontWeight: 700,
+          cursor: "pointer", fontFamily: "system-ui",
+        }}>
+          {l.flag} {l.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
@@ -87,10 +124,13 @@ export default function DashboardPage() {
 
   const colsActifs = isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)";
 
+ 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.creme, minHeight: "100vh" }}>
 
-      {/* NAVBAR */}
+
+{/* NAVBAR */}
+
       <nav style={{ background: C.blanc, borderBottom: `0.5px solid ${C.grisBord}`, padding: "0 16px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: isMobile ? "60px" : "72px" }}>
           <Link href={`/${locale}`} style={{ textDecoration: "none" }}>
@@ -102,6 +142,7 @@ export default function DashboardPage() {
                 {investisseur ? `${investisseur.prenom} ${investisseur.nom}` : user?.email}
               </span>
             )}
+            <LanguageSwitcher />
             <button onClick={handleSignOut} style={{ background: C.creme, color: C.texteSec, border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "7px 12px" : "7px 16px", borderRadius: "8px", fontSize: "12px", cursor: "pointer" }}>
               {t("deconnexion")}
             </button>
