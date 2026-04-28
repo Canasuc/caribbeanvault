@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, usePathname } from "next/navigation";
 import Footer from "@/components/Footer";
 import { LogoNavy } from "@/components/Logo";
 import NavbarAuth from "@/components/NavbarAuth";
@@ -11,24 +13,6 @@ const C = {
   beige: "#F8F6F1", beigeB: "#E8E2D6", texte: "#111827",
   texteSec: "#4A5568", texteTert: "#9CA3AF", blanc: "#FFFFFF",
 };
-
-const SUJETS = [
-  "Je souhaite investir — questions generales",
-  "Je suis proprietaire d'actifs — partenariat",
-  "Je suis distillerie — tokenisation de futs",
-  "Je suis proprietaire immobilier",
-  "Je suis agriculteur ou cooperative",
-  "Je suis artiste ou galerie",
-  "Question technique sur la plateforme",
-  "Presse & medias",
-  "Autre",
-];
-
-const CONTACTS_DIRECTS = [
-  { titre: "Investisseurs", desc: "Questions sur les actifs, le processus d'investissement, les rendements", email: "invest@geccostrategy.com", icon: "💼", color: C.navy },
-  { titre: "Partenaires", desc: "Distilleries, proprietaires immobiliers, agriculteurs, artistes", email: "partenaires@geccostrategy.com", icon: "🤝", color: "#0F5240" },
-  { titre: "Presse & Medias", desc: "Relations presse, demandes d'interview, partenariats medias", email: "presse@geccostrategy.com", icon: "📰", color: C.sable },
-];
 
 const inputStyle = {
   width: "100%", padding: "10px 12px",
@@ -44,12 +28,52 @@ const labelStyle = {
   marginBottom: "6px",
 };
 
+const LOCALES = [
+  { code: "fr", label: "FR", flag: "🇫🇷" },
+  { code: "en", label: "EN", flag: "🇬🇧" },
+  { code: "es", label: "ES", flag: "🇪🇸" },
+];
+
+function LanguageSwitcher() {
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+  function switchLocale(newLocale: string) {
+    const segments = pathname.split("/");
+    segments[1] = newLocale;
+    router.push(segments.join("/"));
+  }
+  return (
+    <div style={{ display: "flex", gap: "4px" }}>
+      {LOCALES.map(l => (
+        <button key={l.code} onClick={() => switchLocale(l.code)} style={{
+          background: locale === l.code ? C.navy : "transparent",
+          color: locale === l.code ? "white" : C.texteSec,
+          border: locale === l.code ? "none" : `1px solid ${C.beigeB}`,
+          borderRadius: "4px", padding: "3px 8px", fontSize: "10px",
+          fontWeight: 700, cursor: "pointer", fontFamily: "system-ui",
+        }}>{l.flag} {l.label}</button>
+      ))}
+    </div>
+  );
+}
+
 export default function ContactPage() {
+  const t = useTranslations("contact");
+  const locale = useLocale();
   const [form, setForm] = useState({ prenom: "", nom: "", email: "", sujet: "", message: "", consentement: false });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { isMobile, isTablet } = useBreakpoint();
+
+  const SUJETS = t.raw("sujets") as string[];
+
+  const CONTACTS_DIRECTS = [
+    { titre: t("contacts.investisseurs_titre"), desc: t("contacts.investisseurs_desc"), email: "invest@geccostrategy.com", icon: "💼", color: C.navy },
+    { titre: t("contacts.partenaires_titre"), desc: t("contacts.partenaires_desc"), email: "partenaires@geccostrategy.com", icon: "🤝", color: "#0F5240" },
+    { titre: t("contacts.presse_titre"), desc: t("contacts.presse_desc"), email: "presse@geccostrategy.com", icon: "📰", color: C.sable },
+  ];
 
   const handleSubmit = async () => {
     if (!form.email || !form.message || !form.sujet || !form.consentement) return;
@@ -65,7 +89,7 @@ export default function ContactPage() {
       if (res.ok) { setSent(true); }
       else { setError(data.error || "Une erreur est survenue."); }
     } catch {
-      setError("Erreur de connexion. Verifiez votre connexion internet.");
+      setError("Erreur de connexion.");
     } finally {
       setLoading(false);
     }
@@ -77,9 +101,12 @@ export default function ContactPage() {
       {/* NAVBAR */}
       <nav style={{ background: C.beige, borderBottom: `0.5px solid ${C.beigeB}`, padding: "0 16px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: isMobile ? "60px" : "64px" }}>
-          <LogoNavy size={isMobile ? 0.7 : 0.85} />
+          <Link href={`/${locale}`} style={{ textDecoration: "none" }}>
+            <LogoNavy size={isMobile ? 0.7 : 0.85} />
+          </Link>
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <Link href="/" style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>← Retour</Link>
+            <LanguageSwitcher />
+            <Link href={`/${locale}`} style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>{t("retour")}</Link>
             <NavbarAuth buttonBg="#1A2E4A" buttonColor="white" textColor="#4A5568" borderColor="#E8E2D6" />
           </div>
         </div>
@@ -89,12 +116,10 @@ export default function ContactPage() {
       <section style={{ background: C.navy, padding: isMobile ? "28px 16px" : "40px 24px" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ display: "inline-flex", background: C.sable, padding: "3px 14px", borderRadius: "2px", marginBottom: "12px" }}>
-            <span style={{ color: "white", fontSize: "10px", fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase" }}>Nous contacter</span>
+            <span style={{ color: "white", fontSize: "10px", fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase" }}>{t("badge")}</span>
           </div>
-          <h1 style={{ color: "white", fontSize: isMobile ? "22px" : "28px", fontWeight: 800, margin: "0 0 6px", letterSpacing: "-.3px" }}>Contact</h1>
-          <p style={{ color: "#B8C4D4", fontSize: "13px", margin: 0 }}>
-            Une question, un projet de partenariat ? Nous vous repondons sous 48h.
-          </p>
+          <h1 style={{ color: "white", fontSize: isMobile ? "22px" : "28px", fontWeight: 800, margin: "0 0 6px" }}>{t("titre")}</h1>
+          <p style={{ color: "#B8C4D4", fontSize: "13px", margin: 0 }}>{t("sous_titre")}</p>
         </div>
       </section>
 
@@ -103,81 +128,67 @@ export default function ContactPage() {
 
           {/* FORMULAIRE */}
           <div style={{ background: C.blanc, borderRadius: "10px", border: `0.5px solid ${C.beigeB}`, padding: isMobile ? "20px 16px" : "28px" }}>
-            <h2 style={{ color: C.navy, fontSize: "18px", fontWeight: 700, margin: "0 0 18px" }}>Envoyer un message</h2>
+            <h2 style={{ color: C.navy, fontSize: "18px", fontWeight: 700, margin: "0 0 18px" }}>{t("form_titre")}</h2>
 
             {sent ? (
               <div style={{ textAlign: "center", padding: "32px 16px" }}>
                 <div style={{ fontSize: "36px", marginBottom: "14px" }}>✅</div>
-                <div style={{ color: "#0F6E56", fontSize: "15px", fontWeight: 700, marginBottom: "8px" }}>Message envoye !</div>
-                <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.7 }}>
-                  Merci pour votre message. Notre equipe vous repondra dans les 48 heures ouvrées.
-                </p>
-                <button
-                  onClick={() => { setSent(false); setForm({ prenom: "", nom: "", email: "", sujet: "", message: "", consentement: false }); }}
-                  style={{ marginTop: "14px", background: C.navy, color: "white", border: "none", padding: "10px 20px", borderRadius: "5px", fontSize: "12px", cursor: "pointer" }}
-                >
-                  Envoyer un autre message
+                <div style={{ color: "#0F6E56", fontSize: "15px", fontWeight: 700, marginBottom: "8px" }}>{t("succes_titre")}</div>
+                <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.7 }}>{t("succes_desc")}</p>
+                <button onClick={() => { setSent(false); setForm({ prenom: "", nom: "", email: "", sujet: "", message: "", consentement: false }); }}
+                  style={{ marginTop: "14px", background: C.navy, color: "white", border: "none", padding: "10px 20px", borderRadius: "5px", fontSize: "12px", cursor: "pointer" }}>
+                  {t("autre_message")}
                 </button>
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {/* Prénom / Nom */}
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "10px" }}>
                   <div>
-                    <label style={labelStyle}>Prenom</label>
+                    <label style={labelStyle}>{t("prenom")}</label>
                     <input type="text" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })} placeholder="Jean" style={inputStyle} />
                   </div>
                   <div>
-                    <label style={labelStyle}>Nom</label>
+                    <label style={labelStyle}>{t("nom")}</label>
                     <input type="text" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} placeholder="Dupont" style={inputStyle} />
                   </div>
                 </div>
-                {/* Email */}
                 <div>
-                  <label style={labelStyle}>Email *</label>
+                  <label style={labelStyle}>{t("email")}</label>
                   <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="jean.dupont@email.com" style={inputStyle} />
                 </div>
-                {/* Sujet */}
                 <div>
-                  <label style={labelStyle}>Sujet *</label>
+                  <label style={labelStyle}>{t("sujet")}</label>
                   <select value={form.sujet} onChange={e => setForm({ ...form, sujet: e.target.value })} style={{ ...inputStyle, color: form.sujet ? C.texte : C.texteTert }}>
-                    <option value="" disabled>Selectionnez un sujet...</option>
+                    <option value="" disabled>{t("sujet_placeholder")}</option>
                     {SUJETS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
-                {/* Message */}
                 <div>
-                  <label style={labelStyle}>Message *</label>
+                  <label style={labelStyle}>{t("message")}</label>
                   <textarea value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
-                    placeholder="Decrivez votre demande en detail..." rows={isMobile ? 4 : 5}
+                    placeholder={t("message_placeholder")} rows={isMobile ? 4 : 5}
                     style={{ ...inputStyle, resize: "vertical" as const, fontFamily: "inherit" }} />
                 </div>
-                {/* Consentement */}
                 <div style={{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "12px", background: "#F0FDF4", borderRadius: "8px", border: "1px solid #BBF7D0" }}>
                   <input type="checkbox" checked={form.consentement} onChange={e => setForm({ ...form, consentement: e.target.checked })}
                     style={{ marginTop: "2px", accentColor: "#0F6E56", flexShrink: 0 }} />
                   <span style={{ color: C.texteSec, fontSize: "11px", lineHeight: 1.6 }}>
-                    {"J'accepte que mes donnees soient traitees conformement a la "}
-                    <Link href="/confidentialite" style={{ color: C.navy, fontWeight: 600 }}>politique de confidentialite</Link>. *
+                    {t("consentement")}{" "}
+                    <Link href={`/${locale}/confidentialite`} style={{ color: C.navy, fontWeight: 600 }}>{t("politique")}</Link>. *
                   </span>
                 </div>
-                {/* Erreur */}
                 {error && (
                   <div style={{ background: "#FEE2E2", borderRadius: "8px", padding: "10px 14px", color: "#DC2626", fontSize: "12px" }}>
                     ❌ {error}
                   </div>
                 )}
-                {/* Bouton */}
-                <button
-                  onClick={handleSubmit}
+                <button onClick={handleSubmit}
                   disabled={loading || !form.email || !form.message || !form.sujet || !form.consentement}
-                  style={{ background: loading || !form.email || !form.message || !form.sujet || !form.consentement ? "#9CA3AF" : C.navy, color: "white", border: "none", padding: "12px", borderRadius: "6px", fontSize: "13px", fontWeight: 700, cursor: loading ? "wait" : "pointer", transition: "background .15s" }}
-                >
-                  {loading ? "Envoi en cours..." : "Envoyer le message →"}
+                  style={{ background: loading || !form.email || !form.message || !form.sujet || !form.consentement ? "#9CA3AF" : C.navy, color: "white", border: "none", padding: "12px", borderRadius: "6px", fontSize: "13px", fontWeight: 700, cursor: loading ? "wait" : "pointer" }}>
+                  {loading ? t("envoi_cours") : t("envoyer")}
                 </button>
                 <p style={{ color: C.texteTert, fontSize: "10px", margin: 0 }}>
-                  {"* Champs obligatoires · "}
-                  <Link href="/confidentialite" style={{ color: C.sable }}>Politique de confidentialite</Link>
+                  {t("champs_obligatoires")} · <Link href={`/${locale}/confidentialite`} style={{ color: C.sable }}>{t("politique")}</Link>
                 </p>
               </div>
             )}
@@ -185,8 +196,6 @@ export default function ContactPage() {
 
           {/* INFOS + CONTACTS */}
           <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-
-            {/* Contacts directs */}
             {CONTACTS_DIRECTS.map((c, i) => (
               <div key={i} style={{ background: C.blanc, borderRadius: "10px", border: `0.5px solid ${C.beigeB}`, padding: isMobile ? "16px" : "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
@@ -204,16 +213,15 @@ export default function ContactPage() {
               </div>
             ))}
 
-            {/* Infos pratiques */}
             <div style={{ background: C.navy, borderRadius: "10px", padding: isMobile ? "16px" : "20px" }}>
               <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase", marginBottom: "12px" }}>
-                Informations pratiques
+                {t("infos_titre")}
               </div>
               {[
-                { label: "Delai de reponse", val: "48h ouvertes" },
-                { label: "Siege social", val: "Guadeloupe, France (DOM)" },
-                { label: "Langues", val: "Francais, English, Espanol" },
-                { label: "Horaires", val: "Lun-Ven, 8h-18h (Antilles)" },
+                { label: t("delai"), val: t("delai_val") },
+                { label: t("siege"), val: t("siege_val") },
+                { label: t("langues"), val: t("langues_val") },
+                { label: t("horaires"), val: t("horaires_val") },
               ].map((info, i) => (
                 <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: i < 3 ? "0.5px solid #253D5E" : "none", flexWrap: "wrap", gap: "4px" }}>
                   <span style={{ color: "#6B8AAA", fontSize: "11px" }}>{info.label}</span>
@@ -222,27 +230,23 @@ export default function ContactPage() {
               ))}
             </div>
 
-            {/* CTA */}
             <div style={{ background: C.sable, borderRadius: "10px", padding: isMobile ? "16px" : "20px", textAlign: "center" }}>
               <div style={{ fontSize: "22px", marginBottom: "8px" }}>🌴</div>
-              <div style={{ color: "white", fontSize: "13px", fontWeight: 700, marginBottom: "6px" }}>Rejoindre la famille CaribbeanVault</div>
-              <p style={{ color: "rgba(255,255,255,.85)", fontSize: "12px", lineHeight: 1.6, margin: "0 0 12px" }}>
-                {"Accedez en avant-premiere aux actifs disponibles."}
-              </p>
-              <Link href="/kyc" style={{ background: C.navy, color: "white", padding: "10px 20px", borderRadius: "5px", fontSize: "12px", fontWeight: 700, textDecoration: "none", display: "inline-block" }}>
-                S'inscrire maintenant →
+              <div style={{ color: "white", fontSize: "13px", fontWeight: 700, marginBottom: "6px" }}>{t("cta_titre")}</div>
+              <p style={{ color: "rgba(255,255,255,.85)", fontSize: "12px", lineHeight: 1.6, margin: "0 0 12px" }}>{t("cta_desc")}</p>
+              <Link href={`/${locale}/kyc`} style={{ background: C.navy, color: "white", padding: "10px 20px", borderRadius: "5px", fontSize: "12px", fontWeight: 700, textDecoration: "none", display: "inline-block" }}>
+                {t("cta_btn")}
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Liens footer */}
         <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "28px", flexWrap: "wrap" }}>
           {[
-            { label: "Mentions legales", href: "/mentions-legales" },
-            { label: "CGU", href: "/cgu" },
-            { label: "Confidentialite", href: "/confidentialite" },
-            { label: "Accueil", href: "/" },
+            { label: "Mentions légales", href: `/${locale}/mentions-legales` },
+            { label: "CGU", href: `/${locale}/cgu` },
+            { label: "Confidentialité", href: `/${locale}/confidentialite` },
+            { label: "Accueil", href: `/${locale}` },
           ].map(l => (
             <Link key={l.label} href={l.href} style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>{l.label}</Link>
           ))}
