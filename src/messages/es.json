@@ -1001,5 +1001,101 @@
       "spam": "¿No ves el email? Revisa tu carpeta de spam o ",
       "reessayer": "inténtalo con otro email",
       "retour_accueil": "Volver al inicio"
+    },
+    "legal": {
+      "retour": "← Volver",
+      "nav_cgu": "Términos",
+      "nav_confidentialite": "Privacidad",
+      "nav_mentions": "Aviso legal",
+      "nav_contact": "Contacto",
+      "nav_accueil": "Inicio",
+      "cgu": {
+        "badge": "Condiciones de uso",
+        "titre": "Términos y Condiciones de Uso",
+        "date": "Última actualización: Abril 2026 — Versión 1.0",
+        "important": "Importante: Al acceder a la plataforma CaribbeanVault y utilizar sus servicios, aceptas sin reservas los presentes Términos.",
+        "s1_titre": "1. Objeto",
+        "s1": "Los presentes Términos definen las condiciones en las que CaribbeanVault SAS pone a disposición de sus usuarios la plataforma caribbeanvault.geccostrategy.com, permitiendo el acceso a información relativa a la tokenización de activos reales caribeños.",
+        "s2_titre": "2. Acceso a la plataforma",
+        "s2": "El acceso a la plataforma es gratuito y está abierto a cualquier persona física mayor de edad o persona jurídica. Algunas funcionalidades (inversión, acceso a la cartera) requieren la creación de una cuenta y la validación de un proceso KYC. El usuario es responsable de la confidencialidad de sus credenciales de acceso.",
+        "s3_titre": "3. Descripción de los servicios",
+        "s3_intro": "CaribbeanVault ofrece los siguientes servicios:",
+        "s3_items": [
+          "Presentación de activos caribeños tokenizados (ron AOC, inmobiliario, agricultura, arte)",
+          "Simulador de rentabilidad indicativo",
+          "Acceso a un mercado primario de suscripción de tokens",
+          "Acceso a un mercado secundario de intercambio de tokens",
+          "Panel de control del inversor",
+          "Noticias sobre los mercados RWA y caribeños"
+        ],
+        "s4_titre": "4. Elegibilidad y KYC",
+        "s4_intro": "Para acceder a las funcionalidades de inversión, el usuario debe:",
+        "s4_items": [
+          "Tener al menos 18 años",
+          "Completar el proceso de verificación de identidad (KYC)",
+          "No residir en un país sujeto a sanciones internacionales",
+          "Aceptar los presentes Términos y la política de privacidad",
+          "Disponer de una wallet compatible con la red XRP Ledger (XRPL)"
+        ],
+        "s5_titre": "5. Riesgos de inversión",
+        "s5_intro": "La inversión en activos tokenizados conlleva riesgos significativos:",
+        "s5_items": [
+          "Riesgo de pérdida parcial o total del capital invertido",
+          "Riesgo de liquidez (dificultad para revender los tokens)",
+          "Riesgo regulatorio (cambios legislativos)",
+          "Riesgo tecnológico (fallo blockchain, pérdida de wallet)",
+          "Riesgo físico para los activos reales (ciclones, incendios)",
+          "Riesgo de mercado (fluctuación del valor de los activos)"
+        ],
+        "s5_note": "Las proyecciones de rentabilidad son indicativas y no constituyen una garantía de rendimiento futuro.",
+        "s6_titre": "6. Obligaciones del usuario",
+        "s6_intro": "El usuario se compromete a:",
+        "s6_items": [
+          "Proporcionar información exacta y actualizada al registrarse",
+          "No utilizar la plataforma con fines ilícitos o fraudulentos",
+          "No intentar eludir las medidas de seguridad",
+          "Respetar los derechos de propiedad intelectual de CaribbeanVault",
+          "Notificar cualquier anomalía o fallo de seguridad detectado"
+        ],
+        "s7_titre": "7. Estructura SPV y protección de activos",
+        "s7": "Cada activo tokenizado está en manos de una Sociedad de Propósito Especial (SPV) independiente que garantiza que los activos físicos están aislados del patrimonio de CaribbeanVault SAS. Se realiza una auditoría anual independiente para cada SPV.",
+        "s8_titre": "8. Comisiones y tarifas",
+        "s8_items": [
+          "Comisiones de emisión: 1,5 a 3% del importe recaudado",
+          "Comisiones de gestión anuales: 0,5 a 1,5% de los activos bajo gestión",
+          "Comisiones de transacción mercado secundario: 0,3 a 1% por intercambio",
+          "Comisiones de salida: 1 a 3% del valor de cesión"
+        ],
+        "s9_titre": "9. Modificación de los Términos",
+        "s9": "CaribbeanVault se reserva el derecho a modificar los presentes Términos en cualquier momento. Los usuarios serán informados por correo electrónico. El uso continuado de la plataforma tras la notificación implica la aceptación de las nuevas condiciones.",
+        "s10_titre": "10. Derecho aplicable y jurisdicción",
+        "s10": "Los presentes Términos se rigen por el derecho francés. Cualquier litigio será sometido a los tribunales competentes de Pointe-à-Pitre (Guadalupe)."
+      },
+      "confidentialite": {
+        "badge": "Tus datos personales",
+        "titre": "Política de Privacidad",
+        "date": "Última actualización: Abril 2026 — Conforme RGPD (UE 2016/679)",
+        "s1_titre": "1. Responsable del tratamiento",
+        "s2_titre": "2. Datos recopilados",
+        "s3_titre": "3. Finalidades del tratamiento",
+        "s4_titre": "4. Destinatarios de los datos",
+        "s5_titre": "5. Período de conservación",
+        "s6_titre": "6. Tus derechos",
+        "s7_titre": "7. Cookies",
+        "s8_titre": "8. Seguridad de los datos"
+      },
+      "mentions": {
+        "badge": "Información legal",
+        "titre": "Aviso Legal",
+        "date": "Última actualización: Abril 2026",
+        "s1_titre": "1. Editor del sitio",
+        "s2_titre": "2. Alojamiento",
+        "s3_titre": "3. Situación reglamentaria",
+        "s4_titre": "4. Propiedad intelectual",
+        "s5_titre": "5. Responsabilidad",
+        "s6_titre": "6. Datos personales",
+        "s7_titre": "7. Cookies",
+        "s8_titre": "8. Derecho aplicable"
+      }
     }
   }
