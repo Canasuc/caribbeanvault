@@ -933,5 +933,53 @@
       "rejoindre_titre": "Únete a la familia CaribbeanVault",
       "rejoindre_desc": "Acceso privilegiado a nuevos barriles y visitas exclusivas.",
       "rejoindre_btn": "Unirse a la familia →"
+    },
+    "actu": {
+      "retour": "← Inicio",
+      "nav_immobilier": "Inmobiliario",
+      "nav_rhum": "Rhum AOC",
+      "hero_badge": "📰 Noticias en tiempo real",
+      "hero_titre": "El newsboard de CaribbeanVault",
+      "hero_desc": "Toda la actualidad del inmobiliario caribeño, el ron AOC, la agricultura y la blockchain — resumida por Claude cada 30 minutos.",
+      "filtres": [
+        {
+          "key": "tous",
+          "label": "Todas",
+          "icon": "📰"
+        },
+        {
+          "key": "Immobilier",
+          "label": "Inmobiliario",
+          "icon": "🏠"
+        },
+        {
+          "key": "Rhum",
+          "label": "Rhum AOC",
+          "icon": "🥃"
+        },
+        {
+          "key": "Blockchain",
+          "label": "Blockchain",
+          "icon": "⛓️"
+        },
+        {
+          "key": "Agriculture",
+          "label": "Agricultura",
+          "icon": "🌿"
+        },
+        {
+          "key": "RWA",
+          "label": "RWA",
+          "icon": "🔗"
+        }
+      ],
+      "erreur_titre": "No se pueden cargar las noticias",
+      "erreur_desc": "Verifica tu conexión o inténtalo de nuevo.",
+      "reessayer": "Reintentar",
+      "vide_titre": "No hay noticias disponibles",
+      "vide_desc": "Las fuentes RSS pueden estar temporalmente no disponibles.",
+      "lire": "Leer →",
+      "info_bas": "Actualizado cada 30 minutos · Resúmenes generados por Claude ·",
+      "articles": "artículos"
     }
   }

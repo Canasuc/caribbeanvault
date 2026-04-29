@@ -934,5 +934,53 @@
       "rejoindre_titre": "Rejoindre la famille CaribbeanVault",
       "rejoindre_desc": "Accès privilégié aux nouveaux fûts et visites exclusives.",
       "rejoindre_btn": "Rejoindre la famille →"
+    },
+    "actu": {
+      "retour": "← Accueil",
+      "nav_immobilier": "Immobilier",
+      "nav_rhum": "Rhum AOC",
+      "hero_badge": "📰 Actualités en temps réel",
+      "hero_titre": "Le newsboard CaribbeanVault",
+      "hero_desc": "Toute l'actualité de l'immobilier caribéen, du rhum AOC, de l'agriculture et de la blockchain — résumée par Claude toutes les 30 minutes.",
+      "filtres": [
+        {
+          "key": "tous",
+          "label": "Toutes",
+          "icon": "📰"
+        },
+        {
+          "key": "Immobilier",
+          "label": "Immobilier",
+          "icon": "🏠"
+        },
+        {
+          "key": "Rhum",
+          "label": "Rhum AOC",
+          "icon": "🥃"
+        },
+        {
+          "key": "Blockchain",
+          "label": "Blockchain",
+          "icon": "⛓️"
+        },
+        {
+          "key": "Agriculture",
+          "label": "Agriculture",
+          "icon": "🌿"
+        },
+        {
+          "key": "RWA",
+          "label": "RWA",
+          "icon": "🔗"
+        }
+      ],
+      "erreur_titre": "Impossible de charger les actualités",
+      "erreur_desc": "Vérifiez votre connexion ou réessayez.",
+      "reessayer": "Réessayer",
+      "vide_titre": "Aucune actualité disponible",
+      "vide_desc": "Les sources RSS sont peut-être temporairement indisponibles.",
+      "lire": "Lire →",
+      "info_bas": "Actualisé toutes les 30 minutes · Résumés générés par Claude ·",
+      "articles": "articles"
     }
   }
