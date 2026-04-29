@@ -1002,100 +1002,218 @@
       "reessayer": "try again with another email",
       "retour_accueil": "Back to home"
     },
-    "legal": {
+     "legal": {
       "retour": "← Back",
       "nav_cgu": "Terms",
       "nav_confidentialite": "Privacy",
       "nav_mentions": "Legal notice",
       "nav_contact": "Contact",
       "nav_accueil": "Home",
-      "cgu": {
-        "badge": "Terms of use",
-        "titre": "Terms and Conditions",
-        "date": "Last updated: April 2026 — Version 1.0",
-        "important": "Important: By accessing the CaribbeanVault platform and using its services, you unreservedly accept these Terms.",
-        "s1_titre": "1. Purpose",
-        "s1": "These Terms define the conditions under which CaribbeanVault SAS makes the caribbeanvault.geccostrategy.com platform available to users, providing access to information on the tokenization of real Caribbean assets.",
-        "s2_titre": "2. Platform access",
-        "s2": "Access to the platform is free and open to any adult individual or legal entity. Some features (investment, portfolio access) require account creation and KYC validation. The user is responsible for the confidentiality of their login credentials.",
-        "s3_titre": "3. Services description",
-        "s3_intro": "CaribbeanVault offers the following services:",
-        "s3_items": [
-          "Presentation of tokenized Caribbean assets (AOC rum, real estate, agriculture, art)",
-          "Indicative yield simulator",
-          "Access to a primary token subscription market",
-          "Access to a secondary token exchange market",
-          "Investor dashboard",
-          "RWA and Caribbean market news"
-        ],
-        "s4_titre": "4. Eligibility and KYC",
-        "s4_intro": "To access investment features, the user must:",
-        "s4_items": [
-          "Be at least 18 years old",
-          "Complete the identity verification process (KYC)",
-          "Not reside in a country subject to international sanctions",
-          "Accept these Terms and the privacy policy",
-          "Have a wallet compatible with the XRP Ledger (XRPL) network"
-        ],
-        "s5_titre": "5. Investment risks",
-        "s5_intro": "Investment in tokenized assets involves significant risks:",
-        "s5_items": [
-          "Risk of partial or total loss of invested capital",
-          "Liquidity risk (difficulty reselling tokens)",
-          "Regulatory risk (legislative changes)",
-          "Technological risk (blockchain flaw, wallet loss)",
-          "Physical risk for real assets (cyclones, fires)",
-          "Market risk (fluctuation in asset values)"
-        ],
-        "s5_note": "Yield projections are indicative and do not constitute a guarantee of future performance.",
-        "s6_titre": "6. User obligations",
-        "s6_intro": "The user agrees to:",
-        "s6_items": [
-          "Provide accurate and up-to-date information upon registration",
-          "Not use the platform for illegal or fraudulent purposes",
-          "Not attempt to circumvent security measures",
-          "Respect CaribbeanVault's intellectual property rights",
-          "Report any detected anomaly or security flaw"
-        ],
-        "s7_titre": "7. SPV structure and asset protection",
-        "s7": "Each tokenized asset is held by a separate Special Purpose Vehicle (SPV) ensuring that physical assets are isolated from CaribbeanVault SAS's assets. An independent annual audit is conducted for each SPV.",
-        "s8_titre": "8. Fees and commissions",
-        "s8_items": [
-          "Issuance fees: 1.5 to 3% of the amount raised",
-          "Annual management fees: 0.5 to 1.5% of assets under management",
-          "Secondary market transaction fees: 0.3 to 1% per exchange",
-          "Exit fees: 1 to 3% of the sale value"
-        ],
-        "s9_titre": "9. Amendment of Terms",
-        "s9": "CaribbeanVault reserves the right to modify these Terms at any time. Users will be notified by email. Continued use of the platform after notification constitutes acceptance of the new terms.",
-        "s10_titre": "10. Applicable law and jurisdiction",
-        "s10": "These Terms are governed by French law. Any dispute will be submitted to the competent courts of Pointe-à-Pitre (Guadeloupe)."
+      "mentions": {
+        "badge": "Legal information",
+        "titre": "Legal Notice",
+        "date": "Last updated: April 2026",
+        "s1_titre": "1. Publisher",
+        "s1": {
+          "raison_label": "Company name:",
+          "raison_val": "CaribbeanVault SAS",
+          "forme_label": "Legal form:",
+          "forme_val": "Simplified Joint Stock Company (SAS)",
+          "capital_label": "Share capital:",
+          "capital_val": "Being incorporated",
+          "siege_label": "Registered office:",
+          "siege_val": "Guadeloupe, France (DOM)",
+          "email_label": "Email:",
+          "email_val": "contact@geccostrategy.com",
+          "site_label": "Website:",
+          "site_val": "caribbeanvault.geccostrategy.com"
+        },
+        "s2_titre": "2. Hosting",
+        "s2": {
+          "hebergeur_label": "Host:",
+          "hebergeur_val": "Vercel Inc.",
+          "adresse_label": "Address:",
+          "adresse_val": "340 Pine Street, Suite 701, San Francisco, CA 94104, United States",
+          "site_label": "Website:",
+          "site_val": "vercel.com"
+        },
+        "s3_titre": "3. Regulatory status",
+        "s3_p1": "CaribbeanVault is a platform currently being registered as a Digital Asset Service Provider (DASP) with the French Financial Markets Authority (AMF).",
+        "s3_p2": "Pending this registration, CaribbeanVault operates in a limited pilot phase, in compliance with the MiCA (Markets in Crypto-Assets) regulatory framework applicable in the European Union since 2024.",
+        "s3_p3": "Tokens issued via the platform may constitute financial instruments within the meaning of the MiFID II regulation. Investors are advised to consult a financial advisor before investing.",
+        "s4_titre": "4. Intellectual property",
+        "s4_p1": "All content on this site is the exclusive property of CaribbeanVault SAS and is protected by French and international intellectual property laws.",
+        "s4_p2": "Any reproduction, representation or modification is prohibited without prior written authorization from CaribbeanVault SAS.",
+        "s5_titre": "5. Liability",
+        "s5_p1": "The information presented on this site is purely informational and does not constitute investment advice or financial recommendation.",
+        "s5_p2": "Investing in tokenized digital or real assets involves risks, including partial or total loss of invested capital.",
+        "s6_titre": "6. Personal data",
+        "s6_p1": "The processing of personal data collected on this site is governed by our",
+        "s6_lien": "Privacy Policy",
+        "s6_p2": "To exercise your rights, contact us at:",
+        "s6_email": "contact@geccostrategy.com",
+        "s7_titre": "7. Cookies",
+        "s7": "This site uses technical cookies necessary for its operation. No advertising tracking cookies are used without your prior consent.",
+        "s8_titre": "8. Applicable law",
+        "s8": "This site and these legal notices are governed by French law. In the event of a dispute, French courts shall have sole jurisdiction."
       },
       "confidentialite": {
         "badge": "Your personal data",
         "titre": "Privacy Policy",
         "date": "Last updated: April 2026 — GDPR compliant (EU 2016/679)",
         "s1_titre": "1. Data controller",
+        "s1_societe": "CaribbeanVault SAS",
+        "s1_lieu": "Guadeloupe, France (DOM)",
+        "s1_dpo_label": "DPO Email:",
+        "s1_dpo": "contact@geccostrategy.com",
+        "s1_engagement": "CaribbeanVault SAS is committed to protecting the privacy of its users in accordance with GDPR (EU 2016/679) and the French Data Protection Act.",
         "s2_titre": "2. Data collected",
+        "s2_inscription_label": "Registration data:",
+        "s2_inscription": "first name, last name, email, date of birth, country of residence.",
+        "s2_kyc_label": "KYC data:",
+        "s2_kyc": "official identity document, proof of address, verification selfie.",
+        "s2_usage_label": "Usage data:",
+        "s2_usage": "IP address, browser, pages visited, transaction history.",
         "s3_titre": "3. Processing purposes",
+        "s3_finalites": [
+          {
+            "fin": "User account management",
+            "base": "Contract performance"
+          },
+          {
+            "fin": "Identity verification (KYC/AML)",
+            "base": "Legal obligation"
+          },
+          {
+            "fin": "Investment processing",
+            "base": "Contract performance"
+          },
+          {
+            "fin": "Transactional communications",
+            "base": "Contract performance"
+          },
+          {
+            "fin": "Newsletter and information",
+            "base": "Consent"
+          },
+          {
+            "fin": "Fraud prevention",
+            "base": "Legal obligation"
+          },
+          {
+            "fin": "Platform improvement",
+            "base": "Legitimate interest"
+          },
+          {
+            "fin": "Usage statistics",
+            "base": "Legitimate interest"
+          }
+        ],
         "s4_titre": "4. Data recipients",
+        "s4_intro": "Your data may be shared with the following service providers strictly within the scope of their missions:",
+        "s4_prestataires": [
+          {
+            "nom": "Sumsub",
+            "desc": "Approved KYC/AML provider"
+          },
+          {
+            "nom": "Stripe",
+            "desc": "Payment provider"
+          },
+          {
+            "nom": "Supabase",
+            "desc": "Database hosting (EU)"
+          },
+          {
+            "nom": "Resend",
+            "desc": "Transactional email sending"
+          },
+          {
+            "nom": "Competent authorities",
+            "desc": "AMF, Tracfin, on legal request"
+          }
+        ],
+        "s4_note": "No personal data is sold to third parties for commercial purposes.",
         "s5_titre": "5. Retention period",
+        "s5_items": [
+          {
+            "type": "Active account data",
+            "duree": "Duration of the contractual relationship"
+          },
+          {
+            "type": "KYC data",
+            "duree": "5 years after end of relationship (AML obligation)"
+          },
+          {
+            "type": "Transaction data",
+            "duree": "10 years (accounting obligation)"
+          },
+          {
+            "type": "Connection logs",
+            "duree": "12 months"
+          },
+          {
+            "type": "Marketing data",
+            "duree": "Until unsubscription + 3 years"
+          }
+        ],
         "s6_titre": "6. Your rights",
+        "s6_intro": "Under GDPR, you have the following rights:",
+        "s6_droits": [
+          {
+            "droit": "Right of access",
+            "desc": "Obtain a copy of your data"
+          },
+          {
+            "droit": "Right of rectification",
+            "desc": "Correct inaccurate data"
+          },
+          {
+            "droit": "Right to erasure",
+            "desc": "Delete your data (except legal obligations)"
+          },
+          {
+            "droit": "Right to portability",
+            "desc": "Receive your data in a structured format"
+          },
+          {
+            "droit": "Right to object",
+            "desc": "Object to marketing processing"
+          },
+          {
+            "droit": "Right to restriction",
+            "desc": "Restrict the processing of your data"
+          }
+        ],
+        "s6_contact": "To exercise your rights:",
+        "s6_email": "contact@geccostrategy.com",
+        "s6_cnil": "You may also file a complaint with the CNIL (French data protection authority):",
+        "s6_cnil_url": "www.cnil.fr",
         "s7_titre": "7. Cookies",
-        "s8_titre": "8. Data security"
-      },
-      "mentions": {
-        "badge": "Legal information",
-        "titre": "Legal Notice",
-        "date": "Last updated: April 2026",
-        "s1_titre": "1. Publisher",
-        "s2_titre": "2. Hosting",
-        "s3_titre": "3. Regulatory status",
-        "s4_titre": "4. Intellectual property",
-        "s5_titre": "5. Liability",
-        "s6_titre": "6. Personal data",
-        "s7_titre": "7. Cookies",
-        "s8_titre": "8. Applicable law"
+        "s7_items": [
+          {
+            "type": "Technical cookies",
+            "desc": "Necessary for operation. No consent required."
+          },
+          {
+            "type": "Analytical cookies",
+            "desc": "Anonymized audience measurement (Vercel Analytics). With consent only."
+          },
+          {
+            "type": "Preference cookies",
+            "desc": "Remembering your choices. With consent only."
+          }
+        ],
+        "s7_note": "No advertising or commercial tracking cookies are used on this site.",
+        "s8_titre": "8. Data security",
+        "s8_intro": "CaribbeanVault implements the following measures to protect your data:",
+        "s8_items": [
+          "SSL/TLS encryption of all communications",
+          "AES-256 encryption of sensitive data in the database",
+          "Restricted data access by authorized personnel",
+          "Multi-factor authentication for administrator access",
+          "Regular security audits and penetration testing"
+        ]
       }
     }
   }

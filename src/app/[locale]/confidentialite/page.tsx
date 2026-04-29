@@ -24,8 +24,9 @@ export default function ConfidentialitePage(){
   const t=useTranslations("legal");
   const locale=useLocale();
   const {isMobile}=useBreakpoint();
-  const conf=t.raw("confidentialite") as any;
+  const c=t.raw("confidentialite") as any;
   const NAV_LINKS=[{label:t("nav_mentions"),href:`/${locale}/mentions-legales`},{label:t("nav_cgu"),href:`/${locale}/cgu`},{label:t("nav_contact"),href:`/${locale}/contact`},{label:t("nav_accueil"),href:`/${locale}`}];
+
   return(
     <main style={{fontFamily:"system-ui",background:C.beige,minHeight:"100vh"}}>
       <nav style={{background:C.beige,borderBottom:`0.5px solid ${C.beigeB}`,padding:"0 16px",position:"sticky",top:0,zIndex:100}}>
@@ -38,83 +39,94 @@ export default function ConfidentialitePage(){
           </div>
         </div>
       </nav>
+
       <section style={{background:C.navy,padding:isMobile?"28px 16px":"40px 24px"}}>
         <div style={{maxWidth:"900px",margin:"0 auto"}}>
           <div style={{display:"inline-flex",background:C.sable,padding:"3px 14px",borderRadius:"2px",marginBottom:"12px"}}>
-            <span style={{color:"white",fontSize:"10px",fontWeight:700,letterSpacing:".15em",textTransform:"uppercase"}}>{conf.badge}</span>
+            <span style={{color:"white",fontSize:"10px",fontWeight:700,letterSpacing:".15em",textTransform:"uppercase"}}>{c.badge}</span>
           </div>
-          <h1 style={{color:"white",fontSize:isMobile?"22px":"28px",fontWeight:800,margin:"0 0 6px",letterSpacing:"-.3px"}}>{conf.titre}</h1>
-          <p style={{color:"#B8C4D4",fontSize:"13px",margin:0}}>{conf.date}</p>
+          <h1 style={{color:"white",fontSize:isMobile?"22px":"28px",fontWeight:800,margin:"0 0 6px",letterSpacing:"-.3px"}}>{c.titre}</h1>
+          <p style={{color:"#B8C4D4",fontSize:"13px",margin:0}}>{c.date}</p>
         </div>
       </section>
+
       <div style={{maxWidth:"900px",margin:"0 auto",padding:isMobile?"20px 16px":"40px 24px"}}>
         <div style={{background:C.blanc,borderRadius:"10px",border:`0.5px solid ${C.beigeB}`,padding:isMobile?"20px 16px":"32px 36px"}}>
-          <Section titre={conf.s1_titre}>
-            <p><strong style={{color:C.texte}}>CaribbeanVault SAS</strong> — Guadeloupe, France (DOM)</p>
-            <p>Email DPO : <strong style={{color:C.texte}}>contact@geccostrategy.com</strong></p>
-            <p style={{marginTop:"8px"}}>CaribbeanVault SAS s'engage à protéger la vie privée de ses utilisateurs conformément au RGPD (UE 2016/679) et à la loi Informatique et Libertés.</p>
+
+          <Section titre={c.s1_titre}>
+            <p><strong style={{color:C.texte}}>{c.s1_societe}</strong> — {c.s1_lieu}</p>
+            <p>{c.s1_dpo_label} <strong style={{color:C.texte}}>{c.s1_dpo}</strong></p>
+            <p style={{marginTop:"8px"}}>{c.s1_engagement}</p>
           </Section>
-          <Section titre={conf.s2_titre}>
-            <p><strong style={{color:C.texte}}>Données d'inscription :</strong> nom, prénom, email, date de naissance, pays de résidence.</p>
-            <p style={{marginTop:"8px"}}><strong style={{color:C.texte}}>Données KYC :</strong> pièce d'identité officielle, justificatif de domicile, selfie de vérification.</p>
-            <p style={{marginTop:"8px"}}><strong style={{color:C.texte}}>Données d'utilisation :</strong> adresse IP, navigateur, pages visitées, historique des transactions.</p>
+
+          <Section titre={c.s2_titre}>
+            <p><strong style={{color:C.texte}}>{c.s2_inscription_label}</strong> {c.s2_inscription}</p>
+            <p style={{marginTop:"8px"}}><strong style={{color:C.texte}}>{c.s2_kyc_label}</strong> {c.s2_kyc}</p>
+            <p style={{marginTop:"8px"}}><strong style={{color:C.texte}}>{c.s2_usage_label}</strong> {c.s2_usage}</p>
           </Section>
-          <Section titre={conf.s3_titre}>
+
+          <Section titre={c.s3_titre}>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:"10px",marginTop:"8px"}}>
-              {[["Gestion du compte utilisateur","Exécution du contrat"],["Vérification d'identité (KYC/AML)","Obligation légale"],["Traitement des investissements","Exécution du contrat"],["Communications transactionnelles","Exécution du contrat"],["Newsletter et informations","Consentement"],["Prévention de la fraude","Obligation légale"],["Amélioration de la plateforme","Intérêt légitime"],["Statistiques d'utilisation","Intérêt légitime"]].map(([fin,base],i)=>(
+              {(c.s3_finalites as {fin:string;base:string}[]).map((f,i)=>(
                 <div key={i} style={{background:C.beige,borderRadius:"6px",padding:"10px 12px"}}>
-                  <div style={{color:C.texte,fontSize:"12px",fontWeight:500}}>{fin}</div>
-                  <div style={{color:C.sable,fontSize:"10px",marginTop:"2px"}}>{base}</div>
+                  <div style={{color:C.texte,fontSize:"12px",fontWeight:500}}>{f.fin}</div>
+                  <div style={{color:C.sable,fontSize:"10px",marginTop:"2px"}}>{f.base}</div>
                 </div>
               ))}
             </div>
           </Section>
-          <Section titre={conf.s4_titre}>
-            <p>Vos données peuvent être transmises aux prestataires suivants dans le strict cadre de leurs missions :</p>
+
+          <Section titre={c.s4_titre}>
+            <p>{c.s4_intro}</p>
             <ul style={{paddingLeft:"20px",marginTop:"8px"}}>
-              {[["Sumsub","Prestataire KYC/AML agréé"],["Stripe","Prestataire de paiement"],["Supabase","Hébergement base de données (UE)"],["Resend","Envoi d'emails transactionnels"],["Autorités compétentes","AMF, Tracfin, sur réquisition légale"]].map(([nom,desc],i)=>(
-                <li key={i} style={{marginBottom:"5px"}}><strong style={{color:C.texte}}>{nom}</strong> — {desc}</li>
+              {(c.s4_prestataires as {nom:string;desc:string}[]).map((p,i)=>(
+                <li key={i} style={{marginBottom:"5px"}}><strong style={{color:C.texte}}>{p.nom}</strong> — {p.desc}</li>
               ))}
             </ul>
-            <p style={{marginTop:"10px"}}>Aucune donnée personnelle n'est vendue à des tiers à des fins commerciales.</p>
+            <p style={{marginTop:"10px"}}>{c.s4_note}</p>
           </Section>
-          <Section titre={conf.s5_titre}>
+
+          <Section titre={c.s5_titre}>
             <ul style={{paddingLeft:"20px"}}>
-              {[["Données de compte actif","Durée de la relation contractuelle"],["Données KYC","5 ans après la fin de la relation (obligation LCB-FT)"],["Données de transaction","10 ans (obligation comptable)"],["Logs de connexion","12 mois"],["Données marketing","Jusqu'au désabonnement + 3 ans"]].map(([type,duree],i)=>(
-                <li key={i} style={{marginBottom:"5px"}}><strong style={{color:C.texte}}>{type} :</strong> {duree}</li>
+              {(c.s5_items as {type:string;duree:string}[]).map((item,i)=>(
+                <li key={i} style={{marginBottom:"5px"}}><strong style={{color:C.texte}}>{item.type} :</strong> {item.duree}</li>
               ))}
             </ul>
           </Section>
-          <Section titre={conf.s6_titre}>
-            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+
+          <Section titre={c.s6_titre}>
+            <p>{c.s6_intro}</p>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:"8px",marginTop:"10px"}}>
-              {[["Droit d'accès","Obtenir une copie de vos données"],["Droit de rectification","Corriger vos données inexactes"],["Droit à l'effacement","Supprimer vos données (sauf obligations légales)"],["Droit à la portabilité","Recevoir vos données dans un format structuré"],["Droit d'opposition","Vous opposer au traitement marketing"],["Droit à la limitation","Restreindre le traitement de vos données"]].map(([droit,desc],i)=>(
+              {(c.s6_droits as {droit:string;desc:string}[]).map((d,i)=>(
                 <div key={i} style={{border:`0.5px solid ${C.beigeB}`,borderRadius:"6px",padding:"10px 12px"}}>
-                  <div style={{color:C.navy,fontSize:"12px",fontWeight:600}}>{droit}</div>
-                  <div style={{color:C.texteSec,fontSize:"11px",marginTop:"2px"}}>{desc}</div>
+                  <div style={{color:C.navy,fontSize:"12px",fontWeight:600}}>{d.droit}</div>
+                  <div style={{color:C.texteSec,fontSize:"11px",marginTop:"2px"}}>{d.desc}</div>
                 </div>
               ))}
             </div>
-            <p style={{marginTop:"12px"}}>Pour exercer vos droits : <strong style={{color:C.texte}}>contact@geccostrategy.com</strong></p>
-            <p style={{marginTop:"6px"}}>Vous pouvez aussi introduire une réclamation auprès de la CNIL : <strong style={{color:C.texte}}>www.cnil.fr</strong></p>
+            <p style={{marginTop:"12px"}}>{c.s6_contact} <strong style={{color:C.texte}}>{c.s6_email}</strong></p>
+            <p style={{marginTop:"6px"}}>{c.s6_cnil} <strong style={{color:C.texte}}>{c.s6_cnil_url}</strong></p>
           </Section>
-          <Section titre={conf.s7_titre}>
+
+          <Section titre={c.s7_titre}>
             <ul style={{paddingLeft:"20px"}}>
-              <li style={{marginBottom:"5px"}}><strong style={{color:C.texte}}>Cookies techniques :</strong> Nécessaires au fonctionnement. Pas de consentement requis.</li>
-              <li style={{marginBottom:"5px"}}><strong style={{color:C.texte}}>Cookies analytiques :</strong> Mesure d'audience anonymisée (Vercel Analytics). Avec consentement uniquement.</li>
-              <li><strong style={{color:C.texte}}>Cookies de préférences :</strong> Mémorisation de vos choix. Avec consentement uniquement.</li>
+              {(c.s7_items as {type:string;desc:string}[]).map((item,i)=>(
+                <li key={i} style={{marginBottom:"5px"}}><strong style={{color:C.texte}}>{item.type} :</strong> {item.desc}</li>
+              ))}
             </ul>
-            <p style={{marginTop:"10px"}}>Aucun cookie publicitaire ou de traçage commercial n'est utilisé sur ce site.</p>
+            <p style={{marginTop:"10px"}}>{c.s7_note}</p>
           </Section>
-          <Section titre={conf.s8_titre}>
-            <p>CaribbeanVault met en œuvre les mesures suivantes :</p>
+
+          <Section titre={c.s8_titre}>
+            <p>{c.s8_intro}</p>
             <ul style={{paddingLeft:"20px",marginTop:"8px"}}>
-              {["Chiffrement SSL/TLS de toutes les communications","Chiffrement AES-256 des données sensibles en base","Accès restreint aux données par le personnel habilité","Authentification multi-facteurs pour les accès administrateur","Audits de sécurité réguliers et tests de pénétration"].map((item,i)=>(
+              {(c.s8_items as string[]).map((item,i)=>(
                 <li key={i} style={{marginBottom:"5px"}}>{item}</li>
               ))}
             </ul>
           </Section>
         </div>
+
         <div style={{display:"flex",gap:"16px",justifyContent:"center",marginTop:"20px",flexWrap:"wrap"}}>
           {NAV_LINKS.map(l=>(<Link key={l.label} href={l.href} style={{color:C.texteSec,fontSize:"12px",textDecoration:"none"}}>{l.label}</Link>))}
         </div>
