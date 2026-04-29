@@ -981,5 +981,25 @@
       "lire": "Leer →",
       "info_bas": "Actualizado cada 30 minutos · Resúmenes generados por Claude ·",
       "articles": "artículos"
+    },
+    "login": {
+      "inscrire": "Registrarse",
+      "inscrire_long": "¿Sin cuenta? Registrarse",
+      "titre": "Acceso inversor",
+      "desc": "Introduce tu email para recibir un enlace de inicio de sesión seguro. Sin contraseña.",
+      "label_email": "Correo electrónico",
+      "placeholder_email": "tu@email.com",
+      "btn_loading": "Enviando...",
+      "btn_submit": "Recibir mi enlace de acceso",
+      "pas_compte": "¿Sin cuenta aún? ",
+      "rejoindre": "Únete a CaribbeanVault",
+      "securite": "Inicio de sesión seguro · Enlace válido 24h · Conforme RGPD",
+      "erreur": "Error al enviar. Verifica tu email e inténtalo de nuevo.",
+      "succes_titre": "¡Revisa tu email!",
+      "succes_desc1": "Se ha enviado un enlace de acceso a",
+      "succes_desc2": "Haz clic en el enlace del email para acceder a tu espacio de inversor. El enlace es válido 24h.",
+      "spam": "¿No ves el email? Revisa tu carpeta de spam o ",
+      "reessayer": "inténtalo con otro email",
+      "retour_accueil": "Volver al inicio"
     }
   }

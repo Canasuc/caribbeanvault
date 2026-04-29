@@ -982,5 +982,25 @@
       "lire": "Lire →",
       "info_bas": "Actualisé toutes les 30 minutes · Résumés générés par Claude ·",
       "articles": "articles"
+    },
+    "login": {
+      "inscrire": "S'inscrire",
+      "inscrire_long": "Pas encore de compte ? S'inscrire",
+      "titre": "Accès investisseur",
+      "desc": "Entrez votre email pour recevoir un lien de connexion sécurisé. Aucun mot de passe requis.",
+      "label_email": "Adresse email",
+      "placeholder_email": "votre@email.com",
+      "btn_loading": "Envoi en cours...",
+      "btn_submit": "Recevoir mon lien de connexion",
+      "pas_compte": "Pas encore de compte ? ",
+      "rejoindre": "Rejoindre CaribbeanVault",
+      "securite": "Connexion sécurisée · Lien valable 24h · RGPD conforme",
+      "erreur": "Erreur lors de l'envoi. Vérifiez votre email et réessayez.",
+      "succes_titre": "Vérifiez votre email !",
+      "succes_desc1": "Un lien de connexion a été envoyé à",
+      "succes_desc2": "Cliquez sur le lien dans l'email pour accéder à votre espace investisseur. Le lien est valable 24h.",
+      "spam": "Vous ne voyez pas l'email ? Vérifiez votre dossier spam ou ",
+      "reessayer": "réessayez avec un autre email",
+      "retour_accueil": "Retour à l'accueil"
     }
   }
