@@ -11,6 +11,7 @@
     "join": "Rejoindre →",
     "dashboard": "Mon espace →",
     "logout": "Se déconnecter"
+
   },
   "hero": {
     "badge": "Première plateforme RWA caribéenne",
@@ -1216,5 +1217,18 @@
           "Audits de sécurité réguliers et tests de pénétration"
         ]
       }
+    },
+    "nav": {
+      "login": "Se connecter",
+      "join": "Rejoindre la famille →",
+      "dashboard": "Mon espace →",
+      "logout": "Se déconnecter"
+    },
+    "footer": {
+      "mentions": "Mentions légales",
+      "cgu": "CGU",
+      "confidentialite": "Politique de confidentialité",
+      "contact": "Contact",
+      "disclaimer": "CaribbeanVault est une plateforme en cours d'enregistrement PSAN auprès de l'AMF. Investir comporte des risques."
     }
   }

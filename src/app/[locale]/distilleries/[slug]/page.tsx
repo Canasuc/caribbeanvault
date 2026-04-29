@@ -14,6 +14,8 @@ const C = {
   or:"#C8992A",orClair:"#D4B96A",orPale:"#F0E6C8",creme:"#F7F5F0",
   texte:"#2C1810",gris:"#6B7280",menthe:"#9FE1CB",
 };
+const locale = useLocale(); // "fr" | "en" | "es"
+type L = "fr" | "en" | "es";
 
 const LOCALES=[{code:"fr",label:"FR",flag:"🇫🇷"},{code:"en",label:"EN",flag:"🇬🇧"},{code:"es",label:"ES",flag:"🇪🇸"}];
 
@@ -68,7 +70,7 @@ function SidebarContent({d,isMobile,locale,t}:{d:any;isMobile:boolean;locale:str
           </div>
           <div>
             <div style={{color:C.gris,fontSize:"10px",textTransform:"uppercase",letterSpacing:".08em"}}>{t("statut")}</div>
-            <div style={{color:C.texte,fontSize:"12px",marginTop:"2px"}}>{d.statut}</div>
+            <div style={{color:C.texte,fontSize:"12px",marginTop:"2px"}}>{d.statut[locale as L] ?? d.statut.fr}</div>
           </div>
           {d.site&&(
             <div>
@@ -176,7 +178,7 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
             )}
           </div>
           <h1 style={{color:C.orPale,fontSize:isMobile?"26px":"clamp(26px, 4vw, 48px)",fontWeight:300,lineHeight:1.15,margin:"0 0 10px",fontFamily:"Georgia, serif"}}>{d.nom}</h1>
-          <p style={{color:C.menthe,fontSize:isMobile?"13px":"15px",lineHeight:1.7,maxWidth:"580px",margin:"0 0 20px",opacity:.9}}>{d.description}</p>
+          <p style={{color:C.menthe,fontSize:isMobile?"13px":"15px",lineHeight:1.7,maxWidth:"580px",margin:"0 0 20px",opacity:.9}}>{d.description[locale as L] ?? d.description.fr}</p>
           <div style={{display:"flex",gap:"0",flexWrap:"wrap",borderTop:`0.5px solid ${C.or}30`,paddingTop:"20px"}}>
             {STATS_DATA.map((s,i)=>(
               <div key={i} style={{paddingRight:isMobile?"16px":"32px",marginRight:isMobile?"16px":"32px",borderRight:i<3?`0.5px solid ${C.or}20`:"none",marginBottom:"8px"}}>
@@ -195,13 +197,13 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
 
             <div style={{background:"white",borderRadius:"8px",border:"1px solid #E8E2D6",padding:isMobile?"18px":"28px",marginBottom:"16px"}}>
               <div style={{color:C.or,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"10px"}}>{t("notre_histoire")}</div>
-              <p style={{color:C.gris,fontSize:"14px",lineHeight:1.9,margin:0}}>{d.histoire}</p>
+              <p style={{color:C.gris,fontSize:"14px",lineHeight:1.9,margin:0}}>{d.histoire[locale as L] ?? d.histoire.fr}</p>
             </div>
 
             <div style={{background:"white",borderRadius:"8px",border:"1px solid #E8E2D6",padding:isMobile?"18px":"28px",marginBottom:"16px"}}>
               <div style={{color:C.or,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"14px"}}>{t("nos_rhums")}</div>
               <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
-                {d.specialites.map((s:string,i:number)=>(
+                {d.specialites.map(s => s[locale as L] ?? s.fr)=>(
                   <div key={i} style={{display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",background:C.creme,borderRadius:"4px",borderLeft:`3px solid ${d.couleur}`}}>
                     <span style={{color:C.or,fontSize:"14px"}}>🥃</span>
                     <span style={{color:C.texte,fontSize:"13px"}}>{s}</span>
@@ -213,7 +215,7 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
             <div style={{background:"white",borderRadius:"8px",border:"1px solid #E8E2D6",padding:isMobile?"18px":"28px",marginBottom:"16px"}}>
               <div style={{color:C.or,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"14px"}}>{t("nos_futs")}</div>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2, 1fr)":"repeat(auto-fit, minmax(200px, 1fr))",gap:"10px"}}>
-                {d.barriques.map((b:string,i:number)=>(
+                {d.barriques.map(b => b[locale as L] ?? b.fr)=>(
                   <div key={i} style={{padding:"12px",background:C.foret,borderRadius:"4px",textAlign:"center"}}>
                     <div style={{fontSize:"18px",marginBottom:"6px"}}>🪵</div>
                     <div style={{color:C.orClair,fontSize:"11px",fontWeight:500}}>{b}</div>

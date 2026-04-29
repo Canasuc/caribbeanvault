@@ -1215,5 +1215,18 @@
           "Auditorías de seguridad regulares y pruebas de penetración"
         ]
       }
+    },
+    "nav": {
+      "login": "Iniciar sesión",
+      "join": "Unirse a la familia →",
+      "dashboard": "Mi espacio →",
+      "logout": "Cerrar sesión"
+    },
+    "footer": {
+      "mentions": "Aviso legal",
+      "cgu": "Términos",
+      "confidentialite": "Política de privacidad",
+      "contact": "Contacto",
+      "disclaimer": "CaribbeanVault es una plataforma en proceso de registro como PSAN ante la AMF. Invertir conlleva riesgos."
     }
   }
