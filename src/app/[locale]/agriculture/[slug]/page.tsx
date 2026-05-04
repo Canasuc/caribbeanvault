@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { LogoEmeraude } from "@/components/Logo";
 import Footer from "@/components/Footer";
 import NavbarAuth from "@/components/NavbarAuth";
-import { PARCELLES, getParcelle } from "@/lib/parcelles";
+import { PARCELLES, getParcelle, type Parcelle, type LocaleStr } from "@/lib/parcelles";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { createBrowserClient } from "@supabase/ssr";
 
@@ -19,6 +19,8 @@ const CarteLeaflet = dynamic(() => import("@/components/CarteLeaflet"), {
     </div>
   ),
 });
+
+type L = "fr" | "en" | "es";
 
 const C = {
   noir:"#0D1A08",foret:"#1E2D14",vert:"#2C3A1E",feuille:"#5A8A3C",menthe:"#8FBF6A",
@@ -42,6 +44,15 @@ function LanguageSwitcher(){
   );
 }
 
+// Type pour CarteLeaflet
+interface BienLeaflet {
+  id: number; nom: string; ile: string; region: string; photo: string;
+  type: string; tag: string; tagColor: string; rendementBrut: string;
+  occupation: string; revenuEstime: string; prixToken: number;
+  tokensDispo: number; tokensTotal: number; statut: string;
+  couleur: string; adresse: string; coordonnees: { lat: number; lng: number };
+}
+
 export default function ParcellePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const t = useTranslations("agri_slug");
@@ -60,7 +71,7 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
       if (!session) { window.location.href = `/${locale}/login`; }
       else { setAuthChecked(true); }
     });
-  }, []);
+  }, [locale]);
 
   if (!authChecked) {
     return (
@@ -94,13 +105,13 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
   const rendementAnnuel = tokensAchat * parcelle.prixToken * (parseFloat(parcelle.rendementEst.split("-")[1]) / 100);
   const autresParcelles = PARCELLES.filter(p => p.ile === parcelle.ile && p.slug !== parcelle.slug).slice(0, 3);
 
-  const bienLeaflet = [{
+  const bienLeaflet: BienLeaflet[] = [{
     id: 1, nom: parcelle.nom, ile: parcelle.ile, region: parcelle.region,
     photo: parcelle.photo, type: parcelle.culture, tag: parcelle.tag,
     tagColor: parcelle.tagColor, rendementBrut: parcelle.rendementEst,
     occupation: "100%", revenuEstime: `Sur ${parcelle.duree}`,
     prixToken: parcelle.prixToken, tokensDispo: parcelle.disponibles,
-    tokensTotal: parcelle.tokens, statut: parcelle.statut,
+    tokensTotal: parcelle.tokens, statut: parcelle.statut[locale as L] ?? parcelle.statut.fr,
     couleur: parcelle.couleur, adresse: parcelle.adresse,
     coordonnees: parcelle.coordonnees,
   }];
@@ -185,7 +196,7 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
           {[
             { label: t("producteur"), val: parcelle.producteur },
             { label: t("surface"), val: parcelle.surface },
-            { label: t("assurance"), val: parcelle.assurance },
+            { label: t("assurance"), val: parcelle.assurance[locale as L] ?? parcelle.assurance.fr },
             { label: t("adresse"), val: parcelle.adresse },
           ].map((r, i) => (
             <div key={i}>
@@ -260,7 +271,9 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
               <div style={{ color: C.paille, fontSize: isMobile ? "14px" : "16px", fontWeight: 400, fontFamily: "system-ui" }}>{parcelle.producteur} · {parcelle.region}</div>
             </div>
           </div>
-          <p style={{ color: C.menthe, fontSize: isMobile ? "13px" : "15px", lineHeight: 1.8, maxWidth: "580px", margin: "0 0 20px", opacity: .9, fontFamily: "system-ui" }}>{parcelle.description}</p>
+          <p style={{ color: C.menthe, fontSize: isMobile ? "13px" : "15px", lineHeight: 1.8, maxWidth: "580px", margin: "0 0 20px", opacity: .9, fontFamily: "system-ui" }}>
+            {parcelle.description[locale as L] ?? parcelle.description.fr}
+          </p>
           <div style={{ display: "flex", gap: "0", flexWrap: "wrap", borderTop: `0.5px solid ${C.paille}30`, paddingTop: "18px" }}>
             {[
               { val: parcelle.rendementEst, label: t("rendement_label") },
@@ -280,20 +293,22 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "20px 16px 40px" : "40px 24px" }}>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr" : "2fr 1fr", gap: "24px", alignItems: "start" }}>
           <div>
-            {isMobile && <SidebarContent />}
+            {isMobile && SidebarContent()}
 
             <div style={{ background: C.blanc, borderRadius: "8px", border: `1px solid #D5CCBA`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.feuille, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px", fontFamily: "system-ui" }}>{t("notre_histoire")}</div>
-              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: 0, fontFamily: "system-ui" }}>{parcelle.histoire}</p>
+              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: 0, fontFamily: "system-ui" }}>
+                {parcelle.histoire[locale as L] ?? parcelle.histoire.fr}
+              </p>
             </div>
 
             <div style={{ background: C.blanc, borderRadius: "8px", border: `1px solid #D5CCBA`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.feuille, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "system-ui" }}>{t("techniques")}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                {parcelle.techniques.map((tech, i) => (
+                {parcelle.techniques.map((tech: LocaleStr, i: number) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px", padding: "10px 12px", background: C.cremeV, borderRadius: "4px", borderLeft: `3px solid ${C.feuille}` }}>
                     <span style={{ color: C.feuille, fontSize: "14px", flexShrink: 0 }}>🌱</span>
-                    <span style={{ color: C.texte, fontSize: "13px", fontFamily: "system-ui" }}>{tech}</span>
+                    <span style={{ color: C.texte, fontSize: "13px", fontFamily: "system-ui" }}>{tech[locale as L] ?? tech.fr}</span>
                   </div>
                 ))}
               </div>
@@ -302,10 +317,10 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
             <div style={{ background: C.blanc, borderRadius: "8px", border: `1px solid #D5CCBA`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.feuille, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "system-ui" }}>{t("certifications")}</div>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: "10px" }}>
-                {parcelle.certificationDetails.map((c, i) => (
+                {parcelle.certificationDetails.map((c: LocaleStr, i: number) => (
                   <div key={i} style={{ padding: "12px", background: C.terre, borderRadius: "4px", display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <span style={{ color: parcelle.tagColor, fontSize: "14px", flexShrink: 0 }}>✓</span>
-                    <span style={{ color: C.texte, fontSize: "12px", fontFamily: "system-ui" }}>{c}</span>
+                    <span style={{ color: C.texte, fontSize: "12px", fontFamily: "system-ui" }}>{c[locale as L] ?? c.fr}</span>
                   </div>
                 ))}
               </div>
@@ -314,13 +329,13 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
             <div style={{ background: C.blanc, borderRadius: "8px", border: `1px solid #D5CCBA`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.feuille, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px", fontFamily: "system-ui" }}>{t("localisation")}</div>
               <p style={{ color: C.texteSec, fontSize: "13px", marginBottom: "12px", fontFamily: "system-ui" }}>{parcelle.adresse}</p>
-              <CarteLeaflet biens={bienLeaflet as any} onBienClick={() => {}} />
+              <CarteLeaflet biens={bienLeaflet as never} onBienClick={() => {}} />
             </div>
 
             <div style={{ background: C.blanc, borderRadius: "8px", border: `1px solid #D5CCBA`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.feuille, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "system-ui" }}>{t("distinctions")}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                {parcelle.recompenses.map((r, i) => (
+                {parcelle.recompenses.map((r: string, i: number) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <span style={{ color: C.pailleC, fontSize: "14px", flexShrink: 0 }}>★</span>
                     <span style={{ color: C.texteSec, fontSize: "13px", fontFamily: "system-ui" }}>{r}</span>
@@ -357,7 +372,7 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
             <div style={{ background: "#FFFBEB", borderRadius: "8px", border: "1px solid #FCD34D44", padding: isMobile ? "16px" : "22px", marginBottom: "16px" }}>
               <div style={{ color: "#92400E", fontSize: "12px", fontWeight: 700, marginBottom: "10px", fontFamily: "system-ui" }}>{t("avertissements")}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                {risques.map((r, i) => (
+                {risques.map((r: string, i: number) => (
                   <div key={i} style={{ display: "flex", gap: "6px", fontSize: "12px", color: "#92400E", fontFamily: "system-ui" }}>
                     <span style={{ flexShrink: 0 }}>›</span><span>{r}</span>
                   </div>
@@ -370,7 +385,7 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
                 <div style={{ color: C.feuille, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px", fontFamily: "system-ui" }}>{t("aussi_en")} {parcelle.ile}</div>
                 <h3 style={{ color: C.texte, fontSize: "15px", fontWeight: 700, margin: "0 0 14px", fontFamily: "system-ui" }}>{t("autres_parcelles")}</h3>
                 <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(autresParcelles.length, 3)}, 1fr)`, gap: "10px" }}>
-                  {autresParcelles.map(p => (
+                  {autresParcelles.map((p: Parcelle) => (
                     <Link key={p.slug} href={`/${locale}/agriculture/${p.slug}`} style={{ textDecoration: "none" }}>
                       <div style={{ background: p.couleur, borderRadius: "6px", padding: "14px", transition: "transform .2s" }}
                         onMouseEnter={e => (e.currentTarget.style.transform = "translateY(-2px)")}
@@ -390,7 +405,7 @@ export default function ParcellePage({ params }: { params: Promise<{ slug: strin
 
           {!isMobile && (
             <div style={{ position: "sticky", top: "76px" }}>
-              <SidebarContent />
+             {SidebarContent()}
             </div>
           )}
         </div>

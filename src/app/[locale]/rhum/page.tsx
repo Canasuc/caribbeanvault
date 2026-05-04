@@ -10,6 +10,9 @@ import { LogoEmeraude } from "@/components/Logo";
 import NavbarAuth from "@/components/NavbarAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
+type TFn = ReturnType<typeof useTranslations>;
+
+
 const C = {
   noir:"#0D2018",foret:"#0F3D2A",emeraude:"#0F5240",vert:"#1A6B5A",
   or:"#C8992A",orClair:"#D4B96A",orPale:"#F0E6C8",creme:"#F7F5F0",
@@ -82,7 +85,7 @@ function DistillerieCard({d,ile}:{d:typeof DISTILLERIES_GUADELOUPE[0];ile:string
   );
 }
 
-function TerritoireCard({territoire,isOpen,onToggle,onFilter,isMobile,t}:{territoire:typeof TERRITOIRES[0];isOpen:boolean;onToggle:()=>void;onFilter:()=>void;isMobile:boolean;t:any}){
+function TerritoireCard({territoire,isOpen,onToggle,onFilter,isMobile,t}:{territoire:typeof TERRITOIRES[0];isOpen:boolean;onToggle:()=>void;onFilter:()=>void;isMobile:boolean;t:TFn}){
   const futsT=FUTS.filter(f=>f.ile===territoire.nom);
   const futsDispos=futsT.filter(f=>f.disponibles>0).length;
   return(

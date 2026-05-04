@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
 import Footer from "@/components/Footer";
@@ -19,6 +19,15 @@ const C = {
 };
 
 type AssetKey = "rhum"|"villa"|"local"|"agriculture"|"art";
+
+interface AssetRates { pessimiste: number; realiste: number; optimiste: number; }
+interface AssetConfig {
+  label: string; icon: string; emoji: string; description: string; territory: string;
+  minAmount: number; maxAmount: number; defaultAmount: number;
+  minDuration: number; maxDuration: number; defaultDuration: number;
+  entryFee: number; managementFee: number; exitFee: number;
+  rates: AssetRates; note: string; color: string; href: string;
+}
 
 const LOCALES = [
   {code:"fr",label:"FR",flag:"🇫🇷"},
@@ -69,20 +78,20 @@ function calcReturn(amount:number,rate:number,years:number,entry:number,mgmt:num
 }
 
 function calcYearly(amount:number,rate:number,years:number,entry:number,mgmt:number){
-  const pts:[{yr:number;val:number}]=[ {yr:0,val:amount}];
+  const pts:{yr:number;val:number}[]=[{yr:0,val:amount}];
   let v=amount*(1-entry);
   for(let i=1;i<=years;i++){v=v*(1+rate)*(1-mgmt);pts.push({yr:i,val:Math.round(v)});}
   return pts;
 }
 
-function Chart({amount,years,cfg,todayLabel}:{amount:number;years:number;cfg:any;todayLabel:string}){
+function Chart({amount,years,cfg,todayLabel,yearLabel}:{amount:number;years:number;cfg:AssetConfig;todayLabel:string;yearLabel:string}){
   const series=[
     {key:"pessimiste",color:"#EF9F27",pts:calcYearly(amount,cfg.rates.pessimiste,years,cfg.entryFee,cfg.managementFee)},
     {key:"realiste",color:"#1D9E75",pts:calcYearly(amount,cfg.rates.realiste,years,cfg.entryFee,cfg.managementFee)},
     {key:"optimiste",color:"#378ADD",pts:calcYearly(amount,cfg.rates.optimiste,years,cfg.entryFee,cfg.managementFee)},
   ];
   const compSeries=COMPARAISONS.map(c=>{
-    const pts:[{yr:number;val:number}]=[{yr:0,val:amount}];
+    const pts:{yr:number;val:number}[]=[{yr:0,val:amount}];
     let v=amount;
     for(let i=1;i<=years;i++){v*=(1+c.rate);pts.push({yr:i,val:Math.round(v)});}
     return{...c,pts};
@@ -107,12 +116,12 @@ function Chart({amount,years,cfg,todayLabel}:{amount:number;years:number;cfg:any
       ))}
       {compSeries.map(c=><path key={c.label} d={path(c.pts)} fill="none" stroke={c.color} strokeWidth="1" strokeDasharray="5 3" opacity="0.5"/>)}
       {series.map(s=><path key={s.key} d={path(s.pts)} fill="none" stroke={s.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>)}
-      {xTicks.map(i=><text key={i} x={x(i)} y={H-6} textAnchor="middle" fontSize="9" fill="#9CA3AF">{i===0?todayLabel:`An ${i}`}</text>)}
+      {xTicks.map(i=><text key={i} x={x(i)} y={H-6} textAnchor="middle" fontSize="9" fill="#9CA3AF">{i===0?todayLabel:`${yearLabel} ${i}`}</text>)}
     </svg>
   );
 }
 
-function TableauDetail({amount,years,cfg,todayLabel,yearLabel,scenarioLabels}:{amount:number;years:number;cfg:any;todayLabel:string;yearLabel:string;scenarioLabels:[string,string,string]}){
+function TableauDetail({amount,years,cfg,todayLabel,yearLabel,scenarioLabels}:{amount:number;years:number;cfg:AssetConfig;todayLabel:string;yearLabel:string;scenarioLabels:[string,string,string]}){
   const rows=Array.from({length:years+1},(_,yr)=>{
     const calc=(rate:number)=>{let v=amount*(1-cfg.entryFee);for(let i=0;i<yr;i++)v=v*(1+rate)*(1-cfg.managementFee);return Math.round(yr===0?amount:v);};
     return{yr,pess:calc(cfg.rates.pessimiste),real:calc(cfg.rates.realiste),opti:calc(cfg.rates.optimiste)};
@@ -143,6 +152,15 @@ function TableauDetail({amount,years,cfg,todayLabel,yearLabel,scenarioLabels}:{a
   );
 }
 
+  // Au niveau module — hors du composant
+const ASSET_DEFAULTS: Record<AssetKey, { amount: number; duration: number }> = {
+  rhum:        { amount: 2000, duration: 10 },
+  villa:       { amount: 5000, duration: 5  },
+  local:       { amount: 5000, duration: 3  },
+  agriculture: { amount: 2000, duration: 1  },
+  art:         { amount: 500,  duration: 5  },
+};
+
 export default function SimulateurPage(){
   const t=useTranslations("sim");
   const locale=useLocale();
@@ -153,7 +171,7 @@ export default function SimulateurPage(){
   const [duration,setDuration]=useState(10);
   const [showTable,setShowTable]=useState(false);
 
-  const ASSETS_CONFIG: Record<AssetKey,any>={
+  const ASSETS_CONFIG: Record<AssetKey, AssetConfig>={
     rhum:{label:t("assets.rhum_label"),icon:"🥃",emoji:"🥃",description:t("assets.rhum_desc"),territory:t("assets.rhum_territory"),minAmount:500,maxAmount:50000,defaultAmount:2000,minDuration:5,maxDuration:15,defaultDuration:10,entryFee:0.02,managementFee:0.01,exitFee:0.02,rates:{pessimiste:0.05,realiste:0.10,optimiste:0.15},note:t("assets.rhum_note"),color:"#0F5240",href:`/${locale}/rhum`},
     villa:{label:t("assets.villa_label"),icon:"🏠",emoji:"🏠",description:t("assets.villa_desc"),territory:t("assets.villa_territory"),minAmount:100,maxAmount:100000,defaultAmount:5000,minDuration:1,maxDuration:15,defaultDuration:5,entryFee:0.02,managementFee:0.015,exitFee:0.02,rates:{pessimiste:0.055,realiste:0.085,optimiste:0.11},note:t("assets.villa_note"),color:"#0891B2",href:`/${locale}/immobilier`},
     local:{label:t("assets.local_label"),icon:"🏢",emoji:"🏢",description:t("assets.local_desc"),territory:t("assets.local_territory"),minAmount:100,maxAmount:100000,defaultAmount:5000,minDuration:1,maxDuration:9,defaultDuration:3,entryFee:0.02,managementFee:0.01,exitFee:0.015,rates:{pessimiste:0.06,realiste:0.08,optimiste:0.10},note:t("assets.local_note"),color:"#0891B2",href:`/${locale}/immobilier`},
@@ -162,13 +180,6 @@ export default function SimulateurPage(){
   };
 
   const cfg=ASSETS_CONFIG[asset];
-
-  useEffect(()=>{
-    const config=ASSETS_CONFIG[asset];
-    setAmount(config.defaultAmount);
-    setInputAmount(String(config.defaultAmount));
-    setDuration(config.defaultDuration);
-  },[asset]);
 
   const results={
     pessimiste:calcReturn(amount,cfg.rates.pessimiste,duration,cfg.entryFee,cfg.managementFee,cfg.exitFee),
@@ -193,7 +204,7 @@ export default function SimulateurPage(){
           </Link>
           {!isMobile&&(
             <div style={{display:"flex",gap:isTablet?"10px":"16px",alignItems:"center"}}>
-              {(Object.entries(ASSETS_CONFIG) as [AssetKey,any][]).map(([key,a])=>(
+              {(Object.entries(ASSETS_CONFIG) as [AssetKey,AssetConfig][]).map(([key,a])=>(
                 <Link key={key} href={a.href} style={{color:C.texteSec,fontSize:"11px",textDecoration:"none"}}>
                   {a.icon} {a.label.split(" ")[0]}
                 </Link>
@@ -223,20 +234,25 @@ export default function SimulateurPage(){
 
       <div style={{maxWidth:"1000px",margin:"0 auto",padding:isMobile?"20px 16px":"32px 24px"}}>
 
-        {/* Sélecteur actif */}
         <div style={{background:C.blanc,borderRadius:"10px",border:`0.5px solid ${C.beigeB}`,padding:isMobile?"16px":"20px",marginBottom:"12px"}}>
           <div style={{fontSize:"11px",fontWeight:600,color:C.texteTert,textTransform:"uppercase",letterSpacing:".08em",marginBottom:"12px"}}>{t("choisir_actif")}</div>
           <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(5, 1fr)",gap:"8px"}}>
-            {(Object.entries(ASSETS_CONFIG) as [AssetKey,any][]).map(([key,a])=>(
-              <button key={key} onClick={()=>setAsset(key)} style={{
-                padding:isMobile?"10px 8px":"10px 14px",borderRadius:"6px",cursor:"pointer",
-                border:asset===key?`2px solid ${a.color}`:`1px solid ${C.beigeB}`,
-                background:asset===key?`${a.color}12`:C.blanc,
-                color:asset===key?a.color:C.texteSec,
-                fontWeight:asset===key?700:400,
-                fontSize:isMobile?"12px":"13px",transition:"all .15s",
-                display:"flex",alignItems:"center",gap:"6px",textAlign:"left",
-              }}>
+            {(Object.entries(ASSETS_CONFIG) as [AssetKey,AssetConfig][]).map(([key,a])=>(
+              <button key={key} onClick={() => {
+  setAsset(key);
+  setAmount(ASSET_DEFAULTS[key].amount);
+  setInputAmount(String(ASSET_DEFAULTS[key].amount));
+  setDuration(ASSET_DEFAULTS[key].duration);
+}} style={{
+  padding:isMobile?"10px 8px":"10px 14px",borderRadius:"6px",cursor:"pointer",
+  border:asset===key?`2px solid ${a.color}`:`1px solid ${C.beigeB}`,
+  background:asset===key?`${a.color}12`:C.blanc,
+  color:asset===key?a.color:C.texteSec,
+  fontWeight:asset===key?700:400,
+  fontSize:isMobile?"12px":"13px",transition:"all .15s",
+  display:"flex",alignItems:"center",gap:"6px",textAlign:"left",
+}}>
+
                 <span style={{fontSize:"18px"}}>{a.icon}</span>
                 <div>
                   <div>{isMobile?a.label.split(" ")[0]:a.label}</div>
@@ -247,7 +263,6 @@ export default function SimulateurPage(){
           </div>
         </div>
 
-        {/* Paramètres */}
         <div style={{background:C.blanc,borderRadius:"10px",border:`0.5px solid ${C.beigeB}`,padding:isMobile?"16px":"20px",marginBottom:"12px"}}>
           <div style={{fontSize:"11px",fontWeight:600,color:C.texteTert,textTransform:"uppercase",letterSpacing:".08em",marginBottom:"16px"}}>{t("parametres")}</div>
           <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:isMobile?"20px":"24px"}}>
@@ -292,7 +307,6 @@ export default function SimulateurPage(){
           </div>
         </div>
 
-        {/* Résultats */}
         <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(3, 1fr)",gap:"10px",marginBottom:"12px"}}>
           {(["pessimiste","realiste","optimiste"] as const).map((key,idx)=>{
             const s=C[key];
@@ -333,7 +347,6 @@ export default function SimulateurPage(){
           })}
         </div>
 
-        {/* Graphique */}
         <div style={{background:C.blanc,borderRadius:"10px",border:`0.5px solid ${C.beigeB}`,padding:isMobile?"16px":"20px",marginBottom:"12px"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px",flexWrap:"wrap",gap:"8px"}}>
             <div style={{fontSize:"13px",fontWeight:600,color:C.texte}}>
@@ -345,12 +358,11 @@ export default function SimulateurPage(){
           </div>
           {showTable
             ?<TableauDetail amount={amount} years={duration} cfg={cfg} todayLabel={t("aujourd_hui")} yearLabel={t("annee")} scenarioLabels={scenarioLabels}/>
-            :<Chart amount={amount} years={duration} cfg={cfg} todayLabel={t("aujourd_hui")}/>
+            :<Chart amount={amount} years={duration} cfg={cfg} todayLabel={t("aujourd_hui")} yearLabel={t("annee")}/>
           }
           {!showTable&&<div style={{fontSize:"10px",color:C.texteTert,textAlign:"center",marginTop:"8px"}}>{t("lignes_tirets")}</div>}
         </div>
 
-        {/* Comparaison */}
         <div style={{background:C.blanc,borderRadius:"10px",border:`0.5px solid ${C.beigeB}`,padding:isMobile?"16px":"20px",marginBottom:"12px"}}>
           <div style={{fontSize:"13px",fontWeight:600,color:C.texte,marginBottom:"12px"}}>
             {t("comparaison")} — {duration} {duration>1?t("ans"):t("an")}
@@ -383,14 +395,12 @@ export default function SimulateurPage(){
           </div>
         </div>
 
-        {/* Note */}
         <div style={{padding:"12px 16px",background:"#FFFBEB",borderRadius:"8px",border:"1px solid #FCD34D44",fontSize:"11px",color:"#92400E",lineHeight:1.7,marginBottom:"16px"}}>
           <strong>{t("a_noter")}</strong> {cfg.note} {t("note_suffix")}
         </div>
 
-        {/* Liens actifs */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(5, 1fr)",gap:"8px",marginBottom:"16px"}}>
-          {(Object.entries(ASSETS_CONFIG) as [AssetKey,any][]).map(([key,a])=>(
+          {(Object.entries(ASSETS_CONFIG) as [AssetKey,AssetConfig][]).map(([key,a])=>(
             <Link key={key} href={a.href} style={{background:asset===key?C.navy:C.blanc,border:`0.5px solid ${asset===key?C.navy:C.beigeB}`,borderRadius:"8px",padding:isMobile?"10px 4px":"12px 10px",textAlign:"center",textDecoration:"none"}}>
               <div style={{fontSize:isMobile?"18px":"20px",marginBottom:"4px"}}>{a.icon}</div>
               <div style={{fontSize:"9px",fontWeight:600,color:asset===key?"white":C.texte}}>{a.label.split(" ")[0]}</div>
@@ -398,7 +408,6 @@ export default function SimulateurPage(){
           ))}
         </div>
 
-        {/* CTA */}
         <div style={{background:C.navy,borderRadius:"10px",padding:isMobile?"24px 16px":"28px",textAlign:"center"}}>
           <div style={{color:C.sable,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"10px"}}>{t("pret_investir")}</div>
           <h2 style={{color:"white",fontSize:isMobile?"20px":"22px",fontWeight:800,margin:"0 0 10px"}}>{t("cta_titre")}</h2>

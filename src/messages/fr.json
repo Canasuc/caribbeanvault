@@ -8,10 +8,9 @@
     "simulateur": "Simulateur",
     "connexion": "Connexion",
     "login": "Se connecter",
-    "join": "Rejoindre →",
+    "join": "Rejoindre la famille →",
     "dashboard": "Mon espace →",
     "logout": "Se déconnecter"
-
   },
   "hero": {
     "badge": "Première plateforme RWA caribéenne",
@@ -91,10 +90,6 @@
     "label": "Actualités",
     "titre": "Les dernières nouvelles",
     "voir_tout": "Toutes les actualités →"
-  },
-  "footer": {
-    "tagline": "La Caraïbe, tokenisée.",
-    "langues": "Langues"
   },
   
   "dashboard": {
@@ -1218,17 +1213,14 @@
         ]
       }
     },
-    "nav": {
-      "login": "Se connecter",
-      "join": "Rejoindre la famille →",
-      "dashboard": "Mon espace →",
-      "logout": "Se déconnecter"
-    },
+
     "footer": {
       "mentions": "Mentions légales",
       "cgu": "CGU",
       "confidentialite": "Politique de confidentialité",
       "contact": "Contact",
-      "disclaimer": "CaribbeanVault est une plateforme en cours d'enregistrement PSAN auprès de l'AMF. Investir comporte des risques."
+      "disclaimer": "CaribbeanVault est une plateforme en cours d'enregistrement PSAN auprès de l'AMF. Investir comporte des risques.",
+      "tagline": "La Caraïbe, tokenisée.",
+      "langues": "Langues"
     }
   }

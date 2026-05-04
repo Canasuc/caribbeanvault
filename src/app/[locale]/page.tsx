@@ -108,10 +108,6 @@ const ASSETS = [
   buttonColor="white"
   textColor="#4A5568"
   borderColor="#E8E2D6"
-  loginLabel={tNav("login")}
-  joinLabel={tNav("join")}
-  dashboardLabel={tNav("dashboard")}
-  logoutLabel={tNav("logout")}
 />
             </div>
           )}
@@ -123,10 +119,6 @@ const ASSETS = [
   buttonColor="white"
   textColor="#4A5568"
   borderColor="#E8E2D6"
-  loginLabel={tNav("login")}
-  joinLabel={tNav("join")}
-  dashboardLabel={tNav("dashboard")}
-  logoutLabel={tNav("logout")}
 />
               <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", cursor: "pointer", padding: "4px", display: "flex", flexDirection: "column", gap: "5px" }}>
                 {[0,1,2].map(i => <div key={i} style={{ width: "22px", height: "2px", background: "#1A2E4A", borderRadius: "2px" }} />)}

@@ -9,8 +9,22 @@ import { LogoNavy } from "@/components/Logo";
 import Footer from "@/components/Footer";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useRouter, usePathname } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
 
-
+// ✅ Types déplacés au niveau module — correct
+interface Investisseur {
+  id: string;
+  email: string;
+  nom?: string;
+  prenom?: string;
+  statut?: string;
+  statut_investisseur?: string;
+  telephone?: string;
+  pays?: string;
+  actif_interet?: string;
+  montant_envisage?: string;
+  statut_kyc?: string;
+}
 
 const C = {
   navy:     "#1A2E4A",
@@ -28,7 +42,7 @@ const C = {
   vertL:    "#E1F5EE",
 };
 
- const LOCALES = [
+const LOCALES = [
   { code: "fr", label: "FR", flag: "🇫🇷" },
   { code: "en", label: "EN", flag: "🇬🇧" },
   { code: "es", label: "ES", flag: "🇪🇸" },
@@ -65,10 +79,11 @@ function LanguageSwitcher() {
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const locale = useLocale();
-  const [user, setUser] = useState<any>(null);
-  const [investisseur, setInvestisseur] = useState<any>(null);
+  // ✅ useState dans le composant — correct
+  const [user, setUser] = useState<User | null>(null);
+  const [investisseur, setInvestisseur] = useState<Investisseur | null>(null);
   const [loading, setLoading] = useState(true);
-  const { isMobile, isTablet } = useBreakpoint();
+  const { isMobile } = useBreakpoint(); // ✅ isTablet supprimé (non utilisé)
 
   useEffect(() => {
     async function loadData() {
@@ -80,11 +95,11 @@ export default function DashboardPage() {
       if (!session) { window.location.href = `/${locale}/login`; return; }
       setUser(session.user);
       const { data } = await supabase.from("investisseurs").select("*").eq("email", session.user.email).single();
-      if (data) setInvestisseur(data);
+      if (data) setInvestisseur(data as Investisseur);
       setLoading(false);
     }
-    loadData();
-  }, []);
+    void loadData();
+  }, [locale]); // ✅ locale ajouté
 
   async function handleSignOut() {
     const supabase = createBrowserClient(
@@ -124,12 +139,8 @@ export default function DashboardPage() {
 
   const colsActifs = isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)";
 
- 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.creme, minHeight: "100vh" }}>
-
-
-{/* NAVBAR */}
 
       <nav style={{ background: C.blanc, borderBottom: `0.5px solid ${C.grisBord}`, padding: "0 16px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: isMobile ? "60px" : "72px" }}>
@@ -139,7 +150,7 @@ export default function DashboardPage() {
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             {!isMobile && (
               <span style={{ color: C.texteSec, fontSize: "12px" }}>
-                {investisseur ? `${investisseur.prenom} ${investisseur.nom}` : user?.email}
+                {investisseur ? `${investisseur.prenom ?? ""} ${investisseur.nom ?? ""}`.trim() : user?.email}
               </span>
             )}
             <LanguageSwitcher />
@@ -152,30 +163,25 @@ export default function DashboardPage() {
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "20px 16px 40px" : "40px 24px 60px" }}>
 
-        {/* HERO BIENVENUE */}
         <div style={{ background: C.navy, borderRadius: "16px", padding: isMobile ? "24px 20px" : "36px 40px", marginBottom: "20px", position: "relative", overflow: "hidden" }}>
-          {/* Décorations */}
           <div style={{ position: "absolute", right: "-30px", top: "-30px", width: "220px", height: "220px", borderRadius: "50%", background: "rgba(212,136,74,.08)" }} />
           <div style={{ position: "absolute", right: "60px", top: "60px", width: "130px", height: "130px", borderRadius: "50%", background: "rgba(212,136,74,.06)" }} />
           <div style={{ position: "absolute", left: "-10px", bottom: "-10px", width: "100px", height: "100px", borderRadius: "50%", background: "rgba(255,255,255,.03)" }} />
-
           <div style={{ position: "relative" }}>
             <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "8px" }}>
               {t("espace")}
             </div>
             <h1 style={{ color: "white", fontSize: isMobile ? "22px" : "28px", fontWeight: 800, margin: "0 0 8px" }}>
-              {t("bienvenue")}{investisseur ? `, ${investisseur.prenom}` : ""} ! 🌴
+              {t("bienvenue")}{investisseur ? `, ${investisseur.prenom ?? ""}` : ""} ! 🌴
             </h1>
             <p style={{ color: "rgba(255,255,255,.65)", fontSize: "13px", lineHeight: 1.7, margin: "0 0 20px", maxWidth: "500px" }}>
               {t("desc")}
             </p>
-
-            {/* Métriques profil */}
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
               {[
                 { label: t("statut_compte"), val: investisseur?.statut === "en_attente" ? t("en_attente") : t("valide"), highlight: true },
-                { label: t("actif_interet"), val: investisseur?.actif_interet || t("non_renseigne"), highlight: false },
-                ...(!isMobile ? [{ label: t("montant"), val: investisseur?.montant_envisage || t("non_renseigne"), highlight: false }] : []),
+                { label: t("actif_interet"), val: investisseur?.actif_interet ?? t("non_renseigne"), highlight: false },
+                ...(!isMobile ? [{ label: t("montant"), val: investisseur?.montant_envisage ?? t("non_renseigne"), highlight: false }] : []),
               ].map((m, i) => (
                 <div key={i} style={{ background: "rgba(255,255,255,.08)", borderRadius: "10px", padding: "12px 16px", backdropFilter: "blur(4px)", border: "0.5px solid rgba(255,255,255,.1)" }}>
                   <div style={{ color: "rgba(255,255,255,.5)", fontSize: "10px", marginBottom: "4px", textTransform: "uppercase", letterSpacing: ".08em" }}>{m.label}</div>
@@ -186,17 +192,12 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* STATUT KYC */}
         {investisseur?.statut === "en_attente" && (
           <div style={{ background: "#FFFBEB", borderRadius: "12px", border: "1px solid #FCD34D44", padding: isMobile ? "16px" : "20px 24px", marginBottom: "20px", display: "flex", gap: "14px", alignItems: "flex-start" }}>
             <div style={{ fontSize: "22px", flexShrink: 0 }}>⏳</div>
             <div style={{ flex: 1 }}>
-              <div style={{ color: "#92400E", fontSize: "13px", fontWeight: 700, marginBottom: "6px" }}>
-                {t("kyc_titre")}
-              </div>
-              <p style={{ color: "#92400E", fontSize: "12px", lineHeight: 1.7, margin: "0 0 12px" }}>
-                {t("kyc_desc")}
-              </p>
+              <div style={{ color: "#92400E", fontSize: "13px", fontWeight: 700, marginBottom: "6px" }}>{t("kyc_titre")}</div>
+              <p style={{ color: "#92400E", fontSize: "12px", lineHeight: 1.7, margin: "0 0 12px" }}>{t("kyc_desc")}</p>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
                 {[t("kyc_step1"), t("kyc_step2"), t("kyc_step3")].map((s, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -212,7 +213,6 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* STATS MARCHÉ */}
         <div style={{ background: C.cremeB, borderRadius: "12px", padding: isMobile ? "16px" : "20px 24px", marginBottom: "20px", border: `0.5px solid ${C.grisBord}` }}>
           <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "4px" }}>{t("marche_titre")}</div>
           <div style={{ color: C.texteSec, fontSize: "12px", marginBottom: "14px" }}>{t("marche_desc")}</div>
@@ -232,14 +232,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ACCÈS RAPIDE ACTIFS */}
         <div style={{ marginBottom: "20px" }}>
-          <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px" }}>
-            {t("acces_rapide")}
-          </div>
-          <h2 style={{ color: C.texte, fontSize: isMobile ? "18px" : "22px", fontWeight: 800, margin: "0 0 14px" }}>
-            {t("explorer_actifs")}
-          </h2>
+          <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px" }}>{t("acces_rapide")}</div>
+          <h2 style={{ color: C.texte, fontSize: isMobile ? "18px" : "22px", fontWeight: 800, margin: "0 0 14px" }}>{t("explorer_actifs")}</h2>
           <div style={{ display: "grid", gridTemplateColumns: colsActifs, gap: "10px" }}>
             {ACTIFS.map((a, i) => (
               <Link key={i} href={a.href} style={{ textDecoration: "none" }}>
@@ -257,22 +252,17 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* PROFIL + ÉTAPES */}
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "14px", marginBottom: "20px" }}>
-
-          {/* Profil */}
           <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "24px" }}>
-            <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>
-              {t("mon_profil")}
-            </div>
+            <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>{t("mon_profil")}</div>
             {investisseur ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {[
-                  { label: t("nom_complet"), val: `${investisseur.prenom} ${investisseur.nom}` },
+                  { label: t("nom_complet"), val: `${investisseur.prenom ?? ""} ${investisseur.nom ?? ""}`.trim() },
                   { label: t("email"), val: investisseur.email },
-                  { label: t("telephone"), val: investisseur.telephone || t("non_renseigne") },
-                  { label: t("pays"), val: investisseur.pays },
-                  { label: t("statut"), val: investisseur.statut_investisseur },
+                  { label: t("telephone"), val: investisseur.telephone ?? t("non_renseigne") },
+                  { label: t("pays"), val: investisseur.pays ?? t("non_renseigne") },
+                  { label: t("statut"), val: investisseur.statut_investisseur ?? t("non_renseigne") },
                 ].map((r, i) => (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: i < 4 ? `0.5px solid ${C.grisBord}` : "none", gap: "8px" }}>
                     <span style={{ color: C.texteTert, fontSize: "11px", flexShrink: 0 }}>{r.label}</span>
@@ -285,11 +275,8 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Étapes */}
           <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "24px" }}>
-            <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>
-              {t("etapes")}
-            </div>
+            <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>{t("etapes")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               {ETAPES.map((e, i) => (
                 <div key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
@@ -307,7 +294,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* SIMULATEUR CTA */}
         <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, ${C.navyL} 100%)`, borderRadius: "12px", padding: isMobile ? "20px" : "28px 32px", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
           <div>
             <div style={{ fontSize: "28px", marginBottom: "8px" }}>📊</div>
@@ -319,7 +305,6 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* CONTACT */}
         <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "22px 28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
           <div>
             <div style={{ color: C.sable, fontSize: "11px", fontWeight: 700, marginBottom: "3px" }}>{t("question")}</div>

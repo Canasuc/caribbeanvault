@@ -7,11 +7,12 @@
     "art": "Creole Art",
     "simulateur": "Simulator",
     "connexion": "Login",
-    "login": "Login",
-    "join": "Join us →",
-    "dashboard": "My account →",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "login": "Log in",
+    "join": "Join the family →",
+    "dashboard": "My space →"
   },
+
   "hero": {
     "badge": "First Caribbean RWA Platform",
     "titre1": "Invest in the real assets",
@@ -93,8 +94,14 @@
   },
   "footer": {
     "tagline": "The Caribbean, tokenized.",
-    "langues": "Languages"
+    "langues": "Languages",
+    "mentions": "Legal notice",
+    "cgu": "Terms",
+    "confidentialite": "Privacy policy",
+    "contact": "Contact",
+    "disclaimer": "CaribbeanVault is a platform currently being registered as a DASP with the AMF. Investing involves risks."
   },
+
   "dashboard": {
     "espace": "Investor space",
     "bienvenue": "Welcome",
@@ -1215,18 +1222,5 @@
           "Regular security audits and penetration testing"
         ]
       }
-    },
-     "nav": {
-      "login": "Log in",
-      "join": "Join the family →",
-      "dashboard": "My space →",
-      "logout": "Log out"
-    },
-    "footer": {
-      "mentions": "Legal notice",
-      "cgu": "Terms",
-      "confidentialite": "Privacy policy",
-      "contact": "Contact",
-      "disclaimer": "CaribbeanVault is a platform currently being registered as a DASP with the AMF. Investing involves risks."
     }
   }

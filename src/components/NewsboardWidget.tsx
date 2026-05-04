@@ -78,7 +78,7 @@ export default function NewsboardWidget() {
               <div style={{ color: C.texte, fontSize: "12px", fontWeight: 600, lineHeight: 1.5, marginBottom: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                 {a.titre}
               </div>
-              <div style={{ color: a.color, fontSize: "10px", fontWeight: 600 }}>Lire l'article →</div>
+<div style={{ color: a.color, fontSize: "10px", fontWeight: 600 }}>{"Lire l'article →"}</div>
             </div>
           </div>
         </a>

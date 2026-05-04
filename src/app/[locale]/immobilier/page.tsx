@@ -11,6 +11,9 @@ import { BIENS, REGIONS, PROCESSUS_ONBOARDING, TYPES_BAIL, FISCALITE, getBienSlu
 import NavbarAuth from "@/components/NavbarAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
+
+type L = "fr" | "en" | "es";
+
 const CarteLeaflet = dynamic(() => import("@/components/CarteLeaflet"), {
   ssr: false,
   loading: () => (
@@ -77,15 +80,16 @@ export default function ImmobilierPage(){
     return()=>window.removeEventListener("filtreRegion",handler as EventListener);
   },[]);
 
-  const biensFiltres=BIENS.filter(b=>{
-    const matchType=
-      filtreType==="villa"?b.type.includes("Villa"):
-      filtreType==="hotel"?(b.type.includes("Hotel")||b.type.includes("Hôtel")||b.type.includes("Boutique")):
-      filtreType==="commercial"?(b.type.includes("Commercial")||b.type.includes("Bureau")):
-      filtreType==="meuble"?b.type.includes("Meublé"):true;
-    const matchRegion=filtreRegion==="toutes"?true:b.ile===filtreRegion;
-    return matchType&&matchRegion;
-  });
+const biensFiltres = BIENS.filter(b => {
+  const typeFr = b.type.fr; // ✅ toujours comparer sur le FR
+  const matchType =
+    filtreType === "villa" ? typeFr.includes("Villa") :
+    filtreType === "hotel" ? (typeFr.includes("Hotel") || typeFr.includes("Hôtel") || typeFr.includes("Boutique")) :
+    filtreType === "commercial" ? (typeFr.includes("Commercial") || typeFr.includes("Bureau")) :
+    filtreType === "meuble" ? typeFr.includes("Meublé") : true;
+  const matchRegion = filtreRegion === "toutes" ? true : b.ile === filtreRegion;
+  return matchType && matchRegion;
+});
 
   function handleRegionFilter(region:string){setFiltreRegion(region as typeof filtreRegion);scrollToSelection();}
   function handleBailFilter(nomBail:string){
@@ -398,13 +402,13 @@ export default function ImmobilierPage(){
                       <Image src={bien.photo} alt={bien.nom} fill sizes="(max-width: 768px) 100vw, 33vw" style={{objectFit:"cover"}}/>
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to top, rgba(0,0,0,.5) 0%, transparent 60%)"}}/>
                       <div style={{position:"absolute",top:"10px",left:"10px"}}>
-                        <span style={{background:bien.tagColor,color:"white",fontSize:"8px",fontWeight:700,padding:"2px 8px",borderRadius:"20px"}}>{bien.tag}</span>
+                        <span style={{background:bien.tagColor,color:"white",fontSize:"8px",fontWeight:700,padding:"2px 8px",borderRadius:"20px"}}>{bien.tag[locale as L] ?? bien.tag.fr}</span>
                       </div>
                       <div style={{position:"absolute",top:"10px",right:"10px"}}>
                         <StatutBadge statut={bien.statut}/>
                       </div>
                       <div style={{position:"absolute",bottom:"10px",left:"12px"}}>
-                        <div style={{color:"rgba(255,255,255,.8)",fontSize:"9px",textTransform:"uppercase"}}>{bien.type}</div>
+                        <div style={{color:"rgba(255,255,255,.8)",fontSize:"9px",textTransform:"uppercase"}}>{bien.type[locale as L] ?? bien.type.fr}</div>
                         <div style={{color:"white",fontSize:"14px",fontWeight:700}}>{bien.nom}</div>
                       </div>
                     </div>

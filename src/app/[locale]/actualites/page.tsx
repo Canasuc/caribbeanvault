@@ -94,13 +94,21 @@ export default function ActualitesPage(){
 
   const filtres=t.raw("filtres") as {key:string;label:string;icon:string}[];
 
-  useEffect(()=>{
+useEffect(()=>{
+  const load = async () => {
     setLoading(true);
-    fetch(`/api/news?theme=${theme}&limit=30`)
-      .then(r=>r.json())
-      .then(data=>{setArticles(data.articles||[]);setLoading(false);})
-      .catch(()=>{setErreur(true);setLoading(false);});
-  },[theme]);
+    try {
+      const r = await fetch(`/api/news?theme=${theme}&limit=30`);
+      const data = await r.json();
+      setArticles(data.articles || []);
+    } catch {
+      setErreur(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+  void load();
+}, [theme]);
 
   const featured=articles.slice(0,2);
   const rest=articles.slice(2);

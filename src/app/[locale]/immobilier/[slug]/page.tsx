@@ -11,6 +11,8 @@ import { BIENS, getBien, getBienSlug } from "@/lib/biens";
 import NavbarAuth from "@/components/NavbarAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
+type L = "fr" | "en" | "es";
+
 const CarteLeaflet = dynamic(() => import("@/components/CarteLeaflet"), {
   ssr: false,
   loading: () => (
@@ -48,14 +50,12 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
   const locale = useLocale();
   const bien = getBien(slug);
   const [montant, setMontant] = useState(1000);
-  const [showInvest, setShowInvest] = useState(false);
+  // ✅ showInvest supprimé — non utilisé dans le JSX
   const { isMobile, isTablet } = useBreakpoint();
   const risques = t.raw("risques") as string[];
 
   useEffect(() => {
-    const handleScroll = () => setShowInvest(window.scrollY > 500);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // showInvest était déclaré mais scroll non utilisé — supprimé
   }, []);
 
   if (!bien) {
@@ -72,91 +72,102 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
       </main>
     );
   }
+  const bienSafe = bien!; // non-nul garanti par le early return
+  const pct = Math.round(((bienSafe.tokensTotal - bienSafe.tokensDispo) / bienSafe.tokensTotal) * 100);
+  const complet = bienSafe.tokensDispo === 0;
+  const tokensAchat = Math.floor(montant / bienSafe.prixToken);
+  const rendementAnnuel = tokensAchat * bienSafe.prixToken * (parseFloat(bienSafe.rendementBrut) / 100);
+  const autresBiens = BIENS.filter(b => b.ile === bienSafe.ile && b.id !== bienSafe.id).slice(0, 3);
 
-  const pct = Math.round(((bien.tokensTotal - bien.tokensDispo) / bien.tokensTotal) * 100);
-  const complet = bien.tokensDispo === 0;
-  const tokensAchat = Math.floor(montant / bien.prixToken);
-  const rendementAnnuel = tokensAchat * bien.prixToken * (parseFloat(bien.rendementBrut) / 100);
-  const autresBiens = BIENS.filter(b => b.ile === bien.ile && b.id !== bien.id).slice(0, 3);
+  // ✅ Résolution des LocaleStr une seule fois
+  const bienTag = bienSafe.tag[locale as L] ?? bienSafe.tag.fr;
+  const bienTypeBail = bienSafe.typeBail[locale as L] ?? bienSafe.typeBail.fr;
+  const bienDescription = bienSafe.description[locale as L] ?? bienSafe.description.fr;
+  const bienLocatif = bienSafe.locatif[locale as L] ?? bienSafe.locatif.fr;
+  const bienPieces = bienSafe.pieces[locale as L] ?? bienSafe.pieces.fr;
 
-  const CarteInvestissement = () => (
-    <div id="investir" style={{ background: "white", borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, overflow: "hidden", marginBottom: "16px" }}>
-      <div style={{ background: complet ? "#F1EFE8" : C.turquoise, padding: "18px 20px" }}>
-        <div style={{ color: complet ? C.texteTert : "rgba(255,255,255,.8)", fontSize: "11px", marginBottom: "4px" }}>
-          {complet ? t("levee_terminee") : t("levee_cours")}
+  
+  // ✅ CarteInvestissement en fonction appelée directement (pas composant) — évite l'erreur hooks
+  function CarteInvestissement() {
+    return (
+      <div id="investir" style={{ background: "white", borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, overflow: "hidden", marginBottom: "16px" }}>
+        <div style={{ background: complet ? "#F1EFE8" : C.turquoise, padding: "18px 20px" }}>
+          <div style={{ color: complet ? C.texteTert : "rgba(255,255,255,.8)", fontSize: "11px", marginBottom: "4px" }}>
+            {complet ? t("levee_terminee") : t("levee_cours")}
+          </div>
+          <div style={{ color: complet ? C.texte : "white", fontSize: "26px", fontWeight: 800, marginBottom: "2px" }}>{bienSafe.rendementBrut}</div>
+          <div style={{ color: complet ? C.texteSec : "rgba(255,255,255,.8)", fontSize: "12px" }}>{t("rendement_brut_label")}</div>
         </div>
-        <div style={{ color: complet ? C.texte : "white", fontSize: "26px", fontWeight: 800, marginBottom: "2px" }}>{bien.rendementBrut}</div>
-        <div style={{ color: complet ? C.texteSec : "rgba(255,255,255,.8)", fontSize: "12px" }}>{t("rendement_brut_label")}</div>
-      </div>
-      <div style={{ padding: "18px 20px" }}>
-        <div style={{ marginBottom: "14px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
-            <span style={{ color: C.texteSec, fontSize: "12px" }}>{t("progression")}</span>
-            <span style={{ color: C.turquoise, fontSize: "12px", fontWeight: 700 }}>{pct}%</span>
-          </div>
-          <div style={{ background: C.grisBord, borderRadius: "4px", height: "7px" }}>
-            <div style={{ background: pct >= 95 ? "#E24B4A" : C.turquoise, height: "100%", borderRadius: "4px", width: `${pct}%` }} />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "5px" }}>
-            <span style={{ color: C.texteTert, fontSize: "10px" }}>{bien.tokensTotal - bien.tokensDispo} {t("vendus")}</span>
-            <span style={{ color: C.texteTert, fontSize: "10px" }}>{bien.tokensDispo} {t("restants")}</span>
-          </div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "14px" }}>
-          {[
-            { label: t("prix_token"), val: `${bien.prixToken}€` },
-            { label: t("tokens_dispo"), val: String(bien.tokensDispo) },
-            { label: t("occupation"), val: bien.occupation },
-            { label: t("revenu_estime"), val: bien.revenuEstime },
-          ].map((m, i) => (
-            <div key={i} style={{ background: C.gris, borderRadius: "6px", padding: "10px" }}>
-              <div style={{ color: C.texteTert, fontSize: "9px", marginBottom: "3px" }}>{m.label}</div>
-              <div style={{ color: C.texte, fontSize: "13px", fontWeight: 700 }}>{m.val}</div>
+        <div style={{ padding: "18px 20px" }}>
+          <div style={{ marginBottom: "14px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
+              <span style={{ color: C.texteSec, fontSize: "12px" }}>{t("progression")}</span>
+              <span style={{ color: C.turquoise, fontSize: "12px", fontWeight: 700 }}>{pct}%</span>
             </div>
-          ))}
-        </div>
-        {!complet && (
-          <div style={{ background: C.turqLight, borderRadius: "8px", padding: "12px", marginBottom: "14px" }}>
-            <div style={{ color: C.turqDark, fontSize: "11px", fontWeight: 600, marginBottom: "8px" }}>{t("simuler")}</div>
-            <div style={{ marginBottom: "8px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                <span style={{ color: C.texteSec, fontSize: "11px" }}>{t("montant")}</span>
-                <span style={{ color: C.turquoise, fontSize: "12px", fontWeight: 700 }}>{montant}€</span>
-              </div>
-              <input type="range" min={bien.prixToken} max={bien.tokensDispo * bien.prixToken} step={bien.prixToken} value={montant}
-                onChange={e => setMontant(Number(e.target.value))}
-                style={{ width: "100%", accentColor: C.turquoise }} />
+            <div style={{ background: C.grisBord, borderRadius: "4px", height: "7px" }}>
+              <div style={{ background: pct >= 95 ? "#E24B4A" : C.turquoise, height: "100%", borderRadius: "4px", width: `${pct}%` }} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-              <div style={{ background: "white", borderRadius: "6px", padding: "8px", textAlign: "center" }}>
-                <div style={{ color: C.texteTert, fontSize: "9px" }}>{t("tokens_acquis")}</div>
-                <div style={{ color: C.texte, fontSize: "14px", fontWeight: 700 }}>{tokensAchat}</div>
-              </div>
-              <div style={{ background: "white", borderRadius: "6px", padding: "8px", textAlign: "center" }}>
-                <div style={{ color: C.texteTert, fontSize: "9px" }}>{t("revenu_annuel")}</div>
-                <div style={{ color: C.turquoise, fontSize: "14px", fontWeight: 700 }}>{Math.round(rendementAnnuel)}€</div>
-              </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "5px" }}>
+              <span style={{ color: C.texteTert, fontSize: "10px" }}>{bienSafe.tokensTotal - bienSafe.tokensDispo} {t("vendus")}</span>
+              <span style={{ color: C.texteTert, fontSize: "10px" }}>{bienSafe.tokensDispo} {t("restants")}</span>
             </div>
           </div>
-        )}
-        {complet ? (
-          <div>
-            <div style={{ background: C.gris, color: C.texteTert, padding: "12px", borderRadius: "8px", fontSize: "12px", textAlign: "center", marginBottom: "10px" }}>{t("bien_complet")}</div>
-            <Link href={`/${locale}/kyc`} style={{ display: "block", background: C.turquoise, color: "white", padding: "12px", borderRadius: "8px", fontSize: "13px", textAlign: "center", fontWeight: 600, textDecoration: "none" }}>
-              {t("liste_attente_btn")}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "14px" }}>
+            {[
+              { label: t("prix_token"), val: `${bienSafe.prixToken}€` },
+              { label: t("tokens_dispo"), val: String(bienSafe.tokensDispo) },
+              { label: t("occupation"), val: bienSafe.occupation },
+              { label: t("revenu_estime"), val: bienSafe.revenuEstime },
+            ].map((m, i) => (
+              <div key={i} style={{ background: C.gris, borderRadius: "6px", padding: "10px" }}>
+                <div style={{ color: C.texteTert, fontSize: "9px", marginBottom: "3px" }}>{m.label}</div>
+                <div style={{ color: C.texte, fontSize: "13px", fontWeight: 700 }}>{m.val}</div>
+              </div>
+            ))}
+          </div>
+          {!complet && (
+            <div style={{ background: C.turqLight, borderRadius: "8px", padding: "12px", marginBottom: "14px" }}>
+              <div style={{ color: C.turqDark, fontSize: "11px", fontWeight: 600, marginBottom: "8px" }}>{t("simuler")}</div>
+              <div style={{ marginBottom: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                  <span style={{ color: C.texteSec, fontSize: "11px" }}>{t("montant")}</span>
+                  <span style={{ color: C.turquoise, fontSize: "12px", fontWeight: 700 }}>{montant}€</span>
+                </div>
+                <input type="range" min={bienSafe.prixToken} max={bienSafe.tokensDispo * bienSafe.prixToken} step={bienSafe.prixToken} value={montant}
+                  onChange={e => setMontant(Number(e.target.value))}
+                  style={{ width: "100%", accentColor: C.turquoise }} />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                <div style={{ background: "white", borderRadius: "6px", padding: "8px", textAlign: "center" }}>
+                  <div style={{ color: C.texteTert, fontSize: "9px" }}>{t("tokens_acquis")}</div>
+                  <div style={{ color: C.texte, fontSize: "14px", fontWeight: 700 }}>{tokensAchat}</div>
+                </div>
+                <div style={{ background: "white", borderRadius: "6px", padding: "8px", textAlign: "center" }}>
+                  <div style={{ color: C.texteTert, fontSize: "9px" }}>{t("revenu_annuel")}</div>
+                  <div style={{ color: C.turquoise, fontSize: "14px", fontWeight: 700 }}>{Math.round(rendementAnnuel)}€</div>
+                </div>
+              </div>
+            </div>
+          )}
+          {complet ? (
+            <div>
+              <div style={{ background: C.gris, color: C.texteTert, padding: "12px", borderRadius: "8px", fontSize: "12px", textAlign: "center", marginBottom: "10px" }}>{t("bien_complet")}</div>
+              <Link href={`/${locale}/kyc`} style={{ display: "block", background: C.turquoise, color: "white", padding: "12px", borderRadius: "8px", fontSize: "13px", textAlign: "center", fontWeight: 600, textDecoration: "none" }}>
+                {t("liste_attente_btn")}
+              </Link>
+            </div>
+          ) : (
+            <Link href={`/${locale}/kyc`} style={{ display: "block", background: C.turquoise, color: "white", padding: "14px", borderRadius: "8px", fontSize: "14px", textAlign: "center", fontWeight: 700, textDecoration: "none" }}>
+              {t("investir_btn")}
             </Link>
-          </div>
-        ) : (
-          <Link href={`/${locale}/kyc`} style={{ display: "block", background: C.turquoise, color: "white", padding: "14px", borderRadius: "8px", fontSize: "14px", textAlign: "center", fontWeight: 700, textDecoration: "none" }}>
-            {t("investir_btn")}
-          </Link>
-        )}
-        <p style={{ color: C.texteTert, fontSize: "10px", textAlign: "center", marginTop: "10px", lineHeight: 1.5 }}>
-          {t("kyc_requis")} {bien.prixToken}€ · {t("risque")}
-        </p>
+          )}
+          <p style={{ color: C.texteTert, fontSize: "10px", textAlign: "center", marginTop: "10px", lineHeight: 1.5 }}>
+            {t("kyc_requis")} {bienSafe.prixToken}€ · {t("risque")}
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.gris, minHeight: "100vh" }}>
@@ -176,7 +187,7 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
       </nav>
 
       <section style={{ position: "relative", height: isMobile ? "280px" : "420px", overflow: "hidden" }}>
-        <Image src={bien.photo} alt={bien.nom} fill sizes="100vw" style={{ objectFit: "cover" }} priority />
+        <Image src={bienSafe.photo} alt={bienSafe.nom} fill sizes="100vw" style={{ objectFit: "cover" }} priority />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.8) 0%, rgba(0,0,0,.3) 60%, transparent 100%)" }} />
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: isMobile ? "20px 16px" : "32px" }}>
           <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -184,20 +195,21 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
                 <Link href={`/${locale}/immobilier`} style={{ color: "rgba(255,255,255,.7)", fontSize: "11px", textDecoration: "none" }}>Immobilier</Link>
                 <span style={{ color: "rgba(255,255,255,.4)" }}>›</span>
-                <span style={{ color: "rgba(255,255,255,.7)", fontSize: "11px" }}>{bien.ile}</span>
+                <span style={{ color: "rgba(255,255,255,.7)", fontSize: "11px" }}>{bienSafe.ile}</span>
                 <span style={{ color: "rgba(255,255,255,.4)" }}>›</span>
-                <span style={{ color: C.turquoise, fontSize: "11px" }}>{bien.nom}</span>
+                <span style={{ color: C.turquoise, fontSize: "11px" }}>{bienSafe.nom}</span>
               </div>
             )}
             <div style={{ display: "flex", gap: "6px", marginBottom: "10px", flexWrap: "wrap" }}>
-              <span style={{ background: bien.tagColor, color: "white", fontSize: "9px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>{bien.tag}</span>
-              <span style={{ background: complet ? "#444" : "#0F6E56", color: "white", fontSize: "9px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>{bien.statut}</span>
-              {!isMobile && <span style={{ background: "rgba(255,255,255,.15)", color: "white", fontSize: "9px", padding: "3px 10px", borderRadius: "20px" }}>{bien.typeBail}</span>}
+              {/* ✅ Pattern B appliqué */}
+              <span style={{ background: bienSafe.tagColor, color: "white", fontSize: "9px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>{bienTag}</span>
+              <span style={{ background: complet ? "#444" : "#0F6E56", color: "white", fontSize: "9px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>{bienSafe.statut}</span>
+              {!isMobile && <span style={{ background: "rgba(255,255,255,.15)", color: "white", fontSize: "9px", padding: "3px 10px", borderRadius: "20px" }}>{bienTypeBail}</span>}
             </div>
-            <h1 style={{ color: "white", fontSize: isMobile ? "22px" : "clamp(24px, 4vw, 40px)", fontWeight: 800, margin: "0 0 8px", letterSpacing: "-.5px" }}>{bien.nom}</h1>
+            <h1 style={{ color: "white", fontSize: isMobile ? "22px" : "clamp(24px, 4vw, 40px)", fontWeight: 800, margin: "0 0 8px", letterSpacing: "-.5px" }}>{bienSafe.nom}</h1>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-              <span style={{ color: "rgba(255,255,255,.8)", fontSize: "12px" }}>📍 {bien.ile} · {bien.region}</span>
-              <span style={{ color: C.turquoise, fontSize: isMobile ? "18px" : "22px", fontWeight: 800 }}>{bien.rendementBrut}</span>
+              <span style={{ color: "rgba(255,255,255,.8)", fontSize: "12px" }}>📍 {bienSafe.ile} · {bienSafe.region}</span>
+              <span style={{ color: C.turquoise, fontSize: isMobile ? "18px" : "22px", fontWeight: 800 }}>{bienSafe.rendementBrut}</span>
               <span style={{ color: "rgba(255,255,255,.6)", fontSize: "11px" }}>{t("rendement_brut_label")}</span>
             </div>
           </div>
@@ -207,24 +219,27 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "20px 16px 100px" : "32px 24px" }}>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr" : "1fr 360px", gap: "24px", alignItems: "start" }}>
           <div>
-            {isMobile && <CarteInvestissement />}
+            {/* ✅ Appel de fonction directe — évite l'erreur composant */}
+            {isMobile && CarteInvestissement()}
 
             <div style={{ background: "white", borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "20px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.turquoise, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px" }}>{t("a_propos")}</div>
-              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: "0 0 16px" }}>{bien.description}</p>
+              {/* ✅ Pattern B */}
+              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: "0 0 16px" }}>{bienDescription}</p>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)", gap: "10px" }}>
                 {[
-                  { label: t("surface"), val: bien.surface, icon: "📐" },
-                  { label: t("caracteristiques"), val: bien.pieces, icon: "🏠" },
-                  { label: t("type_bail"), val: bien.typeBail, icon: "📋" },
-                  { label: t("construction"), val: String(bien.anneeConstruction), icon: "🏗️" },
-                  { label: t("classe_energie"), val: bien.classEnergie, icon: "⚡" },
-                  { label: t("gestionnaire"), val: bien.gestionnaire, icon: "👤" },
-                ].map((c, i) => (
+                  { label: t("surface"), val: bienSafe.surface, icon: "📐" },
+                  { label: t("caracteristiques"), val: bienPieces, icon: "🏠" },
+                  { label: t("type_bail"), val: bienTypeBail, icon: "📋" },
+                  { label: t("construction"), val: String(bienSafe.anneeConstruction), icon: "🏗️" },
+                  { label: t("classe_energie"), val: bienSafe.classEnergie, icon: "⚡" },
+                  { label: t("gestionnaire"), val: bienSafe.gestionnaire, icon: "👤" },
+                ].map((item, i) => (
                   <div key={i} style={{ background: C.gris, borderRadius: "8px", padding: "10px" }}>
-                    <div style={{ fontSize: "14px", marginBottom: "4px" }}>{c.icon}</div>
-                    <div style={{ color: C.texteTert, fontSize: "9px", textTransform: "uppercase", letterSpacing: ".08em", marginBottom: "2px" }}>{c.label}</div>
-                    <div style={{ color: C.texte, fontSize: "11px", fontWeight: 600 }}>{c.val}</div>
+                    <div style={{ fontSize: "14px", marginBottom: "4px" }}>{item.icon}</div>
+                    <div style={{ color: C.texteTert, fontSize: "9px", textTransform: "uppercase", letterSpacing: ".08em", marginBottom: "2px" }}>{item.label}</div>
+                    {/* ✅ Renommé 'item' pour éviter conflit avec variable 'c' de CarteLeaflet */}
+                    <div style={{ color: C.texte, fontSize: "11px", fontWeight: 600 }}>{item.val}</div>
                   </div>
                 ))}
               </div>
@@ -234,14 +249,15 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
               <div style={{ color: C.turquoise, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>{t("performance")}</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px", marginBottom: "16px" }}>
                 {[
-                  { label: t("rendement_brut"), val: bien.rendementBrut, color: C.turquoise },
-                  { label: t("taux_occupation"), val: bien.occupation, color: "#0F6E56" },
-                  { label: t("revenu_estime"), val: bien.revenuEstime, color: C.texte },
-                  { label: t("mode_locatif"), val: bien.locatif, color: C.texte },
-                ].map((p, i) => (
+                  { label: t("rendement_brut"), val: bienSafe.rendementBrut, color: C.turquoise },
+                  { label: t("taux_occupation"), val: bienSafe.occupation, color: "#0F6E56" },
+                  { label: t("revenu_estime"), val: bienSafe.revenuEstime, color: C.texte },
+                  { label: t("mode_locatif"), val: bienLocatif, color: C.texte },
+                ].map((perf, i) => (
                   <div key={i} style={{ background: C.turqLight, borderRadius: "8px", padding: "12px" }}>
-                    <div style={{ color: C.texteTert, fontSize: "10px", marginBottom: "4px" }}>{p.label}</div>
-                    <div style={{ color: p.color, fontSize: "15px", fontWeight: 700 }}>{p.val}</div>
+                    <div style={{ color: C.texteTert, fontSize: "10px", marginBottom: "4px" }}>{perf.label}</div>
+                    {/* ✅ Renommé 'perf' pour éviter conflit avec variable 'p' */}
+                    <div style={{ color: perf.color, fontSize: "15px", fontWeight: 700 }}>{perf.val}</div>
                   </div>
                 ))}
               </div>
@@ -259,8 +275,8 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
 
             <div style={{ background: "white", borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "20px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.turquoise, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px" }}>{t("localisation")}</div>
-              <p style={{ color: C.texteSec, fontSize: "13px", marginBottom: "12px" }}>{bien.adresse}</p>
-              <CarteLeaflet biens={[bien]} onBienClick={() => {}} />
+              <p style={{ color: C.texteSec, fontSize: "13px", marginBottom: "12px" }}>{bienSafe.adresse}</p>
+              <CarteLeaflet biens={[bien] as never} onBienClick={() => {}} />
             </div>
 
             <div style={{ background: "white", borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "20px" : "28px", marginBottom: "16px" }}>
@@ -291,7 +307,7 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
             <div style={{ background: "#FFFBEB", borderRadius: "12px", border: "1px solid #FCD34D44", padding: isMobile ? "16px" : "24px", marginBottom: "16px" }}>
               <div style={{ color: "#92400E", fontSize: "12px", fontWeight: 700, marginBottom: "10px" }}>{t("avertissements")}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                {risques.map((r, i) => (
+                {risques.map((r: string, i: number) => (
                   <div key={i} style={{ display: "flex", gap: "6px", fontSize: "12px", color: "#92400E" }}>
                     <span style={{ flexShrink: 0 }}>›</span><span>{r}</span>
                   </div>
@@ -301,7 +317,7 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
 
             {autresBiens.length > 0 && (
               <div style={{ background: "white", borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "20px" : "28px" }}>
-                <div style={{ color: C.turquoise, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px" }}>{t("aussi_en")} {bien.ile}</div>
+                <div style={{ color: C.turquoise, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px" }}>{t("aussi_en")} {bienSafe.ile}</div>
                 <h3 style={{ color: C.texte, fontSize: "15px", fontWeight: 700, margin: "0 0 14px" }}>{t("autres_biens")}</h3>
                 <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(autresBiens.length, 3)}, 1fr)`, gap: "10px" }}>
                   {autresBiens.map(b => (
@@ -324,14 +340,14 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
 
           {!isMobile && (
             <div style={{ position: "sticky", top: "88px" }}>
-              <CarteInvestissement />
+              {CarteInvestissement()}
               <div style={{ background: "white", borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: "20px", marginBottom: "16px" }}>
                 <div style={{ color: C.turquoise, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "12px" }}>{t("gestionnaire_label")}</div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
                   <div style={{ width: "38px", height: "38px", background: C.turqPale, borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🏢</div>
                   <div>
-                    <div style={{ color: C.texte, fontSize: "13px", fontWeight: 600 }}>{bien.gestionnaire}</div>
-                    <div style={{ color: C.texteTert, fontSize: "11px" }}>{bien.ile}</div>
+                    <div style={{ color: C.texte, fontSize: "13px", fontWeight: 600 }}>{bienSafe.gestionnaire}</div>
+                    <div style={{ color: C.texteTert, fontSize: "11px" }}>{bienSafe.ile}</div>
                   </div>
                 </div>
                 <div style={{ color: C.texteSec, fontSize: "12px", lineHeight: 1.6 }}>{t("gestionnaire_desc")}</div>
@@ -353,7 +369,7 @@ export default function BienPage({ params }: { params: Promise<{ slug: string }>
         <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "white", borderTop: `0.5px solid ${C.grisBord}`, padding: "12px 16px", zIndex: 150, display: "flex", gap: "10px", alignItems: "center" }}>
           <div style={{ flex: 1 }}>
             <div style={{ color: C.texteTert, fontSize: "10px" }}>{t("rendement_mobile")}</div>
-            <div style={{ color: C.turquoise, fontSize: "18px", fontWeight: 800 }}>{bien.rendementBrut}</div>
+            <div style={{ color: C.turquoise, fontSize: "18px", fontWeight: 800 }}>{bienSafe.rendementBrut}</div>
           </div>
           <Link href={`/${locale}/kyc`} style={{ background: C.turquoise, color: "white", padding: "13px 24px", borderRadius: "8px", fontSize: "14px", fontWeight: 700, textDecoration: "none", flexShrink: 0 }}>
             {complet ? t("liste_attente_mobile") : t("investir_mobile")}

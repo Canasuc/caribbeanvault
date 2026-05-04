@@ -7,9 +7,11 @@ import { useRouter, usePathname } from "next/navigation";
 import { LogoNuit } from "@/components/Logo";
 import Footer from "@/components/Footer";
 import NavbarAuth from "@/components/NavbarAuth";
-import { OEUVRES, getOeuvre } from "@/lib/oeuvres";
+import { OEUVRES, getOeuvre, type Oeuvre} from "@/lib/oeuvres";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { createBrowserClient } from "@supabase/ssr";
+
+type L = "fr" | "en" | "es";
 
 const C = {
   nuit:"#0D0518",violet:"#1A0A2E",prune:"#2D1A4A",mauve:"#C084FC",
@@ -51,7 +53,7 @@ export default function OeuvrePage({ params }: { params: Promise<{ slug: string 
       if (!session) window.location.href = `/${locale}/login`;
       else setAuthChecked(true);
     });
-  }, []);
+  }, [locale]);
 
   if (!authChecked) {
     return (
@@ -231,22 +233,26 @@ export default function OeuvrePage({ params }: { params: Promise<{ slug: string 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "20px 16px 40px" : "40px 24px" }}>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr" : "2fr 1fr", gap: "24px", alignItems: "start" }}>
           <div>
-            {isMobile && <SidebarContent />}
+           {isMobile && SidebarContent()}
 
             <div style={{ background: C.violet, borderRadius: "8px", border: `0.5px solid ${C.prune}`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px", fontFamily: "system-ui" }}>{t("l_oeuvre")}</div>
-              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: 0, fontFamily: "system-ui" }}>{oeuvre.description}</p>
+              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: 0, fontFamily: "system-ui" }}>
+                {oeuvre.description[locale as L] ?? oeuvre.description.fr}
+              </p>
             </div>
 
             <div style={{ background: C.violet, borderRadius: "8px", border: `0.5px solid ${C.prune}`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px", fontFamily: "system-ui" }}>{t("histoire_oeuvre")}</div>
-              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: 0, fontFamily: "system-ui" }}>{oeuvre.histoire}</p>
+              <p style={{ color: C.texteSec, fontSize: "14px", lineHeight: 1.9, margin: 0, fontFamily: "system-ui" }}>
+                {oeuvre.histoire[locale as L] ?? oeuvre.histoire.fr}
+              </p>
             </div>
 
             <div style={{ background: C.violet, borderRadius: "8px", border: `0.5px solid ${C.prune}`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "system-ui" }}>{t("palette")}</div>
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                {oeuvre.couleurs.map((c, i) => (
+                {oeuvre.couleurs.map((c: string, i: number) => (
                   <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
                     <div style={{ width: isMobile ? "40px" : "56px", height: isMobile ? "40px" : "56px", borderRadius: "50%", background: c, border: `2px solid ${C.prune}`, boxShadow: `0 0 12px ${c}40` }} />
                     <div style={{ color: C.texteTert, fontSize: "9px", fontFamily: "system-ui" }}>{c}</div>
@@ -263,17 +269,23 @@ export default function OeuvrePage({ params }: { params: Promise<{ slug: string 
                 </div>
                 <div>
                   <div style={{ color: C.orPale, fontSize: "16px", fontWeight: 600 }}>{oeuvre.artiste}</div>
-                  <div style={{ color: C.texteSec, fontSize: "12px", fontFamily: "system-ui", marginTop: "2px" }}>{oeuvre.origine} · {oeuvre.style}</div>
+                  <div style={{ color: C.texteSec, fontSize: "12px", fontFamily: "system-ui", marginTop: "2px" }}>
+                    {oeuvre.origine} · {oeuvre.style[locale as L] ?? oeuvre.style.fr}
+                  </div>
                 </div>
               </div>
-              <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.8, margin: "0 0 14px", fontFamily: "system-ui" }}>{oeuvre.artisteBio}</p>
+              <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.8, margin: "0 0 14px", fontFamily: "system-ui" }}>
+                {oeuvre.artisteBio[locale as L] ?? oeuvre.artisteBio.fr}
+              </p>
               <div style={{ background: `${C.mauve}15`, border: `0.5px solid ${C.mauve}30`, borderRadius: "6px", padding: "10px 12px", marginBottom: "14px" }}>
                 <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".1em", marginBottom: "4px", fontFamily: "system-ui" }}>{t("actualite")}</div>
-                <div style={{ color: C.texte, fontSize: "12px", fontFamily: "system-ui" }}>{oeuvre.artisteActu}</div>
+                <div style={{ color: C.texte, fontSize: "12px", fontFamily: "system-ui" }}>
+                  {oeuvre.artisteActu[locale as L] ?? oeuvre.artisteActu.fr}
+                </div>
               </div>
               <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, letterSpacing: ".15em", textTransform: "uppercase", marginBottom: "8px", fontFamily: "system-ui" }}>{t("expositions")}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                {oeuvre.artisteExpositions.map((e, i) => (
+                {oeuvre.artisteExpositions.map((e: string, i: number) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <span style={{ color: C.or, fontSize: "12px", flexShrink: 0 }}>★</span>
                     <span style={{ color: C.texteSec, fontSize: "12px", fontFamily: "system-ui" }}>{e}</span>
@@ -285,7 +297,7 @@ export default function OeuvrePage({ params }: { params: Promise<{ slug: string 
             <div style={{ background: C.violet, borderRadius: "8px", border: `0.5px solid ${C.prune}`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "system-ui" }}>{t("expositions_oeuvre")}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                {oeuvre.expositionsOeuvre.map((e, i) => (
+                {oeuvre.expositionsOeuvre.map((e: string, i: number) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "8px", padding: "10px 12px", background: C.prune, borderRadius: "4px" }}>
                     <span style={{ color: C.mauve, fontSize: "12px", flexShrink: 0 }}>◈</span>
                     <span style={{ color: C.texteSec, fontSize: "12px", fontFamily: "system-ui" }}>{e}</span>
@@ -296,12 +308,14 @@ export default function OeuvrePage({ params }: { params: Promise<{ slug: string 
 
             <div style={{ background: C.violet, borderRadius: "8px", border: `0.5px solid ${C.prune}`, padding: isMobile ? "18px" : "28px", marginBottom: "16px" }}>
               <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "10px", fontFamily: "system-ui" }}>{t("droits")}</div>
-              <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.8, margin: 0, fontFamily: "system-ui" }}>{oeuvre.droits}</p>
+              <p style={{ color: C.texteSec, fontSize: "13px", lineHeight: 1.8, margin: 0, fontFamily: "system-ui" }}>
+                {oeuvre.droits[locale as L] ?? oeuvre.droits.fr}
+              </p>
             </div>
 
             <div style={{ background: "#FFFBEB", borderRadius: "8px", border: "1px solid #FCD34D44", padding: isMobile ? "16px" : "20px", marginBottom: "16px" }}>
               <div style={{ color: "#92400E", fontSize: "12px", fontWeight: 700, marginBottom: "8px", fontFamily: "system-ui" }}>{t("avertissements")}</div>
-              {risques.map((r, i) => (
+              {risques.map((r: string, i: number) => (
                 <div key={i} style={{ display: "flex", gap: "6px", fontSize: "11px", color: "#92400E", fontFamily: "system-ui", marginBottom: "4px" }}>
                   <span style={{ flexShrink: 0 }}>›</span><span>{r}</span>
                 </div>
@@ -313,7 +327,7 @@ export default function OeuvrePage({ params }: { params: Promise<{ slug: string 
                 <div style={{ color: C.mauve, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px", fontFamily: "system-ui" }}>{t("meme_territoire")}</div>
                 <h3 style={{ color: C.orPale, fontSize: "16px", fontWeight: 600, margin: "0 0 14px", fontFamily: "system-ui" }}>{t("autres_oeuvres")}</h3>
                 <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(autresOeuvres.length, 3)}, 1fr)`, gap: "10px" }}>
-                  {autresOeuvres.map(o => (
+                  {autresOeuvres.map((o: Oeuvre) => (
                     <Link key={o.slug} href={`/${locale}/art/${o.slug}`} style={{ textDecoration: "none" }}>
                       <div style={{ borderRadius: "6px", overflow: "hidden", border: `0.5px solid ${C.prune}`, transition: "transform .2s" }}
                         onMouseEnter={e => (e.currentTarget.style.transform = "translateY(-2px)")}
@@ -340,7 +354,7 @@ export default function OeuvrePage({ params }: { params: Promise<{ slug: string 
 
           {!isMobile && (
             <div style={{ position: "sticky", top: "88px" }}>
-              <SidebarContent />
+              {SidebarContent()}
             </div>
           )}
         </div>

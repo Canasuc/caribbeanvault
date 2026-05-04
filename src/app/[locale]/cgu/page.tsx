@@ -20,11 +20,24 @@ function Section({titre,children}:{titre:string;children:React.ReactNode}){
   return(<div style={{marginBottom:"28px"}}><h2 style={{color:C.navy,fontSize:"15px",fontWeight:700,margin:"0 0 10px",paddingBottom:"8px",borderBottom:`1px solid ${C.beigeB}`}}>{titre}</h2><div style={{color:C.texteSec,fontSize:"13px",lineHeight:1.8}}>{children}</div></div>);
 }
 
+interface CguData {
+  badge: string; titre: string; date: string; important: string;
+  s1_titre: string; s1: string;
+  s2_titre: string; s2: string;
+  s3_titre: string; s3_intro: string; s3_items: string[];
+  s4_titre: string; s4_intro: string; s4_items: string[];
+  s5_titre: string; s5_intro: string; s5_items: string[]; s5_note: string;
+  s6_titre: string; s6_intro: string; s6_items: string[];
+  s7_titre: string; s7: string;
+  s8_titre: string; s8_items: string[];
+  s9_titre: string; s9: string;
+  s10_titre: string; s10: string;
+}
 export default function CGUPage(){
   const t=useTranslations("legal");
   const locale=useLocale();
   const {isMobile}=useBreakpoint();
-  const cgu=t.raw("cgu") as any;
+  const cgu = t.raw("cgu") as CguData;
   const NAV_LINKS=[{label:t("nav_mentions"),href:`/${locale}/mentions-legales`},{label:t("nav_confidentialite"),href:`/${locale}/confidentialite`},{label:t("nav_contact"),href:`/${locale}/contact`},{label:t("nav_accueil"),href:`/${locale}`}];
   return(
     <main style={{fontFamily:"system-ui",background:C.beige,minHeight:"100vh"}}>

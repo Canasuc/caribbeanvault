@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useTranslations, useLocale } from "next-intl";
+import type { User } from "@supabase/supabase-js";
 
 interface NavbarAuthProps {
   buttonBg?: string;
@@ -19,8 +20,8 @@ export default function NavbarAuth({
 }: NavbarAuthProps) {
   const t = useTranslations("nav");
   const locale = useLocale();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+const [user, setUser] = useState<User | null>(null);
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const supabase = createBrowserClient(

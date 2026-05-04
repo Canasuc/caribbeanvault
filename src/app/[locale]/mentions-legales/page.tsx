@@ -20,13 +20,40 @@ function Section({titre,children}:{titre:string;children:React.ReactNode}){
   return(<div style={{marginBottom:"28px"}}><h2 style={{color:C.navy,fontSize:"15px",fontWeight:700,margin:"0 0 10px",paddingBottom:"8px",borderBottom:`1px solid ${C.beigeB}`}}>{titre}</h2><div style={{color:C.texteSec,fontSize:"13px",lineHeight:1.8}}>{children}</div></div>);
 }
 
+interface S1Data {
+  raison_label: string; raison_val: string;
+  forme_label: string; forme_val: string;
+  capital_label: string; capital_val: string;
+  siege_label: string; siege_val: string;
+  email_label: string; email_val: string;
+  site_label: string; site_val: string;
+}
+
+interface S2Data {
+  hebergeur_label: string; hebergeur_val: string;
+  adresse_label: string; adresse_val: string;
+  site_label: string; site_val: string;
+}
+
+interface MentionsData {
+  badge: string; titre: string; date: string;
+  s1_titre: string; s1: S1Data;
+  s2_titre: string; s2: S2Data;
+  s3_titre: string; s3_p1: string; s3_p2: string; s3_p3: string;
+  s4_titre: string; s4_p1: string; s4_p2: string;
+  s5_titre: string; s5_p1: string; s5_p2: string;
+  s6_titre: string; s6_p1: string; s6_lien: string; s6_p2: string; s6_email: string;
+  s7_titre: string; s7: string;
+  s8_titre: string; s8: string;
+}
+
 export default function MentionsLegalesPage(){
-  const t=useTranslations("legal");
-  const locale=useLocale();
-  const {isMobile}=useBreakpoint();
-  const m=t.raw("mentions") as any;
-  const s1=m.s1 as any;
-  const s2=m.s2 as any;
+  const t = useTranslations("legal");
+  const locale = useLocale();
+  const { isMobile } = useBreakpoint();
+  const m = t.raw("mentions") as MentionsData;
+  const s1 = m.s1; // ✅ déjà typé via MentionsData — pas besoin de as any
+  const s2 = m.s2; // ✅ idem
   const NAV_LINKS=[{label:t("nav_cgu"),href:`/${locale}/cgu`},{label:t("nav_confidentialite"),href:`/${locale}/confidentialite`},{label:t("nav_contact"),href:`/${locale}/contact`},{label:t("nav_accueil"),href:`/${locale}`}];
 
   return(

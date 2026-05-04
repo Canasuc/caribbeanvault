@@ -3,11 +3,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
-import { DISTILLERIES } from "@/lib/distilleries";
+import { DISTILLERIES, type Distillerie, type LocaleStr } from "@/lib/distilleries";
 import Footer from "@/components/Footer";
 import { LogoEmeraude } from "@/components/Logo";
 import NavbarAuth from "@/components/NavbarAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+
+type L = "fr" | "en" | "es";
 
 const C = {
   noir:"#0D2018",foret:"#0F3D2A",emeraude:"#0F5240",vert:"#1A6B5A",
@@ -111,7 +113,7 @@ export default function DistilleriesPage(){
           </div>
 
           <div style={{display:"grid",gridTemplateColumns:colsGrille,gap:"14px"}}>
-            {filtrees.map(d=>(
+            {filtrees.map((d:Distillerie)=>(
               <Link key={d.slug} href={`/${locale}/distilleries/${d.slug}`} style={{textDecoration:"none"}}
                 onMouseEnter={()=>setHovered(d.slug)}
                 onMouseLeave={()=>setHovered(null)}
@@ -140,16 +142,20 @@ export default function DistilleriesPage(){
                     </div>
                   </div>
                   <div style={{padding:"12px 14px"}}>
+                    {/* ✅ Pattern B — description et statut sont des LocaleStr */}
                     <div style={{color:C.gris,fontSize:"11px",lineHeight:1.6,marginBottom:"10px",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>
-                      {d.description}
+                      {d.description[locale as L] ?? d.description.fr}
                     </div>
                     <div style={{display:"flex",gap:"6px",flexWrap:"wrap",marginBottom:"10px"}}>
-                      {d.specialites.slice(0,isMobile?1:2).map((s,i)=>(
-                        <span key={i} style={{background:"#F0EBE1",color:C.texte,fontSize:"9px",padding:"2px 8px",borderRadius:"2px",fontWeight:500}}>{s.split("—")[0].trim()}</span>
+                      {d.specialites.slice(0,isMobile?1:2).map((s:LocaleStr,i:number)=>(
+                        <span key={i} style={{background:"#F0EBE1",color:C.texte,fontSize:"9px",padding:"2px 8px",borderRadius:"2px",fontWeight:500}}>
+                          {(s[locale as L] ?? s.fr).split("—")[0].trim()}
+                        </span>
                       ))}
                     </div>
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",borderTop:"0.5px solid #F0EBE1",paddingTop:"8px"}}>
-                      <div style={{color:C.gris,fontSize:"10px"}}>{d.statut}</div>
+                      {/* ✅ statut est aussi un LocaleStr */}
+                      <div style={{color:C.gris,fontSize:"10px"}}>{d.statut[locale as L] ?? d.statut.fr}</div>
                       <div style={{color:C.or,fontSize:"11px",fontWeight:700}}>{t("decouvrir")}</div>
                     </div>
                   </div>

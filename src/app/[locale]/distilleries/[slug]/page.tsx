@@ -3,24 +3,28 @@ import Link from "next/link";
 import { use } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
-import { DISTILLERIES, getDistillerie } from "@/lib/distilleries";
+import { DISTILLERIES, getDistillerie, type Distillerie, type LocaleStr } from "@/lib/distilleries";
 import Footer from "@/components/Footer";
 import { LogoEmeraude } from "@/components/Logo";
 import NavbarAuth from "@/components/NavbarAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+
+
+type L = "fr" | "en" | "es";
+type TFn = ReturnType<typeof useTranslations>;
 
 const C = {
   noir:"#0D2018",foret:"#0F3D2A",emeraude:"#0F5240",vert:"#1A6B5A",
   or:"#C8992A",orClair:"#D4B96A",orPale:"#F0E6C8",creme:"#F7F5F0",
   texte:"#2C1810",gris:"#6B7280",menthe:"#9FE1CB",
 };
-const locale = useLocale(); // "fr" | "en" | "es"
-type L = "fr" | "en" | "es";
 
 const LOCALES=[{code:"fr",label:"FR",flag:"🇫🇷"},{code:"en",label:"EN",flag:"🇬🇧"},{code:"es",label:"ES",flag:"🇪🇸"}];
 
 function LanguageSwitcher(){
-  const locale=useLocale();const router=useRouter();const pathname=usePathname();
+  const locale=useLocale();
+  const router=useRouter();
+  const pathname=usePathname();
   function switchLocale(l:string){const s=pathname.split("/");s[1]=l;router.push(s.join("/"));}
   return(
     <div style={{display:"flex",gap:"4px"}}>
@@ -33,7 +37,7 @@ function LanguageSwitcher(){
   );
 }
 
-function SidebarContent({d,isMobile,locale,t}:{d:any;isMobile:boolean;locale:string;t:any}){
+function SidebarContent({d,isMobile,locale,t}:{d:Distillerie;isMobile:boolean;locale:string;t:TFn}){
   return(
     <div style={{display:"flex",flexDirection:"column",gap:"14px",marginBottom:isMobile?"20px":"0"}}>
       <div style={{background:d.futsDisponibles>0?C.foret:"#F1EFE8",borderRadius:"8px",padding:"20px"}}>
@@ -136,7 +140,6 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
 
   return(
     <main style={{fontFamily:"system-ui, -apple-system, sans-serif",background:C.creme,minHeight:"100vh"}}>
-
       <nav style={{background:C.noir,borderBottom:`0.5px solid ${C.foret}`,padding:"0 16px",position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:"1100px",margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",height:"60px"}}>
           <Link href={`/${locale}`} style={{textDecoration:"none"}}>
@@ -178,7 +181,9 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
             )}
           </div>
           <h1 style={{color:C.orPale,fontSize:isMobile?"26px":"clamp(26px, 4vw, 48px)",fontWeight:300,lineHeight:1.15,margin:"0 0 10px",fontFamily:"Georgia, serif"}}>{d.nom}</h1>
-          <p style={{color:C.menthe,fontSize:isMobile?"13px":"15px",lineHeight:1.7,maxWidth:"580px",margin:"0 0 20px",opacity:.9}}>{d.description[locale as L] ?? d.description.fr}</p>
+          <p style={{color:C.menthe,fontSize:isMobile?"13px":"15px",lineHeight:1.7,maxWidth:"580px",margin:"0 0 20px",opacity:.9}}>
+            {d.description[locale as L] ?? d.description.fr}
+          </p>
           <div style={{display:"flex",gap:"0",flexWrap:"wrap",borderTop:`0.5px solid ${C.or}30`,paddingTop:"20px"}}>
             {STATS_DATA.map((s,i)=>(
               <div key={i} style={{paddingRight:isMobile?"16px":"32px",marginRight:isMobile?"16px":"32px",borderRight:i<3?`0.5px solid ${C.or}20`:"none",marginBottom:"8px"}}>
@@ -197,16 +202,18 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
 
             <div style={{background:"white",borderRadius:"8px",border:"1px solid #E8E2D6",padding:isMobile?"18px":"28px",marginBottom:"16px"}}>
               <div style={{color:C.or,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"10px"}}>{t("notre_histoire")}</div>
-              <p style={{color:C.gris,fontSize:"14px",lineHeight:1.9,margin:0}}>{d.histoire[locale as L] ?? d.histoire.fr}</p>
+              <p style={{color:C.gris,fontSize:"14px",lineHeight:1.9,margin:0}}>
+                {d.histoire[locale as L] ?? d.histoire.fr}
+              </p>
             </div>
 
             <div style={{background:"white",borderRadius:"8px",border:"1px solid #E8E2D6",padding:isMobile?"18px":"28px",marginBottom:"16px"}}>
               <div style={{color:C.or,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"14px"}}>{t("nos_rhums")}</div>
               <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
-                {d.specialites.map(s => s[locale as L] ?? s.fr)=>(
+                {d.specialites.map((s:LocaleStr,i:number)=>(
                   <div key={i} style={{display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",background:C.creme,borderRadius:"4px",borderLeft:`3px solid ${d.couleur}`}}>
                     <span style={{color:C.or,fontSize:"14px"}}>🥃</span>
-                    <span style={{color:C.texte,fontSize:"13px"}}>{s}</span>
+                    <span style={{color:C.texte,fontSize:"13px"}}>{s[locale as L] ?? s.fr}</span>
                   </div>
                 ))}
               </div>
@@ -215,10 +222,10 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
             <div style={{background:"white",borderRadius:"8px",border:"1px solid #E8E2D6",padding:isMobile?"18px":"28px",marginBottom:"16px"}}>
               <div style={{color:C.or,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"14px"}}>{t("nos_futs")}</div>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2, 1fr)":"repeat(auto-fit, minmax(200px, 1fr))",gap:"10px"}}>
-                {d.barriques.map(b => b[locale as L] ?? b.fr)=>(
+                {d.barriques.map((b:LocaleStr,i:number)=>(
                   <div key={i} style={{padding:"12px",background:C.foret,borderRadius:"4px",textAlign:"center"}}>
                     <div style={{fontSize:"18px",marginBottom:"6px"}}>🪵</div>
-                    <div style={{color:C.orClair,fontSize:"11px",fontWeight:500}}>{b}</div>
+                    <div style={{color:C.orClair,fontSize:"11px",fontWeight:500}}>{b[locale as L] ?? b.fr}</div>
                   </div>
                 ))}
               </div>
@@ -253,7 +260,7 @@ export default function DistilleriePage({params}:{params:Promise<{slug:string}>}
               {t("autres_distilleries")}
             </h2>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":`repeat(${Math.min(memeIle.length,3)}, 1fr)`,gap:"12px"}}>
-              {memeIle.map((autre:any)=>(
+              {memeIle.map((autre:Distillerie)=>(
                 <Link key={autre.slug} href={`/${locale}/distilleries/${autre.slug}`} style={{textDecoration:"none"}}>
                   <div style={{background:autre.couleur,borderRadius:"6px",padding:isMobile?"16px":"20px",transition:"transform .2s"}}
                     onMouseEnter={e=>(e.currentTarget.style.transform="translateY(-2px)")}

@@ -424,7 +424,7 @@ export default function ArtPage(){
         <div style={{maxWidth:"700px",margin:"0 auto",textAlign:"center"}}>
           <div style={{display:"flex",justifyContent:"center",gap:"12px",marginBottom:"20px"}}>
             <div style={{width:"32px",height:"0.5px",background:C.or,marginTop:"12px"}}/>
-            <span style={{color:C.or,fontSize:"28px",fontWeight:300}}>"</span>
+            <span style={{color:C.or,fontSize:"28px",fontWeight:300}}>{'"'}</span>
             <div style={{width:"32px",height:"0.5px",background:C.or,marginTop:"12px"}}/>
           </div>
           <p style={{color:C.lavande,fontSize:isMobile?"15px":"18px",fontWeight:300,lineHeight:1.7,fontStyle:"italic",margin:"0 0 16px"}}>{t("citation_texte")}</p>

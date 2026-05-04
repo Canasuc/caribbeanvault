@@ -117,10 +117,11 @@ export default function AgriculturePage(){
     "Complet":{bg:"#F1EFE8",color:"#444441"},
   };
 
-  function StatutBadge({statut}:{statut:string}){
-    const s=STATUTS_STYLES[statut]||STATUTS_STYLES["En levee"];
-    return(<span style={{background:s.bg,color:s.color,fontSize:"9px",fontWeight:700,padding:"2px 8px",borderRadius:"2px",letterSpacing:".08em",textTransform:"uppercase"}}>{t(`statuts.${statut}` as any)}</span>);
-  }
+function StatutBadge({statut}:{statut:string}){
+  const s=STATUTS_STYLES[statut]||STATUTS_STYLES["En levee"];
+  const key = `statuts.${statut}` as Parameters<typeof t>[0];
+  return(<span style={{background:s.bg,color:s.color,fontSize:"9px",fontWeight:700,padding:"2px 8px",borderRadius:"2px",letterSpacing:".08em",textTransform:"uppercase"}}>{t(key)}</span>);
+}
 
   function TerritoireCard({territoire,isOpen,onToggle,onFilter,parcellesCount,parcellesDispos}:{territoire:typeof TERRITOIRES_AGRI[0];isOpen:boolean;onToggle:()=>void;onFilter:()=>void;parcellesCount:number;parcellesDispos:number}){
     return(
@@ -290,7 +291,7 @@ export default function AgriculturePage(){
             <div style={{color:C.feuille,fontSize:"10px",fontWeight:700,letterSpacing:".2em",textTransform:"uppercase",marginBottom:"8px",fontFamily:"system-ui"}}>{t("carte_label")}</div>
             <h2 style={{color:C.texte,fontSize:isMobile?"20px":"26px",fontWeight:400,margin:"0 0 8px"}}>{t("carte_titre")}</h2>
           </div>
-          <CarteLeaflet biens={BIENS_LEAFLET as any} onBienClick={()=>{document.getElementById("parcelles")?.scrollIntoView({behavior:"smooth"});}}/>
+          <CarteLeaflet biens={BIENS_LEAFLET as never} onBienClick={()=>{document.getElementById("parcelles")?.scrollIntoView({behavior:"smooth"});}}/>
           <div style={{display:"flex",gap:"16px",marginTop:"12px",flexWrap:"wrap"}}>
             {[{color:C.feuille,label:t("legende_dispo")},{color:"#9CA3AF",label:t("legende_complet")}].map((l,i)=>(
               <div key={i} style={{display:"flex",alignItems:"center",gap:"6px",fontSize:"11px",color:C.texteSec,fontFamily:"system-ui"}}>
@@ -498,7 +499,7 @@ export default function AgriculturePage(){
                   </div>
                 </div>
                 <div style={{padding:"18px"}}>
-                  <div style={{color:C.feuille,fontSize:"20px",marginBottom:"8px",lineHeight:1}}>"</div>
+                  <div style={{color:C.feuille,fontSize:"20px",marginBottom:"8px",lineHeight:1}}>{'"'}</div>
                   <p style={{color:C.texteSec,fontSize:"13px",lineHeight:1.8,margin:0,fontFamily:"system-ui",fontStyle:"italic"}}>{tm.texte}</p>
                 </div>
               </div>

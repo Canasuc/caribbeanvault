@@ -20,11 +20,33 @@ function Section({titre,children}:{titre:string;children:React.ReactNode}){
   return(<div style={{marginBottom:"28px"}}><h2 style={{color:C.navy,fontSize:"15px",fontWeight:700,margin:"0 0 10px",paddingBottom:"8px",borderBottom:`1px solid ${C.beigeB}`}}>{titre}</h2><div style={{color:C.texteSec,fontSize:"13px",lineHeight:1.8}}>{children}</div></div>);
 }
 
+interface Finalite { fin: string; base: string; }
+interface Prestataire { nom: string; desc: string; }
+interface DureeItem { type: string; duree: string; }
+interface Droit { droit: string; desc: string; }
+interface CookieItem { type: string; desc: string; }
+
+interface ConfData {
+  badge: string; titre: string; date: string;
+  s1_titre: string; s1_societe: string; s1_lieu: string;
+  s1_dpo_label: string; s1_dpo: string; s1_engagement: string;
+  s2_titre: string; s2_inscription_label: string; s2_inscription: string;
+  s2_kyc_label: string; s2_kyc: string;
+  s2_usage_label: string; s2_usage: string;
+  s3_titre: string; s3_finalites: Finalite[];
+  s4_titre: string; s4_intro: string; s4_prestataires: Prestataire[]; s4_note: string;
+  s5_titre: string; s5_items: DureeItem[];
+  s6_titre: string; s6_intro: string; s6_droits: Droit[];
+  s6_contact: string; s6_email: string; s6_cnil: string; s6_cnil_url: string;
+  s7_titre: string; s7_items: CookieItem[]; s7_note: string;
+  s8_titre: string; s8_intro: string; s8_items: string[];
+}
+
 export default function ConfidentialitePage(){
   const t=useTranslations("legal");
   const locale=useLocale();
   const {isMobile}=useBreakpoint();
-  const c=t.raw("confidentialite") as any;
+  const c = t.raw("confidentialite") as ConfData;
   const NAV_LINKS=[{label:t("nav_mentions"),href:`/${locale}/mentions-legales`},{label:t("nav_cgu"),href:`/${locale}/cgu`},{label:t("nav_contact"),href:`/${locale}/contact`},{label:t("nav_accueil"),href:`/${locale}`}];
 
   return(

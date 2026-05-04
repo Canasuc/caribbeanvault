@@ -11,24 +11,22 @@ interface CarteLeafletProps {
 
 export default function CarteLeaflet({ biens, onBienClick }: CarteLeafletProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
+  const mapInstanceRef = useRef<import("leaflet").Map | null>(null);
 
-useEffect(() => {
-  if (!mapRef.current || mapInstanceRef.current) return;
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
 
-  import("leaflet").then(L => {
-    // Vérifie si le conteneur est déjà initialisé
-    if ((mapRef.current as any)._leaflet_id) return;
+    import("leaflet").then(L => {
+      const container = mapRef.current as HTMLDivElement & { _leaflet_id?: number };
+      if (container._leaflet_id) return;
 
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    });
+      delete (L.Icon.Default.prototype as L.Icon.Default & { _getIconUrl?: unknown })._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      });
 
-   
-      // Créer la carte centrée sur la Caraïbe
       const map = L.map(mapRef.current!, {
         center: [14.5, -61.0],
         zoom: 7,
@@ -36,17 +34,14 @@ useEffect(() => {
         scrollWheelZoom: true,
       });
 
-      // Tuiles OpenStreetMap
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 18,
       }).addTo(map);
 
-      // Marqueurs personnalisés pour chaque bien
       biens.forEach(bien => {
         const color = bien.tokensDispo === 0 ? "#9CA3AF" : "#0891B2";
 
-        // Icône personnalisée SVG
         const svgIcon = L.divIcon({
           html: `
             <div style="
@@ -72,7 +67,6 @@ useEffect(() => {
           { icon: svgIcon }
         ).addTo(map);
 
-        // Popup au survol
         const popupContent = `
           <div style="font-family: system-ui; min-width: 200px;">
             <div style="color: #0891B2; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">${bien.type}</div>
@@ -88,23 +82,22 @@ useEffect(() => {
               </div>
               <div style="font-size: 10px; color: #6B7280; margin-top: 3px;">${bien.tokensDispo === 0 ? "Complet" : `${bien.tokensDispo} tokens disponibles`}</div>
             </div>
-<button
- onclick="document.getElementById('selection').scrollIntoView({behavior:'smooth'}); window.dispatchEvent(new CustomEvent('filtreRegion', {detail: '${bien.ile}'}))"
-  style="
-    width: 100%; margin-top: 10px; padding: 8px;
-    background: #0891B2; color: white; border: none;
-    border-radius: 6px; font-size: 12px; font-weight: 600;
-    cursor: pointer;
-  "
->
-  Voir ce bien →
-</button>
-</div>
-    `;
+            <button
+              onclick="document.getElementById('selection').scrollIntoView({behavior:'smooth'}); window.dispatchEvent(new CustomEvent('filtreRegion', {detail: '${bien.ile}'}))"
+              style="
+                width: 100%; margin-top: 10px; padding: 8px;
+                background: #0891B2; color: white; border: none;
+                border-radius: 6px; font-size: 12px; font-weight: 600;
+                cursor: pointer;
+              "
+            >
+              Voir ce bien →
+            </button>
+          </div>
+        `;
 
         marker.bindPopup(popupContent, { maxWidth: 240 });
 
-        // Clic sur marqueur
         marker.on("click", () => {
           onBienClick(bien);
         });
@@ -119,12 +112,10 @@ useEffect(() => {
         mapInstanceRef.current = null;
       }
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Mettre à jour les marqueurs quand biens change
   useEffect(() => {
     if (!mapInstanceRef.current) return;
-    // On recharge simplement la carte si nécessaire
   }, [biens]);
 
   return (
