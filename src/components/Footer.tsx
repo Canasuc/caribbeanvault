@@ -1,10 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const t = useTranslations("footer");
-  const locale = useLocale();
+  const pathname = usePathname();
+  // ✅ Extraire le locale depuis le pathname — disponible identiquement SSR et client
+  const locale = pathname.split("/")[1] || "fr";
 
   const LIENS = [
     { label: t("mentions"), href: `/${locale}/mentions-legales` },

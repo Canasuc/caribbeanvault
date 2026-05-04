@@ -60,6 +60,7 @@ function LanguageSwitcher() {
 
 export default function ContactPage() {
   const t = useTranslations("contact");
+  const tLegal = useTranslations("legal");
   const locale = useLocale();
   const [form, setForm] = useState({ prenom: "", nom: "", email: "", sujet: "", message: "", consentement: false });
   const [sent, setSent] = useState(false);
@@ -243,10 +244,10 @@ export default function ContactPage() {
 
         <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "28px", flexWrap: "wrap" }}>
           {[
-            { label: "Mentions légales", href: `/${locale}/mentions-legales` },
-            { label: "CGU", href: `/${locale}/cgu` },
-            { label: "Confidentialité", href: `/${locale}/confidentialite` },
-            { label: "Accueil", href: `/${locale}` },
+{ label: tLegal("nav_mentions"), href: `/${locale}/mentions-legales` },
+{ label: tLegal("nav_cgu"), href: `/${locale}/cgu` },
+{ label: tLegal("nav_confidentialite"), href: `/${locale}/confidentialite` },
+{ label: tLegal("nav_accueil"), href: `/${locale}` },
           ].map(l => (
             <Link key={l.label} href={l.href} style={{ color: C.texteSec, fontSize: "12px", textDecoration: "none" }}>{l.label}</Link>
           ))}
