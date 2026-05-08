@@ -1255,5 +1255,323 @@
       "disclaimer": "CaribbeanVault es una plataforma en proceso de registro como PSAN ante la AMF. Invertir conlleva riesgos.",
       "tagline": "El Caribe, tokenizado.",
       "langues": "Idiomas"
-    }
+    },
+
+  "common": {
+    "continue": "Continuar",
+    "back": "Volver",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "save": "Guardar",
+    "modify": "Modificar",
+    "loading": "Cargando…",
+    "error_generic": "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
+    "retry": "Intentar de nuevo",
+    "yes": "Sí",
+    "no": "No",
+    "or": "o",
+    "and": "y",
+    "recommended": "Recomendado",
+    "coming_soon": "Próximamente",
+    "available": "Disponible",
+    "done": "Hecho",
+    "skip": "Saltar",
+    "validate": "Validar",
+    "next": "Siguiente",
+    "finish": "Finalizar"
+  },
+
+  "onboarding": {
+    "page_title": "Conectar su wallet XRPL",
+    "page_subtitle": "Siga los pasos para conectar su wallet Xaman a su cuenta de CaribbeanVault.",
+    "progress": "Paso {current} de {total}",
+    "restart": "Empezar de nuevo",
+
+    "questionnaire": {
+      "title": "Personalicemos su recorrido",
+      "subtitle": "3 preguntas rápidas para adaptar los pasos a su nivel de experiencia.",
+
+      "q1": {
+        "label": "Pregunta 1 de 3",
+        "title": "¿Ha utilizado alguna vez una wallet de criptomonedas?",
+        "subtitle": "MetaMask, Xaman, Phantom, Ledger… cualquier tipo de wallet.",
+        "options": {
+          "beginner": {
+            "title": "No, es mi primera vez",
+            "subtitle": "Nunca he creado una wallet ni usado una aplicación de criptomonedas"
+          },
+          "intermediate": {
+            "title": "Sí, un poco — ya he tenido una wallet",
+            "subtitle": "He usado una wallet pero no me siento cómodo con todos los pasos"
+          },
+          "expert": {
+            "title": "Sí, tengo experiencia — conozco las wallets",
+            "subtitle": "Ya gestiono wallets, frases semilla y transacciones blockchain"
+          }
+        }
+      },
+
+      "q2": {
+        "label": "Pregunta 2 de 3",
+        "title": "¿Ya tiene la aplicación Xaman instalada?",
+        "subtitle": "Xaman (anteriormente XUMM) es la wallet oficial para la red XRPL.",
+        "options": {
+          "not_installed": {
+            "title": "No, Xaman no está instalado",
+            "subtitle": "Tendré que descargarlo en mi teléfono"
+          },
+          "installed_no_account": {
+            "title": "Xaman está instalado, pero sin cuenta XRPL",
+            "subtitle": "La app está ahí pero aún no he creado una wallet dentro de ella"
+          },
+          "installed_with_account": {
+            "title": "Xaman está instalado con una wallet XRPL activa",
+            "subtitle": "Tengo una dirección XRPL (que empieza por «r») y mi cuenta está activada"
+          }
+        }
+      },
+
+      "q3": {
+        "label": "Pregunta 3 de 3",
+        "title": "¿Cómo desea que le guiemos?",
+        "subtitle": "Puede cambiar esta configuración en cualquier momento desde su perfil.",
+        "options": {
+          "guided": {
+            "title": "Guíeme paso a paso",
+            "subtitle": "Explicaciones detalladas, capturas de pantalla anotadas y preguntas de verificación en cada paso"
+          },
+          "fast": {
+            "title": "Modo rápido — sé lo que hago",
+            "subtitle": "Muéstreme solo los pasos clave, yo me encargo del resto"
+          }
+        }
+      },
+
+      "result": {
+        "title": "Su recorrido personalizado",
+        "profile_label": "Perfil detectado",
+        "steps_to_do": "{count} paso por completar",
+        "steps_to_do_plural": "{count} pasos por completar",
+        "steps_done": "{count} paso ya realizado",
+        "steps_done_plural": "{count} pasos ya realizados",
+        "mode_guided": "Modo guiado completo",
+        "mode_fast": "Modo rápido",
+        "cta": "Comenzar mi incorporación",
+        "profiles": {
+          "beginner": {
+            "name": "Principiante completo",
+            "desc": "Primera experiencia con una wallet de criptomonedas — acompañamiento completo activado"
+          },
+          "intermediate": {
+            "name": "Iniciado",
+            "desc": "Algunos conocimientos de wallets — guía adaptada a los pasos técnicos"
+          },
+          "expert": {
+            "name": "Usuario avanzado",
+            "desc": "Cómodo con las wallets — recorrido acelerado disponible"
+          }
+        },
+        "step_status": {
+          "todo": "por hacer",
+          "done": "ya realizado",
+          "optional": "opcional"
+        }
+      }
+    },
+
+    "steps": {
+      "install": {
+        "title": "Descargar Xaman",
+        "short": "Descarga",
+        "duration": "~2 min",
+        "description": "Xaman es la wallet oficial de la red XRPL. Gratuita, segura, disponible en iOS y Android.",
+        "store_ios": "Descargar en el App Store",
+        "store_android": "Obtener en Google Play",
+        "warning_source": "Descargue únicamente desde el App Store o Google Play oficial. Desconfíe de sitios de terceros que ofrezcan Xaman.",
+        "publisher": "Editor oficial: XRPL Labs",
+        "confirm_question": "¿Está Xaman instalado en su teléfono?",
+        "confirm_hint": "Debería ver la pantalla de inicio que se muestra a continuación en su aplicación.",
+        "screenshot_alt": "Pantalla de inicio de la aplicación Xaman"
+      },
+
+      "create_wallet": {
+        "title": "Crear su wallet XRPL",
+        "short": "Crear wallet",
+        "duration": "~5 min",
+        "critical": "Paso crítico",
+        "description": "Abra Xaman y cree una nueva cuenta. Xaman generará su frase secreta de 24 palabras.",
+        "substep_1": "Pulse «+ Crear cuenta»",
+        "substep_2": "Elija «Cartera estándar»",
+        "substep_3": "Xaman muestra su frase secreta de 24 palabras",
+        "screenshot_alt_1": "Botón Crear cuenta en Xaman",
+        "screenshot_alt_2": "Selección del tipo de cartera",
+        "screenshot_alt_3": "Pantalla de visualización de la frase secreta",
+        "confirm_question": "¿Ve una pantalla con 24 palabras en Xaman?"
+      },
+
+      "seed_phrase": {
+        "title": "Guardar su frase secreta",
+        "short": "Frase secreta",
+        "duration": "~3 min",
+        "critical": "El paso más importante",
+        "description": "Anote sus 24 palabras en papel, en el orden exacto. Esta frase es la única manera de recuperar su wallet si pierde su teléfono.",
+        "rule_1": "Anótela en papel — nunca haga una foto, nunca la envíe por correo electrónico",
+        "rule_2": "Guárdela en un lugar seguro (caja fuerte, sobre sellado)",
+        "rule_3": "No la comparta con nadie — ni con CaribbeanVault ni con terceros",
+        "warning_title": "Advertencia importante",
+        "warning_body": "Si pierde esta frase, el acceso a su wallet se perderá de forma permanente. CaribbeanVault no puede recuperarla por usted. No existe ningún procedimiento de recuperación.",
+        "quiz_title": "Verificación de su copia de seguridad",
+        "quiz_subtitle": "Por su seguridad, confirme que ha anotado su frase respondiendo estas preguntas.",
+        "quiz_question": "¿Cuál es su palabra número {position}?",
+        "quiz_placeholder": "Escriba la palabra {position}",
+        "quiz_error": "Esta palabra no coincide. Compruebe su frase e inténtelo de nuevo.",
+        "quiz_success": "Perfecto — su frase está correctamente guardada.",
+        "confirm_question": "¿Ha anotado sus 24 palabras en papel?",
+        "screenshot_alt": "Pantalla de confirmación de la frase en Xaman"
+      },
+
+      "activate": {
+        "title": "Activar su dirección XRPL",
+        "short": "Activación (2 XRP)",
+        "duration": "1 a 5 días",
+        "friction_label": "Paso con posible demora",
+        "description": "La red XRPL requiere un depósito mínimo de 2 XRP para activar una nueva cuenta. Este importe es una reserva de red, no una comisión.",
+        "option_cv_title": "Opción A — CaribbeanVault activa por usted",
+        "option_cv_subtitle": "Recomendado",
+        "option_cv_description": "Pegue su dirección XRPL a continuación. CaribbeanVault le enviará 2 XRP directamente a su wallet. Cuenta activada en segundos, sin necesidad de un exchange.",
+        "option_cv_note": "Este adelanto se deduce de su primera inversión o se reembolsa según los términos y condiciones.",
+        "option_cv_cta": "Activar a través de CaribbeanVault",
+        "option_exchange_title": "Opción B — A través de un exchange (autónomo)",
+        "option_exchange_description": "Compre al menos 2 XRP en Coinbase o Binance y envíelos a su dirección Xaman. CaribbeanVault detecta automáticamente la activación.",
+        "option_exchange_guide": "Ver guía ilustrada",
+        "address_label": "Su dirección XRPL",
+        "address_placeholder": "rXXXXXXXXXXXXXXXXXXXXXXXX",
+        "address_hint": "Copie su dirección desde Xaman — empieza por la letra «r»",
+        "address_copy_hint": "En Xaman → pulse su dirección en la parte superior de la pantalla para copiarla",
+        "address_valid": "Formato válido",
+        "address_invalid": "La dirección debe comenzar por «r» y tener entre 25 y 34 caracteres",
+        "waiting_title": "Esperando activación",
+        "waiting_body": "CaribbeanVault está monitoreando su dirección XRPL en tiempo real. Recibirá un correo electrónico en cuanto su cuenta esté activada.",
+        "activated_title": "Cuenta XRPL activada",
+        "activated_body": "Su dirección XRPL está activa y lista para recibir tokens.",
+        "screenshot_alt": "Pantalla de dirección XRPL en Xaman"
+      },
+
+      "stablecoin": {
+        "title": "Elegir su stablecoin",
+        "short": "Stablecoin",
+        "duration": "~1 min",
+        "description": "Elija la moneda en la que desea invertir. Puede cambiar esta opción en cualquier momento desde su perfil.",
+        "detected_label": "Sugerencia basada en su región",
+        "detected_eur": "Región detectada: {region} — le sugerimos {coin} (euros, sin conversión de divisas)",
+        "detected_usd": "Región detectada: {region} — le sugerimos {coin} (dólares estadounidenses)",
+        "manual_label": "Elija su stablecoin",
+        "manual_hint": "Un inversor europeo puede perfectamente preferir trabajar en dólares — es su elección.",
+        "coins": {
+          "geur": {
+            "name": "Stablecoin en euros",
+            "issuer": "GateHub",
+            "description": "Ideal si invierte en euros — sus rendimientos se muestran sin ninguna conversión de divisas.",
+            "tags": ["EUR", "Disponible"]
+          },
+          "rlusd": {
+            "name": "Stablecoin en dólares",
+            "issuer": "Ripple",
+            "description": "Stablecoin USD nativo de XRPL, emitido por Ripple y regulado en EE. UU. Liquidez máxima.",
+            "tags": ["USD", "Disponible"]
+          },
+          "eurc": {
+            "name": "Stablecoin en euros",
+            "issuer": "Circle",
+            "description": "Mismo emisor que USDC, regulado por MiCA. Implementación en curso en XRPL — próximamente disponible.",
+            "tags": ["EUR", "Próximamente"]
+          },
+          "both": {
+            "name": "Ambas divisas",
+            "issuer": "",
+            "description": "CaribbeanVault selecciona automáticamente la divisa según cada activo. Máxima flexibilidad.",
+            "tags": ["EUR", "USD", "Recomendado"]
+          }
+        },
+        "both_warning": "Se solicitarán dos confirmaciones en Xaman — una por cada stablecoin.",
+        "trust_line_title": "Activación del stablecoin",
+        "trust_line_description": "Para recibir este stablecoin, su wallet debe autorizarlo mediante una «trust line». CaribbeanVault prepara esta operación — solo tiene que confirmarla en Xaman.",
+        "trust_line_pending": "Esperando su confirmación en Xaman…",
+        "trust_line_success": "Trust line activada — su wallet ya puede recibir {coin}.",
+        "trust_line_error": "La confirmación ha fallado o ha expirado. Por favor, inténtelo de nuevo.",
+        "xaman_notification": "Aparecerá una notificación en Xaman. Abra la aplicación y pulse «Aceptar».",
+        "xaman_notification_both": "Aparecerán dos notificaciones sucesivas en Xaman. Acepte ambas."
+      },
+
+      "connect": {
+        "title": "Conectarse a CaribbeanVault",
+        "short": "Conexión QR",
+        "duration": "~1 min",
+        "description_desktop": "Escanee este código QR con Xaman para conectar su wallet a su cuenta de CaribbeanVault.",
+        "description_mobile": "Pulse el botón de abajo para abrir Xaman y conectar su wallet.",
+        "qr_instruction": "En Xaman → pulse el icono del escáner en la parte superior derecha → escanee este código QR",
+        "qr_expires": "Este código QR expira en {time}",
+        "qr_expired": "Código QR expirado",
+        "qr_refresh": "Renovar el código QR",
+        "mobile_cta": "Abrir Xaman para conectar",
+        "waiting": "Esperando la conexión de Xaman…",
+        "success_title": "Wallet conectada",
+        "success_body": "Su wallet Xaman está ahora vinculada a su cuenta de CaribbeanVault.",
+        "address_confirmed": "Dirección confirmada: {address}",
+        "security_note": "Su clave privada nunca sale de Xaman. Solo su dirección pública se comparte con CaribbeanVault.",
+        "screenshot_alt": "Icono del escáner en Xaman"
+      },
+
+      "complete": {
+        "title": "Su wallet está lista",
+        "subtitle": "Ya puede invertir en los activos RWA disponibles en CaribbeanVault.",
+        "summary_title": "Resumen de su configuración",
+        "wallet_label": "Wallet XRPL",
+        "stablecoin_label": "Stablecoin(s) activado(s)",
+        "status_label": "Estado",
+        "status_active": "Activo y verificado",
+        "cta_primary": "Explorar los activos disponibles",
+        "cta_secondary": "Ir a mi panel de control",
+        "help_label": "¿Necesita ayuda?",
+        "help_link": "Contactar con el soporte de CaribbeanVault"
+      }
+    },
+
+    "walletconnect": {
+      "session_title": "CaribbeanVault quiere conectarse",
+      "session_description": "Esta conexión permite a CaribbeanVault leer su dirección XRPL y proponerle transacciones para firmar. Su clave privada permanece protegida en Xaman.",
+      "session_active": "Sesión activa",
+      "session_expires": "Expira el {date}",
+      "session_disconnect": "Desconectar esta wallet",
+      "session_reconnect": "Reconectar Xaman"
+    },
+
+    "errors": {
+      "xaman_not_detected": "Xaman no parece estar instalado. Descargue la aplicación antes de continuar.",
+      "qr_expired": "El código QR ha expirado. Haga clic en «Renovar» para generar uno nuevo.",
+      "connection_timeout": "La conexión tardó demasiado. Asegúrese de que Xaman está abierto e inténtelo de nuevo.",
+      "address_invalid": "La dirección XRPL introducida no es válida. Compruebe que empieza por «r» y tiene entre 25 y 34 caracteres.",
+      "account_not_activated": "Esta cuenta XRPL aún no está activada. Deposite al menos 2 XRP para activarla.",
+      "trust_line_failed": "La creación de la trust line ha fallado. Asegúrese de haber aceptado la solicitud en Xaman.",
+      "trust_line_rejected": "Ha rechazado la solicitud en Xaman. Haga clic en «Intentar de nuevo» si desea continuar.",
+      "network_error": "No se puede contactar con la red XRPL. Compruebe su conexión a internet.",
+      "session_expired": "Su sesión de WalletConnect ha expirado. Por favor, vuelva a conectarse.",
+      "already_connected": "Esta wallet ya está conectada a su cuenta."
+    },
+
+    "rgpd": {
+      "consent_title": "Uso de sus datos",
+      "consent_body": "Para conectar su wallet, CaribbeanVault solo almacena su dirección pública XRPL, la fecha de conexión y su preferencia de moneda. Su clave privada nunca se transmite. Puede eliminar estos datos en cualquier momento desde su perfil.",
+      "consent_cta": "Acepto y continúo",
+      "consent_link": "Leer la política de privacidad completa",
+      "data_minimization": "Solo se conserva lo estrictamente necesario — CaribbeanVault no almacena ningún dato sensible de su wallet.",
+      "right_to_delete": "Tiene derecho a la supresión de sus datos (Artículo 17 del RGPD). Para ejercer este derecho, vaya a Perfil → Mis datos → Eliminar mis datos."
+    },
+    
+    "checkout": {
+  "xrp_recovery_label": "Reembolso de activación de wallet XRPL",
+  "xrp_recovery_hint": "Adelantado por CaribbeanVault durante su registro"
+}
   }
+}

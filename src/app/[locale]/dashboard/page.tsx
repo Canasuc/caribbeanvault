@@ -10,8 +10,9 @@ import Footer from "@/components/Footer";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useRouter, usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
+import XamanOnboarding from "@/components/wallet/XamanOnboarding";
 
-// ✅ Types déplacés au niveau module — correct
+// ✅ Types au niveau module — correct
 interface Investisseur {
   id: string;
   email: string;
@@ -79,11 +80,16 @@ function LanguageSwitcher() {
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const locale = useLocale();
+
   // ✅ useState dans le composant — correct
   const [user, setUser] = useState<User | null>(null);
   const [investisseur, setInvestisseur] = useState<Investisseur | null>(null);
   const [loading, setLoading] = useState(true);
-  const { isMobile } = useBreakpoint(); // ✅ isTablet supprimé (non utilisé)
+
+  // ✅ Onglet wallet — affiche ou non l'onboarding Xaman
+  const [showWallet, setShowWallet] = useState(false);
+
+  const { isMobile } = useBreakpoint();
 
   useEffect(() => {
     async function loadData() {
@@ -94,12 +100,16 @@ export default function DashboardPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { window.location.href = `/${locale}/login`; return; }
       setUser(session.user);
-      const { data } = await supabase.from("investisseurs").select("*").eq("email", session.user.email).single();
+      const { data } = await supabase
+        .from("investisseurs")
+        .select("*")
+        .eq("email", session.user.email)
+        .single();
       if (data) setInvestisseur(data as Investisseur);
       setLoading(false);
     }
     void loadData();
-  }, [locale]); // ✅ locale ajouté
+  }, [locale]);
 
   async function handleSignOut() {
     const supabase = createBrowserClient(
@@ -110,6 +120,7 @@ export default function DashboardPage() {
     window.location.href = `/${locale}`;
   }
 
+  // ── Loading ──────────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <main style={{ fontFamily: "system-ui", background: C.creme, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -139,9 +150,11 @@ export default function DashboardPage() {
 
   const colsActifs = isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)";
 
+  // ── Rendu ────────────────────────────────────────────────────────────────────
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.creme, minHeight: "100vh" }}>
 
+      {/* ── Navbar ── */}
       <nav style={{ background: C.blanc, borderBottom: `0.5px solid ${C.grisBord}`, padding: "0 16px", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: isMobile ? "60px" : "72px" }}>
           <Link href={`/${locale}`} style={{ textDecoration: "none" }}>
@@ -163,6 +176,7 @@ export default function DashboardPage() {
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "20px 16px 40px" : "40px 24px 60px" }}>
 
+        {/* ── Hero bannière ── */}
         <div style={{ background: C.navy, borderRadius: "16px", padding: isMobile ? "24px 20px" : "36px 40px", marginBottom: "20px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", right: "-30px", top: "-30px", width: "220px", height: "220px", borderRadius: "50%", background: "rgba(212,136,74,.08)" }} />
           <div style={{ position: "absolute", right: "60px", top: "60px", width: "130px", height: "130px", borderRadius: "50%", background: "rgba(212,136,74,.06)" }} />
@@ -192,6 +206,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* ── Alerte KYC en attente ── */}
         {investisseur?.statut === "en_attente" && (
           <div style={{ background: "#FFFBEB", borderRadius: "12px", border: "1px solid #FCD34D44", padding: isMobile ? "16px" : "20px 24px", marginBottom: "20px", display: "flex", gap: "14px", alignItems: "flex-start" }}>
             <div style={{ fontSize: "22px", flexShrink: 0 }}>⏳</div>
@@ -213,6 +228,7 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* ── Stats marché ── */}
         <div style={{ background: C.cremeB, borderRadius: "12px", padding: isMobile ? "16px" : "20px 24px", marginBottom: "20px", border: `0.5px solid ${C.grisBord}` }}>
           <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "4px" }}>{t("marche_titre")}</div>
           <div style={{ color: C.texteSec, fontSize: "12px", marginBottom: "14px" }}>{t("marche_desc")}</div>
@@ -232,13 +248,15 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* ── Accès rapide actifs ── */}
         <div style={{ marginBottom: "20px" }}>
           <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "6px" }}>{t("acces_rapide")}</div>
           <h2 style={{ color: C.texte, fontSize: isMobile ? "18px" : "22px", fontWeight: 800, margin: "0 0 14px" }}>{t("explorer_actifs")}</h2>
           <div style={{ display: "grid", gridTemplateColumns: colsActifs, gap: "10px" }}>
             {ACTIFS.map((a, i) => (
               <Link key={i} href={a.href} style={{ textDecoration: "none" }}>
-                <div style={{ background: C.blanc, borderRadius: "10px", padding: isMobile ? "14px" : "18px", border: `0.5px solid ${C.grisBord}`, borderTop: `3px solid ${a.color}`, transition: "all .2s", height: "100%" }}
+                <div
+                  style={{ background: C.blanc, borderRadius: "10px", padding: isMobile ? "14px" : "18px", border: `0.5px solid ${C.grisBord}`, borderTop: `3px solid ${a.color}`, transition: "all .2s", height: "100%" }}
                   onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 16px rgba(0,0,0,.08)"; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "none"; (e.currentTarget as HTMLDivElement).style.boxShadow = "none"; }}
                 >
@@ -252,7 +270,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* ── Profil + Étapes ── */}
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "14px", marginBottom: "20px" }}>
+
+          {/* Profil */}
           <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "24px" }}>
             <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>{t("mon_profil")}</div>
             {investisseur ? (
@@ -275,6 +296,7 @@ export default function DashboardPage() {
             )}
           </div>
 
+          {/* Étapes */}
           <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "24px" }}>
             <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>{t("etapes")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -294,6 +316,52 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* ── Bloc Wallet Xaman ─────────────────────────────────────────────────
+             user est garanti non-null ici car le useEffect redirige vers /login
+             si pas de session. La garde `user &&` satisfait TypeScript.
+        ────────────────────────────────────────────────────────────────────── */}
+        {user && (
+          <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, marginBottom: "20px", overflow: "hidden" }}>
+
+            {/* En-tête du bloc — cliquable pour ouvrir/fermer */}
+            <button
+              onClick={() => setShowWallet(v => !v)}
+              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: isMobile ? "16px 18px" : "20px 24px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: C.vertL, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>
+                  🔗
+                </div>
+                <div>
+                  <div style={{ color: C.texte, fontSize: "13px", fontWeight: 700 }}>
+                    Connecter mon wallet Xaman
+                  </div>
+                  <div style={{ color: C.texteSec, fontSize: "11px", marginTop: "2px" }}>
+                    Recevez vos tokens RWA directement sur votre wallet XRPL
+                  </div>
+                </div>
+              </div>
+              <div style={{ color: C.texteTert, fontSize: "18px", transition: "transform .2s", transform: showWallet ? "rotate(180deg)" : "rotate(0deg)" }}>
+                ›
+              </div>
+            </button>
+
+            {/* Contenu — XamanOnboarding */}
+            {showWallet && (
+              <div style={{ borderTop: `0.5px solid ${C.grisBord}` }}>
+                <XamanOnboarding
+                  investorId={user.id}
+                  onComplete={(address) => {
+                    console.log("Wallet lié :", address);
+                    setShowWallet(false);
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Simulateur ── */}
         <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, ${C.navyL} 100%)`, borderRadius: "12px", padding: isMobile ? "20px" : "28px 32px", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
           <div>
             <div style={{ fontSize: "28px", marginBottom: "8px" }}>📊</div>
@@ -305,6 +373,7 @@ export default function DashboardPage() {
           </Link>
         </div>
 
+        {/* ── Contact ── */}
         <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "22px 28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
           <div>
             <div style={{ color: C.sable, fontSize: "11px", fontWeight: 700, marginBottom: "3px" }}>{t("question")}</div>
