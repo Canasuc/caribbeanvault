@@ -342,7 +342,10 @@ export default function XamanOnboarding({
   const t = useTranslations("onboarding");
   const tc = useTranslations("common");
   const locale = useLocale();
-  const supabase = createClient();
+  const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
   // Détection mobile
   const [isMobile, setIsMobile] = useState(false);
