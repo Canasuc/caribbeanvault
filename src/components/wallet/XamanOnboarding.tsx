@@ -324,17 +324,20 @@ function StepShell({
         >
           {backLabel ?? "Retour"}
         </button>
-        <button
-          onClick={onContinue}
-          disabled={!canContinue}
-          className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all
-            ${canContinue
-              ? "bg-emerald-500 text-white hover:bg-emerald-600"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-        >
-          {continueLabel ?? "Continuer"}
-        </button>
+<button
+  onClick={() => {
+    console.log("StepShell — onContinue appelé, canContinue:", canContinue);
+    onContinue?.();
+  }}
+  disabled={!canContinue}
+  className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all
+    ${canContinue
+      ? "bg-emerald-500 text-white hover:bg-emerald-600"
+      : "bg-gray-100 text-gray-400 cursor-not-allowed"
+    }`}
+>
+  {continueLabel ?? "Continuer"}
+</button>
       </div>
     </div>
   );
