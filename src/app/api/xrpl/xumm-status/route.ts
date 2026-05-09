@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import Xumm from "xumm";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { Xumm } = require("xumm");
 
 export async function GET(req: NextRequest) {
   try {
