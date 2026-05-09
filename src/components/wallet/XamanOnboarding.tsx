@@ -860,7 +860,7 @@ export default function XamanOnboarding({
   const locale = useLocale();
 
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line react-hooks/exhaustive-deps
 const [isMobile, setIsMobile] = useState(false);
 useEffect(() => {
   setIsMobile(/iPhone|iPad|Android/i.test(navigator.userAgent));
