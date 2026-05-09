@@ -664,7 +664,6 @@ function StepActivate({
     </StepShell>
   );
 }
-
 function StepStablecoin({
   isGuided,
   stepIndex,
@@ -673,8 +672,11 @@ function StepStablecoin({
   stablecoin,
   trustLines,
   trustLineLoading,
+  xrplAddress,
+  addressValid,
   onSelectStablecoin,
   onCreateTrustLines,
+  onAddressInput,
   onBack,
   onContinue,
   t,
@@ -687,8 +689,11 @@ function StepStablecoin({
   stablecoin: StablecoinChoice | null;
   trustLines: TrustLineStatus;
   trustLineLoading: boolean;
+  xrplAddress: string;
+  addressValid: boolean;
   onSelectStablecoin: (c: StablecoinChoice) => void;
   onCreateTrustLines: () => Promise<void>;
+  onAddressInput: (v: string) => void;
   onBack: () => void;
   onContinue: () => void;
   t: ReturnType<typeof useTranslations>;
@@ -712,6 +717,49 @@ function StepStablecoin({
       continueLabel={tc("continue")}
     >
       <p className="text-sm text-gray-600 mb-3">{t("steps.stablecoin.description")}</p>
+
+      {/* ── Saisie adresse XRPL si l'étape activate a été sautée ── */}
+      {!xrplAddress && (
+        <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+          <p className="text-sm font-medium text-amber-800 mb-1">
+            Votre adresse XRPL
+          </p>
+          <p className="text-xs text-amber-700 mb-3">
+            Copiez votre adresse depuis Xaman — elle commence par « r »
+          </p>
+          <input
+            type="text"
+            placeholder="rXXXXXXXXXXXXXXXXXXXXXXXX"
+            value={xrplAddress}
+            onChange={(e) => onAddressInput(e.target.value)}
+            className={`w-full px-3 py-2.5 text-sm font-mono border rounded-xl focus:outline-none transition-colors
+              ${xrplAddress.length > 0
+                ? addressValid ? "border-emerald-400 bg-emerald-50" : "border-red-300 bg-red-50"
+                : "border-amber-300 bg-white"
+              }`}
+          />
+          {xrplAddress.length > 0 && (
+            <p className={`text-xs mt-1 ${addressValid ? "text-emerald-600" : "text-red-500"}`}>
+              {addressValid ? "✓ Format valide" : "L'adresse doit commencer par « r » et faire 25-34 caractères"}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ── Adresse confirmée ── */}
+      {xrplAddress && addressValid && (
+        <div className="mb-4 flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
+          <span>✅</span>
+          <span className="font-mono">{xrplAddress.slice(0, 8)}…{xrplAddress.slice(-4)}</span>
+          <button
+            onClick={() => onAddressInput("")}
+            className="ml-auto text-gray-400 hover:text-gray-600"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 mb-4">
         <span>📍</span>
         <span>
@@ -722,20 +770,31 @@ function StepStablecoin({
         <Badge type="info">{t("steps.stablecoin.detected_label")}</Badge>
       </div>
       <p className="text-xs text-gray-400 mb-3">{t("steps.stablecoin.manual_hint")}</p>
+
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <StablecoinCard id="geur" symbol="GEUR" name={t("steps.stablecoin.coins.geur.name")} issuer={t("steps.stablecoin.coins.geur.issuer")} description={t("steps.stablecoin.coins.geur.description")} tags={["EUR", t("common.available" as Parameters<typeof t>[0])]} selected={stablecoin === "geur"} onClick={() => onSelectStablecoin("geur")} />
-        <StablecoinCard id="rlusd" symbol="RLUSD" name={t("steps.stablecoin.coins.rlusd.name")} issuer={t("steps.stablecoin.coins.rlusd.issuer")} description={t("steps.stablecoin.coins.rlusd.description")} tags={["USD", t("common.available" as Parameters<typeof t>[0])]} selected={stablecoin === "rlusd"} onClick={() => onSelectStablecoin("rlusd")} />
-        <StablecoinCard id="both" symbol="GEUR + RLUSD" name={t("steps.stablecoin.coins.both.name")} issuer="" description={t("steps.stablecoin.coins.both.description")} tags={["EUR", "USD", t("common.recommended" as Parameters<typeof t>[0])]} selected={stablecoin === "both"} onClick={() => onSelectStablecoin("both")} />
-        <StablecoinCard id="eurc" symbol="EURC" name={t("steps.stablecoin.coins.eurc.name")} issuer={t("steps.stablecoin.coins.eurc.issuer")} description={t("steps.stablecoin.coins.eurc.description")} tags={["EUR", t("common.coming_soon" as Parameters<typeof t>[0])]} selected={false} disabled onClick={() => {}} />
+        <StablecoinCard id="geur" symbol="GEUR" name={t("steps.stablecoin.coins.geur.name")} issuer={t("steps.stablecoin.coins.geur.issuer")} description={t("steps.stablecoin.coins.geur.description")} tags={["EUR", "Disponible"]} selected={stablecoin === "geur"} onClick={() => onSelectStablecoin("geur")} />
+        <StablecoinCard id="rlusd" symbol="RLUSD" name={t("steps.stablecoin.coins.rlusd.name")} issuer={t("steps.stablecoin.coins.rlusd.issuer")} description={t("steps.stablecoin.coins.rlusd.description")} tags={["USD", "Disponible"]} selected={stablecoin === "rlusd"} onClick={() => onSelectStablecoin("rlusd")} />
+        <StablecoinCard id="both" symbol="GEUR + RLUSD" name={t("steps.stablecoin.coins.both.name")} issuer="" description={t("steps.stablecoin.coins.both.description")} tags={["EUR", "USD", "Recommandé"]} selected={stablecoin === "both"} onClick={() => onSelectStablecoin("both")} />
+        <StablecoinCard id="eurc" symbol="EURC" name={t("steps.stablecoin.coins.eurc.name")} issuer={t("steps.stablecoin.coins.eurc.issuer")} description={t("steps.stablecoin.coins.eurc.description")} tags={["EUR", "Bientôt disponible"]} selected={false} disabled onClick={() => {}} />
       </div>
+
       {stablecoin === "both" && <InfoBox type="warn">⚠️ {t("steps.stablecoin.both_warning")}</InfoBox>}
+
       {stablecoin && (
         <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-xl">
           <p className="text-sm font-medium text-gray-800 mb-1">{t("steps.stablecoin.trust_line_title")}</p>
           <p className="text-xs text-gray-500 mb-3">{t("steps.stablecoin.trust_line_description")}</p>
           {!trustReady && !trustLineLoading && (
-            <button onClick={onCreateTrustLines} className="w-full py-2.5 bg-emerald-500 text-white text-sm font-medium rounded-xl hover:bg-emerald-600">
-              {tc("validate")}
+            <button
+              onClick={onCreateTrustLines}
+              disabled={!addressValid}
+              className={`w-full py-2.5 text-sm font-medium rounded-xl transition-all
+                ${addressValid
+                  ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+            >
+              {!addressValid ? "Saisissez d'abord votre adresse XRPL" : tc("validate")}
             </button>
           )}
           {trustLineLoading && <InfoBox>{t("steps.stablecoin.trust_line_pending")}</InfoBox>}
@@ -751,7 +810,8 @@ function StepStablecoin({
           })}
         </div>
       )}
-      {isGuided && stablecoin && (
+
+      {isGuided && stablecoin && addressValid && (
         <InfoBox>
           📱 {stablecoin === "both" ? t("steps.stablecoin.xaman_notification_both") : t("steps.stablecoin.xaman_notification")}
         </InfoBox>
@@ -759,6 +819,7 @@ function StepStablecoin({
     </StepShell>
   );
 }
+
 
 function StepConnect({
   isMobile,
@@ -984,7 +1045,7 @@ export default function XamanOnboarding({
   const update = useCallback((patch: Partial<OnboardingState>) => {
     setState((s) => ({ ...s, ...patch }));
   }, []);
-  
+
   // Polling statut XUMM — toutes les 2 secondes
   useEffect(() => {
     if (state.currentStep !== "connect") return;
@@ -1190,7 +1251,7 @@ export default function XamanOnboarding({
   if (state.currentStep === "create_wallet") return <StepCreateWallet isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
   if (state.currentStep === "seed_phrase") return <StepSeedPhrase isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} quizPassed={quizPassed} quizWords={quizWords} setQuizWords={setQuizWords} setQuizPassed={setQuizPassed} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
   if (state.currentStep === "activate") return <StepActivate isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} xrplAddress={state.xrplAddress} addressValid={state.addressValid} accountActivated={state.accountActivated} xrpAdvance={state.xrpAdvance} onAddressInput={handleAddressInput} onSendAdvance={sendXrpAdvance} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
-  if (state.currentStep === "stablecoin") return <StepStablecoin isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} locale={locale} stablecoin={state.stablecoin} trustLines={state.trustLines} trustLineLoading={trustLineLoading} onSelectStablecoin={(c) => update({ stablecoin: c })} onCreateTrustLines={createTrustLines} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
+  if (state.currentStep === "stablecoin") return <StepStablecoin isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} locale={locale} stablecoin={state.stablecoin} trustLines={state.trustLines} trustLineLoading={trustLineLoading} xrplAddress={state.xrplAddress} addressValid={state.addressValid} onSelectStablecoin={(c) => update({ stablecoin: c })} onCreateTrustLines={createTrustLines} onAddressInput={handleAddressInput} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
   if (state.currentStep === "connect") return <StepConnect isMobile={isMobile} stepIndex={stepIndex} totalSteps={state.steps.length} rgpdConsented={state.rgpdConsented} walletConnected={state.walletConnected} xrplAddress={state.xrplAddress} qrExpiry={state.qrExpiry} xummQrUrl={xummQrUrl} xummUuid={xummUuid} onRgpdConsent={() => update({ rgpdConsented: true })} onInitiateWalletConnect={initiateWalletConnect} onRefreshQr={() => { setXummQrUrl(null); setXummUuid(null); update({ qrExpiry: QR_DURATION_SECONDS }); initiateWalletConnect(); }} onSimulateConnect={() => update({ walletConnected: true, xrplAddress: state.xrplAddress || "rDEVxxxxxxxxxxxxxxxxxxxxxxxxxx" })} onSave={saveToSupabase} t={t} tc={tc} />;
 
   // COMPLETE
