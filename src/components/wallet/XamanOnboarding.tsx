@@ -1151,12 +1151,18 @@ export default function XamanOnboarding({
     } catch { /* géré par l'UI */ }
   }
 
-  async function saveToSupabase() {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    await supabase.from("investisseurs").update({
+async function saveToSupabase() {
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  console.log("saveToSupabase — investorId:", investorId);
+  console.log("saveToSupabase — xrplAddress:", state.xrplAddress);
+
+  const { error } = await supabase
+    .from("investisseurs")
+    .update({
       xrpl_address: state.xrplAddress,
       wallet_verified: true,
       connected_at: new Date().toISOString(),
@@ -1164,16 +1170,19 @@ export default function XamanOnboarding({
       locale,
       devise: state.stablecoin === "rlusd" ? "USD" : "EUR",
       rgpd_consent_at: new Date().toISOString(),
-      xrp_advance_sent: state.xrpAdvance.sent,
-      xrp_advance_amount: state.xrpAdvance.amountXrp,
-      xrp_advance_eur: state.xrpAdvance.amountEur,
-      xrp_advance_tx_hash: state.xrpAdvance.txHash,
-      xrp_advance_status: state.xrpAdvance.status,
-      xrp_advance_sent_at: state.xrpAdvance.sent ? new Date().toISOString() : null,
-    }).eq("id", investorId);
+    })
+    .eq("id", investorId);
+
+  console.log("saveToSupabase — error:", error);
+
+  // ✅ D'abord aller à l'étape complete
+  goToStep("complete");
+  
+  // ✅ Ensuite seulement appeler onComplete
+  setTimeout(() => {
     onComplete?.(state.xrplAddress);
-    goToStep("complete");
-  }
+  }, 1000);
+}
 
   // ── Navigation ──
   const isGuided = state.profile.guideMode === "guided";
