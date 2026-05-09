@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendXrpFromAdmin } from "@/lib/xrpl";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-);
+
 
 const XRP_ADVANCE_AMOUNT = 2;
 
 export async function POST(req: NextRequest) {
+    const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_KEY!
+);
   try {
     const body = await req.json();
     const { investorId, address } = body;
