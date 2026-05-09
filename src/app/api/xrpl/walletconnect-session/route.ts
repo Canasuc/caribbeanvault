@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Xumm } from "xumm";
+import Xumm from "xumm";
 
 export async function POST(req: NextRequest) {
   try {
