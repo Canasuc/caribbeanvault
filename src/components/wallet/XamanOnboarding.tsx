@@ -966,6 +966,25 @@ export default function XamanOnboarding({
     return () => clearInterval(timer);
   }, [state.currentStep, state.qrExpiry]);
 
+
+
+  // Polling activation XRPL
+  useEffect(() => {
+    if (state.currentStep !== "activate" || !state.xrplAddress || !state.addressValid || state.accountActivated) return;
+    const poll = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/xrpl/check-activation?address=${state.xrplAddress}`);
+        const data = await res.json();
+        if (data.activated) { setState((s) => ({ ...s, accountActivated: true })); clearInterval(poll); }
+      } catch { /* silencieux */ }
+    }, 10_000);
+    return () => clearInterval(poll);
+  }, [state.currentStep, state.xrplAddress, state.addressValid, state.accountActivated]);
+
+  const update = useCallback((patch: Partial<OnboardingState>) => {
+    setState((s) => ({ ...s, ...patch }));
+  }, []);
+  
   // Polling statut XUMM — toutes les 2 secondes
   useEffect(() => {
     if (state.currentStep !== "connect") return;
@@ -994,23 +1013,6 @@ export default function XamanOnboarding({
 
     return () => clearInterval(poll);
   }, [state.currentStep, xummUuid, state.walletConnected, update]);
-
-  // Polling activation XRPL
-  useEffect(() => {
-    if (state.currentStep !== "activate" || !state.xrplAddress || !state.addressValid || state.accountActivated) return;
-    const poll = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/xrpl/check-activation?address=${state.xrplAddress}`);
-        const data = await res.json();
-        if (data.activated) { setState((s) => ({ ...s, accountActivated: true })); clearInterval(poll); }
-      } catch { /* silencieux */ }
-    }, 10_000);
-    return () => clearInterval(poll);
-  }, [state.currentStep, state.xrplAddress, state.addressValid, state.accountActivated]);
-
-  const update = useCallback((patch: Partial<OnboardingState>) => {
-    setState((s) => ({ ...s, ...patch }));
-  }, []);
 
   const goToStep = useCallback((step: OnboardingStep) => {
     update({ currentStep: step });
