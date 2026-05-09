@@ -859,11 +859,12 @@ export default function XamanOnboarding({
   const tc = useTranslations("common");
   const locale = useLocale();
 
-const [isMobile] = useState(() =>
-  typeof window !== "undefined"
-    ? /iPhone|iPad|Android/i.test(navigator.userAgent)
-    : false
-);
+// ✅ Détection uniquement côté client après montage
+const [isMobile, setIsMobile] = useState(false);
+useEffect(() => {
+  setIsMobile(/iPhone|iPad|Android/i.test(navigator.userAgent));
+}, []);
+
   const suggestedStablecoin: StablecoinChoice = EUR_LOCALES.includes(locale) ? "geur" : "rlusd";
 
   const [state, setState] = useState<OnboardingState>({
