@@ -859,7 +859,8 @@ export default function XamanOnboarding({
   const tc = useTranslations("common");
   const locale = useLocale();
 
-// ✅ Détection uniquement côté client après montage
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const [isMobile, setIsMobile] = useState(false);
 useEffect(() => {
   setIsMobile(/iPhone|iPad|Android/i.test(navigator.userAgent));
