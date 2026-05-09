@@ -103,7 +103,7 @@ export default function DashboardPage() {
       const { data } = await supabase
         .from("investisseurs")
         .select("*")
-        .eq("email", session.user.email)
+       .ilike("email", session.user.email ?? "")
         .single();
       if (data) setInvestisseur(data as Investisseur);
       setLoading(false);
