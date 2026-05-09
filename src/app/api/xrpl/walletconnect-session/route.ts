@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { Xumm } = require("xumm");
+const xummModule = require("xumm");
+const XummClass = xummModule.Xumm ?? xummModule.default ?? xummModule;
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "investorId requis" }, { status: 400 });
     }
 
-    const xumm = new Xumm(
+    const xumm = new XummClass(
       process.env.XUMM_API_KEY!,
       process.env.XUMM_API_SECRET!
     );
