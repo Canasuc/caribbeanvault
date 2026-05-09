@@ -1,8 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const xummModule = require("xumm");
-const XummClass = xummModule.Xumm ?? xummModule.default ?? xummModule;
-
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,25 +8,23 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "uuid requis" }, { status: 400 });
     }
 
-    const xumm = new XummClass(
-      process.env.XUMM_API_KEY!,
-      process.env.XUMM_API_SECRET!
-    );
+    const response = await fetch(`https://xumm.app/api/v1/platform/payload/${uuid}`, {
+      headers: {
+        "X-API-Key": process.env.XUMM_API_KEY!,
+        "X-API-Secret": process.env.XUMM_API_SECRET!,
+      },
+    });
 
-    const result = await xumm.payload?.get(uuid);
+    const data = await response.json();
 
-    if (!result) {
-      return NextResponse.json({ error: "Payload introuvable" }, { status: 404 });
+    if (!response.ok) {
+      return NextResponse.json({ error: data }, { status: 500 });
     }
 
-    const signed = result.meta.signed;
-    const expired = result.meta.expired;
-    const account = result.response?.account ?? null;
-
     return NextResponse.json({
-      signed,
-      expired,
-      account, // adresse XRPL de l'investisseur si signé
+      signed: data.meta.signed,
+      expired: data.meta.expired,
+      account: data.response?.account ?? null,
     });
 
   } catch (e: unknown) {

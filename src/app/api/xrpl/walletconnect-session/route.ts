@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const xummModule = require("xumm");
-const XummClass = xummModule.Xumm ?? xummModule.default ?? xummModule;
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,44 +9,44 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "investorId requis" }, { status: 400 });
     }
 
-    const xumm = new XummClass(
-      process.env.XUMM_API_KEY!,
-      process.env.XUMM_API_SECRET!
-    );
+    const apiKey = process.env.XUMM_API_KEY!;
+    const apiSecret = process.env.XUMM_API_SECRET!;
 
-    // ── Créer un payload de sign-in XUMM ──
-    const payload = await xumm.payload?.create({
-      txjson: {
-        TransactionType: "SignIn",
+    const response = await fetch("https://xumm.app/api/v1/platform/payload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+        "X-API-Secret": apiSecret,
       },
-      options: {
-        submit: false,
-        expire: 5, // expire en 5 minutes
-        return_url: {
-          web: `${process.env.NEXT_PUBLIC_SITE_URL}/fr/dashboard`,
+      body: JSON.stringify({
+        txjson: { TransactionType: "SignIn" },
+        options: {
+          submit: false,
+          expire: 5,
+          return_url: {
+            web: `${process.env.NEXT_PUBLIC_SITE_URL}/fr/dashboard`,
+          },
         },
-      },
-      custom_meta: {
-        identifier: investorId,
-        blob: { investorId },
-        instruction: "Connectez votre wallet Xaman à CaribbeanVault",
-      },
+        custom_meta: {
+          identifier: investorId,
+          instruction: "Connectez votre wallet Xaman à CaribbeanVault",
+        },
+      }),
     });
 
-    if (!payload) {
-      return NextResponse.json({ error: "Impossible de créer le payload XUMM" }, { status: 500 });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json({ error: data }, { status: 500 });
     }
 
     return NextResponse.json({
       success: true,
-      // URL du QR code à afficher sur desktop
-      qrUrl: payload.refs.qr_png,
-      // URI pour deep link mobile
-      uri: payload.next.always,
-      // UUID pour polling du statut
-      payloadUuid: payload.uuid,
-      // Lien direct Xaman mobile
-      mobileUrl: `https://xumm.app/sign/${payload.uuid}`,
+      qrUrl: data.refs.qr_png,
+      uri: data.next.always,
+      payloadUuid: data.uuid,
+      mobileUrl: `https://xumm.app/sign/${data.uuid}`,
     });
 
   } catch (e: unknown) {
