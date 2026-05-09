@@ -346,18 +346,18 @@ export default function DashboardPage() {
               </div>
             </button>
 
-            {/* Contenu — XamanOnboarding */}
-            {showWallet && (
-              <div style={{ borderTop: `0.5px solid ${C.grisBord}` }}>
-                <XamanOnboarding
-                  investorId={user.id}
-                  onComplete={(address) => {
-                    console.log("Wallet lié :", address);
-                    setShowWallet(false);
-                  }}
-                />
-              </div>
-            )}
+{/* Contenu — XamanOnboarding */}
+{showWallet && investisseur && (
+  <div style={{ borderTop: `0.5px solid ${C.grisBord}` }}>
+    <XamanOnboarding
+      investorId={investisseur.id}
+      onComplete={(address) => {
+        console.log("Wallet lié :", address);
+        setShowWallet(false);
+      }}
+    />
+  </div>
+)}
           </div>
         )}
 
