@@ -761,7 +761,7 @@ function StepStablecoin({
 }
 
 function StepConnect({
-  isMobile,
+ isMobileDevice,
   stepIndex,
   totalSteps,
   rgpdConsented,
@@ -778,7 +778,7 @@ function StepConnect({
   t,
   tc,
 }: {
-  isMobile: boolean;
+  isMobileDevice: boolean;
   stepIndex: number;
   totalSteps: number;
   rgpdConsented: boolean;
@@ -816,11 +816,11 @@ function StepConnect({
       ) : (
         <>
           <p className="text-sm text-gray-600 mb-6">
-            {isMobile ? t("steps.connect.description_mobile") : t("steps.connect.description_desktop")}
+            {isMobileDevice ? t("steps.connect.description_mobile") : t("steps.connect.description_desktop")}
           </p>
 
           <div className="flex flex-col items-center gap-4 mb-6">
-            {isMobile ? (
+            {isMobileDevice ? (
               // ── Mobile : bouton deep link Xaman ──
               <button
                 onClick={onInitiateWalletConnect}
@@ -931,10 +931,10 @@ export default function XamanOnboarding({
   const tc = useTranslations("common");
   const locale = useLocale();
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    setIsMobile(/iPhone|iPad|Android/i.test(navigator.userAgent));
-  }, []);
+const [isMobileDevice, setIsMobileDevice] = useState(false);
+useEffect(() => {
+  setIsMobileDevice(/iPhone|iPad|Android/i.test(navigator.userAgent));
+}, []);
 
   const suggestedStablecoin: StablecoinChoice = EUR_LOCALES.includes(locale) ? "geur" : "rlusd";
 
@@ -1090,7 +1090,7 @@ export default function XamanOnboarding({
       update({ qrExpiry: QR_DURATION_SECONDS });
 
       // Deep link mobile — ouvre Xaman directement
-      if (isMobile && data.mobileUrl) {
+      if (isMobileDevice && data.mobileUrl) {
         window.location.href = data.mobileUrl;
       }
     } catch { /* géré par l'UI */ }
@@ -1202,7 +1202,7 @@ export default function XamanOnboarding({
   if (state.currentStep === "seed_phrase") return <StepSeedPhrase isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} quizPassed={quizPassed} quizWords={quizWords} setQuizWords={setQuizWords} setQuizPassed={setQuizPassed} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
   if (state.currentStep === "activate") return <StepActivate isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} xrplAddress={state.xrplAddress} addressValid={state.addressValid} accountActivated={state.accountActivated} xrpAdvance={state.xrpAdvance} onAddressInput={handleAddressInput} onSendAdvance={sendXrpAdvance} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
   if (state.currentStep === "stablecoin") return <StepStablecoin isGuided={isGuided} stepIndex={stepIndex} totalSteps={state.steps.length} locale={locale} stablecoin={state.stablecoin} trustLines={state.trustLines} trustLineLoading={trustLineLoading} onSelectStablecoin={(c) => update({ stablecoin: c })} onCreateTrustLines={createTrustLines} onBack={goBack} onContinue={goNext} t={t} tc={tc} />;
-  if (state.currentStep === "connect") return <StepConnect isMobile={isMobile} stepIndex={stepIndex} totalSteps={state.steps.length} rgpdConsented={state.rgpdConsented} walletConnected={state.walletConnected} xrplAddress={state.xrplAddress} qrExpiry={state.qrExpiry} xummQrUrl={xummQrUrl} xummUuid={xummUuid} onRgpdConsent={() => update({ rgpdConsented: true })} onInitiateWalletConnect={initiateWalletConnect} onRefreshQr={() => { setXummQrUrl(null); setXummUuid(null); update({ qrExpiry: QR_DURATION_SECONDS }); initiateWalletConnect(); }} onSimulateConnect={() => update({ walletConnected: true, xrplAddress: state.xrplAddress || "rDEVxxxxxxxxxxxxxxxxxxxxxxxxxx" })} onSave={saveToSupabase} t={t} tc={tc} />;
+  if (state.currentStep === "connect") return <StepConnect isMobileDevice={isMobileDevice} stepIndex={stepIndex} totalSteps={state.steps.length} rgpdConsented={state.rgpdConsented} walletConnected={state.walletConnected} xrplAddress={state.xrplAddress} qrExpiry={state.qrExpiry} xummQrUrl={xummQrUrl} xummUuid={xummUuid} onRgpdConsent={() => update({ rgpdConsented: true })} onInitiateWalletConnect={initiateWalletConnect} onRefreshQr={() => { setXummQrUrl(null); setXummUuid(null); update({ qrExpiry: QR_DURATION_SECONDS }); initiateWalletConnect(); }} onSimulateConnect={() => update({ walletConnected: true, xrplAddress: state.xrplAddress || "rDEVxxxxxxxxxxxxxxxxxxxxxxxxxx" })} onSave={saveToSupabase} t={t} tc={tc} />;
 
   // COMPLETE
   if (state.currentStep === "complete") {

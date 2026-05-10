@@ -12,6 +12,8 @@
     "@fontsource/cinzel": "^5.2.8",
     "@fontsource/cormorant-sc": "^5.2.8",
     "@fontsource/playfair-display": "^5.2.8",
+    "@stripe/react-stripe-js": "^6.3.0",
+    "@stripe/stripe-js": "^9.4.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
     "@types/leaflet": "^1.9.21",
