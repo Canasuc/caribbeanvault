@@ -13,6 +13,7 @@ import type { User } from "@supabase/supabase-js";
 import XamanOnboarding from "@/components/wallet/XamanOnboarding";
 import PaiementToken from "@/components/payment/PaiementToken";
 import Portfolio from "@/components/portfolio/Portfolio";
+import KYCWidget from "@/components/kyc/KYCWidget";
 
 interface Investisseur {
   id: string;
@@ -270,6 +271,22 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+{/* ── KYC Widget ── */}
+{user && investisseur && investisseur.statut_kyc !== "approved" && (
+  <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "24px", marginBottom: "20px" }}>
+    <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>
+      Vérification KYC
+    </div>
+    <KYCWidget
+      investorId={investisseur.id}
+      currentStatus={investisseur.statut_kyc}
+      onComplete={(status) => {
+        setInvestisseur({ ...investisseur, statut_kyc: status });
+      }}
+    />
+  </div>
+)}
 
         {/* ── Stats marché ── */}
         <div style={{ background: C.cremeB, borderRadius: "12px", padding: isMobile ? "16px" : "20px 24px", marginBottom: "20px", border: `0.5px solid ${C.grisBord}` }}>
