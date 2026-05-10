@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 // ⚠️ Important : désactiver le body parsing de Next.js pour les webhooks Stripe
-export const config = { api: { bodyParser: false } };
+//export const config = { api: { bodyParser: false } };
 
 export async function POST(req: NextRequest) {
   const body = await req.text();

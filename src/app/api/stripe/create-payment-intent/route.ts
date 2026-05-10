@@ -51,7 +51,8 @@ return NextResponse.json({
       .single();
 
     if (existingTx?.stripe_customer_id) {
-      stripeCustomerId = existingTx.stripe_customer_id;
+      if (existingTx?.stripe_customer_id) {
+  stripeCustomerId = existingTx.stripe_customer_id as string;
     } else {
       const customer = await stripe.customers.create({
         email: investisseur.email,
