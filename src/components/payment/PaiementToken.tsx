@@ -140,32 +140,36 @@ export default function PaiementToken({ actif, investorId, walletAddress, onSucc
 
   // ── Étape 0 : vérifier la trust line au montage ──
   const checkTrustLine = useCallback(async () => {
-    if (!walletAddress) {
-      // Pas de wallet connecté → skip trust line check, aller à select
+  if (!walletAddress) {
+    setStep("select");
+    return;
+  }
+
+  // TODO Production : remplacer par la vérification réelle ci-dessous
+  // En testnet : bypass
+  setTrustStatus("ok");
+  setStep("select");
+
+  // TODO Production : décommenter
+  /*
+  setTrustStatus("checking");
+  try {
+    const res = await fetch(
+      `/api/xrpl/check-trust-line?address=${walletAddress}&currency=${currencyCode}&issuer=${issuerAddress}`
+    );
+    const data = await res.json();
+    if (data.exists) {
+      setTrustStatus("ok");
       setStep("select");
-      return;
+    } else {
+      setTrustStatus("missing");
     }
+  } catch {
+    setStep("select");
+  }
+  */
+}, [walletAddress]);
 
-    setTrustStatus("checking");
-
-    try {
-      const res = await fetch(
-        `/api/xrpl/check-trust-line?address=${walletAddress}&currency=${currencyCode}&issuer=${issuerAddress}`
-      );
-      const data = await res.json();
-
-      if (data.exists) {
-        setTrustStatus("ok");
-        setStep("select");
-      } else {
-        setTrustStatus("missing");
-        // Rester sur check-trust pour afficher l'alerte
-      }
-    } catch {
-      // En cas d'erreur réseau → skip et continuer
-      setStep("select");
-    }
-  }, [walletAddress, currencyCode, issuerAddress]);
 
   useEffect(() => {
     void checkTrustLine();
