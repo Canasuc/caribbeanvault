@@ -11,6 +11,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useRouter, usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import XamanOnboarding from "@/components/wallet/XamanOnboarding";
+import PaiementToken from "@/components/payment/PaiementToken";
 
 interface Investisseur {
   id: string;
@@ -89,8 +90,9 @@ export default function DashboardPage() {
   const [investisseur, setInvestisseur] = useState<Investisseur | null>(null);
   const [loading, setLoading] = useState(true);
   const [showWallet, setShowWallet] = useState(false);
-  // Session active = wallet reconnecté via QR dans cette session de navigation
   const [walletSessionActive, setWalletSessionActive] = useState(false);
+  const [showPaiement, setShowPaiement] = useState(false);
+  const [paiementSuccess, setPaiementSuccess] = useState<string | null>(null);
 
   const { isMobile } = useBreakpoint();
 
@@ -403,6 +405,67 @@ export default function DashboardPage() {
                 }}
               />
             </div>
+          </div>
+        )}
+
+        {/* ── Bloc Paiement Token ── */}
+        {user && investisseur && (
+          <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, marginBottom: "20px", overflow: "hidden" }}>
+
+            {/* En-tête */}
+            <div style={{ padding: isMobile ? "16px 18px" : "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#FFF7ED", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>
+                  🥃
+                </div>
+                <div>
+                  <div style={{ color: C.texte, fontSize: "13px", fontWeight: 700 }}>Investir dans un actif</div>
+                  <div style={{ color: C.texteSec, fontSize: "11px", marginTop: "2px" }}>Achetez des tokens RWA caribéens dès 100€</div>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPaiement(!showPaiement)}
+                style={{ background: C.sable, color: "white", border: "none", borderRadius: "8px", padding: "8px 16px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}
+              >
+                {showPaiement ? "Fermer ✕" : "Investir →"}
+              </button>
+            </div>
+
+            {/* Formulaire paiement */}
+            {showPaiement && (
+              <div style={{ borderTop: `0.5px solid ${C.grisBord}`, padding: isMobile ? "16px 18px" : "24px" }}>
+                {paiementSuccess ? (
+                  // ── Succès ──
+                  <div style={{ textAlign: "center", padding: "32px 20px" }}>
+                    <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎉</div>
+                    <div style={{ color: C.vert, fontSize: "18px", fontWeight: 800, marginBottom: "8px" }}>Investissement confirmé !</div>
+                    <div style={{ color: C.texteSec, fontSize: "13px", marginBottom: "4px" }}>Référence : {paiementSuccess}</div>
+                    <div style={{ color: C.texteSec, fontSize: "12px", marginBottom: "24px" }}>Vos tokens seront émis sur votre wallet XRPL dans les prochains jours ouvrés.</div>
+                    <button
+                      onClick={() => { setPaiementSuccess(null); setShowPaiement(false); }}
+                      style={{ background: C.navy, color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", fontSize: "13px", fontWeight: 700, cursor: "pointer" }}
+                    >
+                      Retour au dashboard
+                    </button>
+                  </div>
+                ) : (
+                  <PaiementToken
+                    actif={{
+                      id: "rhum-damoiseau-2026",
+                      nom: "Rhum Damoiseau AOC 2026",
+                      prixToken: 100,
+                      minInvest: 100,
+                      maxInvest: 50000,
+                    }}
+                    investorId={investisseur.id}
+                    onSuccess={(piId) => {
+                      setPaiementSuccess(piId);
+                    }}
+                    onCancel={() => setShowPaiement(false)}
+                  />
+                )}
+              </div>
+            )}
           </div>
         )}
 
