@@ -449,20 +449,20 @@ export default function DashboardPage() {
                     </button>
                   </div>
                 ) : (
-                  <PaiementToken
-                    actif={{
-                      id: "rhum-damoiseau-2026",
-                      nom: "Rhum Damoiseau AOC 2026",
-                      prixToken: 100,
-                      minInvest: 100,
-                      maxInvest: 50000,
-                    }}
-                    investorId={investisseur.id}
-                    onSuccess={(piId) => {
-                      setPaiementSuccess(piId);
-                    }}
-                    onCancel={() => setShowPaiement(false)}
-                  />
+<PaiementToken
+  actif={{
+    id: "rhum-damoiseau-2026",
+    nom: "Rhum Damoiseau AOC 2026",
+    prixToken: 100,
+    minInvest: 100,
+    maxInvest: 50000,
+    currencyCode: "RHM",
+  }}
+  investorId={investisseur.id}
+  walletAddress={rw6vmYwN3xWPnnoaJsco8Qbq8AcJeLKBb5}  // ← ajouter
+  onSuccess={(piId) => setPaiementSuccess(piId)}
+  onCancel={() => setShowPaiement(false)}
+/>
                 )}
               </div>
             )}
