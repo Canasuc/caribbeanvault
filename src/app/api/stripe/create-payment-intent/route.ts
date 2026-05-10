@@ -16,28 +16,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Récupérer l'investisseur depuis Supabase ──
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_KEY!
     );
 
-const { data: investisseur, error: dbError } = await supabase
-  .from("investisseurs")
-  .select("id, email, prenom, nom, statut_kyc, wallet_verified")
-  .eq("id", investorId)
-  .single();
+    const { data: investisseur, error: dbError } = await supabase
+      .from("investisseurs")
+      .select("id, email, prenom, nom")
+      .eq("id", investorId)
+      .single();
 
-// Retourner le debug directement
-return NextResponse.json({
-  debug: true,
-  investorId,
-  investisseur,
-  dbError,
-  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY,
-  serviceKeyPrefix: process.env.SUPABASE_SERVICE_KEY?.slice(0, 20),
-});
+    // ── Debug temporaire ──
+    console.log("investorId:", investorId);
+    console.log("investisseur:", investisseur);
+    console.log("dbError:", dbError);
+    console.log("hasServiceKey:", !!process.env.SUPABASE_SERVICE_KEY);
+    console.log("serviceKeyPrefix:", process.env.SUPABASE_SERVICE_KEY?.slice(0, 30));
+
+    if (dbError || !investisseur) {
+      return NextResponse.json({
+        error: "Investisseur introuvable",
+        debug: {
+          investorId,
+          dbError: dbError?.message,
+          hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY,
+          serviceKeyPrefix: process.env.SUPABASE_SERVICE_KEY?.slice(0, 30),
+        }
+      }, { status: 404 });
+    }
 
     // ── Créer ou récupérer le Customer Stripe ──
     let stripeCustomerId: string;
@@ -51,13 +58,12 @@ return NextResponse.json({
       .single();
 
     if (existingTx?.stripe_customer_id) {
-      if (existingTx?.stripe_customer_id) {
-  stripeCustomerId = existingTx.stripe_customer_id as string;
+      stripeCustomerId = existingTx.stripe_customer_id as string;
     } else {
       const customer = await stripe.customers.create({
         email: investisseur.email,
         name: `${investisseur.prenom ?? ""} ${investisseur.nom ?? ""}`.trim(),
-        metadata: { investorId, supabase_id: investorId },
+        metadata: { investorId },
       });
       stripeCustomerId = customer.id;
     }
@@ -82,7 +88,7 @@ return NextResponse.json({
       idempotencyKey: `pi-${investorId}-${actifId}-${montantCentimes}-${Date.now()}`,
     });
 
-    // ── Créer la transaction en base (statut pending) ──
+    // ── Créer la transaction en base ──
     await supabase.from("transactions").insert({
       investor_id: investorId,
       actif_id: actifId,
