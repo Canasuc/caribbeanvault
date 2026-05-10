@@ -170,62 +170,68 @@ export default function PaiementToken({ actif, investorId, walletAddress, onSucc
   useEffect(() => {
     void checkTrustLine();
   }, [checkTrustLine]);
+// ── Créer la trust line côté serveur (testnet) ──
+async function createTrustLinePayload() {
+  setLoading(true);
+  setError(null);
 
-  // ── Générer le QR XUMM pour la trust line ──
-  async function createTrustLinePayload() {
-    setLoading(true);
-    setError(null);
+  try {
+    const res = await fetch("/api/xrpl/create-trust-line-server", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ walletAddress, currencyCode }),
+    });
+    const data = await res.json();
 
+    if (!res.ok || data.error) {
+      setError(data.error ?? "Erreur création trust line");
+      return;
+    }
+
+    if (data.success) {
+      setTrustStatus("ok");
+      setStep("select");
+    }
+  } catch {
+    setError("Erreur réseau");
+  } finally {
+    setLoading(false);
+  }
+}
+
+
+// ── Polling statut trust line XUMM ──
+// TODO Production : décommenter ce bloc quand on passe en live
+// En testnet : trust line créée côté serveur sans signature Xaman
+/*
+useEffect(() => {
+  if (step !== "trust-pending" || !trustUuid) return;
+
+  const poll = setInterval(async () => {
     try {
-      const res = await fetch("/api/xrpl/create-trust-line-payload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ investorId, actifId: actif.id, walletAddress }),
-      });
+      const res = await fetch(`/api/xrpl/xumm-status?uuid=${trustUuid}`);
       const data = await res.json();
 
-      if (!res.ok || data.error) {
-        setError(data.error ?? "Erreur génération QR");
-        return;
+      if (data.signed) {
+        setTrustStatus("ok");
+        setTrustQrUrl(null);
+        setTrustUuid(null);
+        setStep("select");
+        clearInterval(poll);
       }
+      if (data.expired) {
+        setTrustQrUrl(null);
+        setTrustUuid(null);
+        setStep("check-trust");
+        clearInterval(poll);
+      }
+    } catch { }
+  }, 2000);
 
-      setTrustQrUrl(data.qrUrl);
-      setTrustUuid(data.payloadUuid);
-      setStep("trust-pending");
-    } catch {
-      setError("Erreur réseau");
-    } finally {
-      setLoading(false);
-    }
-  }
+  return () => clearInterval(poll);
+}, [step, trustUuid]);
+*/
 
-  // ── Polling statut trust line ──
-  useEffect(() => {
-    if (step !== "trust-pending" || !trustUuid) return;
-
-    const poll = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/xrpl/xumm-status?uuid=${trustUuid}`);
-        const data = await res.json();
-
-        if (data.signed) {
-          setTrustStatus("ok");
-          setTrustQrUrl(null);
-          setTrustUuid(null);
-          setStep("select");
-          clearInterval(poll);
-        }
-        if (data.expired) {
-          setTrustQrUrl(null);
-          setTrustUuid(null);
-          setStep("check-trust");
-          clearInterval(poll);
-        }
-      } catch { /* silencieux */ }
-    }, 2000);
-
-    return () => clearInterval(poll);
-  }, [step, trustUuid]);
 
   // ── Créer le PaymentIntent ──
   async function createPaymentIntent() {
