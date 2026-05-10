@@ -38,65 +38,69 @@ export async function POST(req: NextRequest) {
   // ── Traitement des événements ──
   switch (event.type) {
 
-    case "payment_intent.succeeded": {
-      const pi = event.data.object as Stripe.PaymentIntent;
-      const { investorId, actifId, actifNom, tokensQty, montantEuros } = pi.metadata;
+case "payment_intent.succeeded": {
+  const pi = event.data.object as Stripe.PaymentIntent;
+  const { investorId, actifNom, tokensQty, montantEuros } = pi.metadata;
 
-      console.log(`✅ Paiement réussi — ${montantEuros}€ — investisseur ${investorId}`);
+  await supabase
+    .from("transactions")
+    .update({
+      statut: "completed",
+      stripe_charge_id: pi.latest_charge as string,
+      completed_at: new Date().toISOString(),
+    })
+    .eq("stripe_payment_intent_id", pi.id);
 
-      // Mettre à jour la transaction
-      await supabase
-        .from("transactions")
-        .update({
-          statut: "completed",
-          stripe_charge_id: pi.latest_charge as string,
-          completed_at: new Date().toISOString(),
-        })
-        .eq("stripe_payment_intent_id", pi.id);
-
-      // Envoyer email de confirmation via Brevo
-      try {
-        await fetch("https://api.brevo.com/v3/smtp/email", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "api-key": process.env.BREVO_API_KEY!,
-          },
-          body: JSON.stringify({
-            sender: { name: "CaribbeanVault", email: "contact@geccostrategy.com" },
-            to: [{ email: pi.receipt_email ?? "" }],
-            subject: `✅ Confirmation d'investissement — ${actifNom}`,
-            htmlContent: `
-              <div style="font-family: system-ui; max-width: 600px; margin: 0 auto; padding: 32px;">
-                <h2 style="color: #1A2E4A;">Votre investissement est confirmé 🌴</h2>
-                <p>Merci pour votre investissement dans <strong>${actifNom}</strong>.</p>
-                <div style="background: #F8F6F1; border-radius: 12px; padding: 20px; margin: 20px 0;">
-                  <p><strong>Actif :</strong> ${actifNom}</p>
-                  <p><strong>Montant :</strong> ${montantEuros}€</p>
-                  <p><strong>Tokens acquis :</strong> ${tokensQty}</p>
-                  <p><strong>Référence :</strong> ${pi.id}</p>
-                </div>
-                <p>Vos tokens seront émis sur votre wallet XRPL dans les prochains jours ouvrés.</p>
-                <p style="color: #9CA3AF; font-size: 12px;">CaribbeanVault — ${new Date().toLocaleDateString("fr-FR")}</p>
-              </div>
-            `,
-          }),
-        });
-      } catch (emailErr) {
-        console.error("Email confirmation error:", emailErr);
-      }
-
-      // Récupérer l'avance XRP si applicable
-      if (investorId) {
-        await supabase
-          .from("investisseurs")
-          .update({ xrp_advance_status: "recovered", xrp_advance_recovered_at: new Date().toISOString() })
-          .eq("id", investorId)
-          .eq("xrp_advance_status", "pending");
-      }
-
-      break;
+  // Récupérer l'email depuis le customer Stripe
+  let customerEmail = "";
+  if (pi.customer) {
+    const customer = await stripe.customers.retrieve(pi.customer as string);
+    if (!("deleted" in customer)) {
+      customerEmail = customer.email ?? "";
     }
+  }
+
+  if (customerEmail) {
+    await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": process.env.BREVO_API_KEY!,
+      },
+      body: JSON.stringify({
+        sender: { name: "CaribbeanVault", email: "contact@geccostrategy.com" },
+        to: [{ email: customerEmail }],
+        subject: `✅ Confirmation d'investissement — ${actifNom}`,
+        htmlContent: `
+          <div style="font-family: system-ui; max-width: 600px; margin: 0 auto; padding: 32px;">
+            <h2 style="color: #1A2E4A;">Votre investissement est confirmé 🌴</h2>
+            <p>Merci pour votre investissement dans <strong>${actifNom}</strong>.</p>
+            <div style="background: #F8F6F1; border-radius: 12px; padding: 20px; margin: 20px 0;">
+              <p><strong>Actif :</strong> ${actifNom}</p>
+              <p><strong>Montant :</strong> ${montantEuros}€</p>
+              <p><strong>Tokens acquis :</strong> ${tokensQty}</p>
+              <p><strong>Référence :</strong> ${pi.id}</p>
+            </div>
+            <p>Vos tokens seront émis sur votre wallet XRPL dans les prochains jours ouvrés.</p>
+            <p style="color: #9CA3AF; font-size: 12px;">CaribbeanVault — ${new Date().toLocaleDateString("fr-FR")}</p>
+          </div>
+        `,
+      }),
+    });
+  }
+
+  // Récupérer l'avance XRP
+  if (investorId) {
+    await supabase
+      .from("investisseurs")
+      .update({ xrp_advance_status: "recovered", xrp_advance_recovered_at: new Date().toISOString() })
+      .eq("id", investorId)
+      .eq("xrp_advance_status", "pending");
+  }
+
+  break;
+}
+
 
     case "payment_intent.payment_failed": {
       const pi = event.data.object as Stripe.PaymentIntent;
