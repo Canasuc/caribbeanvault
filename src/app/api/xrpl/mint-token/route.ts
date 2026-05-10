@@ -150,34 +150,46 @@ export async function POST(req: NextRequest) {
         .eq("id", transactionId);
 
       // ── Étape 5 : Mettre à jour holdings ──
-      if (txSuccess) {
-        const { data: existingHolding } = await supabase
-          .from("holdings")
-          .select("id, tokens_qty")
-          .eq("investor_id", tx.investor_id)
-          .eq("actif_id", tx.actif_id)
-          .single();
+if (txSuccess) {
+  const { data: existingHolding } = await supabase
+    .from("holdings")
+    .select("id, tokens_qty")
+    .eq("investor_id", tx.investor_id)
+    .eq("asset_id", tx.actif_id)
+    .single();
 
-        if (existingHolding) {
-          await supabase
-            .from("holdings")
-            .update({ tokens_qty: existingHolding.tokens_qty + tokensQty })
-            .eq("id", existingHolding.id);
-        } else {
-          await supabase
-            .from("holdings")
-            .insert({
-              investor_id: tx.investor_id,
-              actif_id: tx.actif_id,
-              actif_nom: tx.actif_nom,
-              currency_code: currencyCode,
-              tokens_qty: tokensQty,
-              prix_achat_unitaire: tx.montant_euros / tokensQty,
-              montant_total_eur: tx.montant_euros,
-              first_purchase_at: new Date().toISOString(),
-            });
-        }
-      }
+  if (existingHolding) {
+    await supabase
+      .from("holdings")
+      .update({ 
+        tokens_qty: (existingHolding.tokens_qty ?? 0) + tokensQty,
+        last_purchase_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", existingHolding.id);
+  } else {
+    await supabase
+      .from("holdings")
+      .insert({
+        investor_id: tx.investor_id,
+        user_id: tx.investor_id,
+        asset_id: tx.actif_id,
+        actif_nom: tx.actif_nom,
+        currency_code: currencyCode,
+        tokens_qty: tokensQty,
+        prix_achat_unitaire: tx.montant_euros / tokensQty,
+        montant_total_eur: tx.montant_euros,
+        amount_eur: tx.montant_euros,
+        mint_tx_hash: txHash,
+        xrpl_issuer_address: issuerAddress,
+        status: "completed",
+        network: "testnet",
+        first_purchase_at: new Date().toISOString(),
+        minted_at: new Date().toISOString(),
+        wallet_address: investisseurAddress,
+      });
+  }
+}
 
       return NextResponse.json({
         success: txSuccess,
