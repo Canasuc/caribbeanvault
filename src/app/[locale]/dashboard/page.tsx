@@ -459,7 +459,7 @@ export default function DashboardPage() {
     currencyCode: "RHM",
   }}
   investorId={investisseur.id}
-  walletAddress={rw6vmYwN3xWPnnoaJsco8Qbq8AcJeLKBb5}  // ← ajouter
+  walletAddress={walletAddress}  // ← ajouter
   onSuccess={(piId) => setPaiementSuccess(piId)}
   onCancel={() => setShowPaiement(false)}
 />
