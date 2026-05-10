@@ -12,7 +12,6 @@ import { useRouter, usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import XamanOnboarding from "@/components/wallet/XamanOnboarding";
 
-// ✅ Types au niveau module — correct
 interface Investisseur {
   id: string;
   email: string;
@@ -25,6 +24,8 @@ interface Investisseur {
   actif_interet?: string;
   montant_envisage?: string;
   statut_kyc?: string;
+  xrpl_address?: string;
+  wallet_verified?: boolean;
 }
 
 const C = {
@@ -53,13 +54,11 @@ function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
-
   function switchLocale(newLocale: string) {
     const segments = pathname.split("/");
     segments[1] = newLocale;
     router.push(segments.join("/"));
   }
-
   return (
     <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
       {LOCALES.map(l => (
@@ -77,17 +76,21 @@ function LanguageSwitcher() {
   );
 }
 
+function formatAddress(addr: string): string {
+  if (!addr || addr.length < 10) return addr;
+  return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+}
+
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const locale = useLocale();
 
-  // ✅ useState dans le composant — correct
   const [user, setUser] = useState<User | null>(null);
   const [investisseur, setInvestisseur] = useState<Investisseur | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // ✅ Onglet wallet — affiche ou non l'onboarding Xaman
   const [showWallet, setShowWallet] = useState(false);
+  // Session active = wallet reconnecté via QR dans cette session de navigation
+  const [walletSessionActive, setWalletSessionActive] = useState(false);
 
   const { isMobile } = useBreakpoint();
 
@@ -103,7 +106,7 @@ export default function DashboardPage() {
       const { data } = await supabase
         .from("investisseurs")
         .select("*")
-       .eq("email", session.user.email?.toLowerCase() ?? "")
+        .eq("email", session.user.email?.toLowerCase() ?? "")
         .single();
       if (data) setInvestisseur(data as Investisseur);
       setLoading(false);
@@ -116,11 +119,15 @@ export default function DashboardPage() {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
+    setWalletSessionActive(false);
     await supabase.auth.signOut();
     window.location.href = `/${locale}`;
   }
 
-  // ── Loading ──────────────────────────────────────────────────────────────────
+  const walletVerified = investisseur?.wallet_verified === true;
+  const walletAddress = investisseur?.xrpl_address ?? "";
+  const walletMode = walletVerified ? "reconnect" : "onboarding";
+
   if (loading) {
     return (
       <main style={{ fontFamily: "system-ui", background: C.creme, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -143,14 +150,13 @@ export default function DashboardPage() {
 
   const ETAPES = [
     { titre: t("etape1_titre"), desc: t("etape1_desc"), done: true },
-    { titre: t("etape2_titre"), desc: t("etape2_desc"), done: false },
+    { titre: t("etape2_titre"), desc: t("etape2_desc"), done: walletVerified },
     { titre: t("etape3_titre"), desc: t("etape3_desc"), done: false },
     { titre: t("etape4_titre"), desc: t("etape4_desc"), done: false },
   ];
 
   const colsActifs = isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)";
 
-  // ── Rendu ────────────────────────────────────────────────────────────────────
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, sans-serif", background: C.creme, minHeight: "100vh" }}>
 
@@ -191,7 +197,9 @@ export default function DashboardPage() {
             <p style={{ color: "rgba(255,255,255,.65)", fontSize: "13px", lineHeight: 1.7, margin: "0 0 20px", maxWidth: "500px" }}>
               {t("desc")}
             </p>
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+
+            {/* ── Badges + bouton wallet ── */}
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "stretch" }}>
               {[
                 { label: t("statut_compte"), val: investisseur?.statut === "en_attente" ? t("en_attente") : t("valide"), highlight: true },
                 { label: t("actif_interet"), val: investisseur?.actif_interet ?? t("non_renseigne"), highlight: false },
@@ -202,11 +210,43 @@ export default function DashboardPage() {
                   <div style={{ color: m.highlight ? C.sable : "white", fontSize: "13px", fontWeight: 700 }}>{m.val}</div>
                 </div>
               ))}
+
+              {/* ── Badge wallet ── */}
+              <div style={{ background: "rgba(255,255,255,.08)", borderRadius: "10px", padding: "12px 16px", backdropFilter: "blur(4px)", border: "0.5px solid rgba(255,255,255,.1)", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "8px" }}>
+                <div style={{ color: "rgba(255,255,255,.5)", fontSize: "10px", textTransform: "uppercase", letterSpacing: ".08em" }}>Wallet XRPL</div>
+
+                {walletSessionActive ? (
+                  // ✅ Session active — pastille verte
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#4ADE80", flexShrink: 0, boxShadow: "0 0 6px #4ADE80" }} />
+                    <span style={{ color: "#4ADE80", fontSize: "12px", fontWeight: 700, fontFamily: "monospace" }}>
+                      {formatAddress(walletAddress)}
+                    </span>
+                  </div>
+                ) : walletVerified ? (
+                  // ⚠️ Connu mais pas reconnecté
+                  <button
+                    onClick={() => setShowWallet(true)}
+                    style={{ display: "flex", alignItems: "center", gap: "6px", background: "rgba(250,180,60,.15)", border: "0.5px solid rgba(250,180,60,.5)", borderRadius: "6px", padding: "5px 10px", cursor: "pointer", color: "#FCD34D", fontSize: "11px", fontWeight: 700 }}
+                  >
+                    <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#FCD34D", flexShrink: 0 }} />
+                    Reconnecter Xaman
+                  </button>
+                ) : (
+                  // ❌ Pas encore de wallet
+                  <button
+                    onClick={() => setShowWallet(true)}
+                    style={{ display: "flex", alignItems: "center", gap: "6px", background: "rgba(255,255,255,.1)", border: "0.5px solid rgba(255,255,255,.25)", borderRadius: "6px", padding: "5px 10px", cursor: "pointer", color: "rgba(255,255,255,.85)", fontSize: "11px", fontWeight: 700 }}
+                  >
+                    🔗 Connecter mon wallet
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ── Alerte KYC en attente ── */}
+        {/* ── Alerte KYC ── */}
         {investisseur?.statut === "en_attente" && (
           <div style={{ background: "#FFFBEB", borderRadius: "12px", border: "1px solid #FCD34D44", padding: isMobile ? "16px" : "20px 24px", marginBottom: "20px", display: "flex", gap: "14px", alignItems: "flex-start" }}>
             <div style={{ fontSize: "22px", flexShrink: 0 }}>⏳</div>
@@ -284,8 +324,16 @@ export default function DashboardPage() {
                   { label: t("telephone"), val: investisseur.telephone ?? t("non_renseigne") },
                   { label: t("pays"), val: investisseur.pays ?? t("non_renseigne") },
                   { label: t("statut"), val: investisseur.statut_investisseur ?? t("non_renseigne") },
+                  {
+                    label: "Wallet XRPL",
+                    val: walletSessionActive
+                      ? `🟢 ${formatAddress(walletAddress)}`
+                      : walletVerified
+                        ? `🟡 ${formatAddress(walletAddress)} (reconnexion requise)`
+                        : "❌ Non connecté"
+                  },
                 ].map((r, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: i < 4 ? `0.5px solid ${C.grisBord}` : "none", gap: "8px" }}>
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: i < 5 ? `0.5px solid ${C.grisBord}` : "none", gap: "8px" }}>
                     <span style={{ color: C.texteTert, fontSize: "11px", flexShrink: 0 }}>{r.label}</span>
                     <span style={{ color: C.texte, fontSize: "11px", fontWeight: 600, textAlign: "right", wordBreak: "break-all" }}>{r.val}</span>
                   </div>
@@ -316,16 +364,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ── Bloc Wallet Xaman ─────────────────────────────────────────────────
-             user est garanti non-null ici car le useEffect redirige vers /login
-             si pas de session. La garde `user &&` satisfait TypeScript.
-        ────────────────────────────────────────────────────────────────────── */}
-        {user && (
+        {/* ── Bloc Wallet Xaman ── */}
+        {user && showWallet && (
           <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, marginBottom: "20px", overflow: "hidden" }}>
-
-            {/* En-tête du bloc — cliquable pour ouvrir/fermer */}
             <button
-              onClick={() => setShowWallet(v => !v)}
+              onClick={() => setShowWallet(false)}
               style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: isMobile ? "16px 18px" : "20px 24px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -334,30 +377,32 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div style={{ color: C.texte, fontSize: "13px", fontWeight: 700 }}>
-                    Connecter mon wallet Xaman
+                    {walletVerified ? "Reconnecter mon wallet Xaman" : "Connecter mon wallet Xaman"}
                   </div>
                   <div style={{ color: C.texteSec, fontSize: "11px", marginTop: "2px" }}>
-                    Recevez vos tokens RWA directement sur votre wallet XRPL
+                    {walletVerified
+                      ? `Wallet enregistré : ${formatAddress(walletAddress)} — reconnexion requise à chaque session`
+                      : "Recevez vos tokens RWA directement sur votre wallet XRPL"
+                    }
                   </div>
                 </div>
               </div>
-              <div style={{ color: C.texteTert, fontSize: "18px", transition: "transform .2s", transform: showWallet ? "rotate(180deg)" : "rotate(0deg)" }}>
-                ›
-              </div>
+              <div style={{ color: C.texteTert, fontSize: "18px" }}>✕</div>
             </button>
 
-{/* Contenu — XamanOnboarding */}
-{showWallet && investisseur && (
-  <div style={{ borderTop: `0.5px solid ${C.grisBord}` }}>
-    <XamanOnboarding
-      investorId={investisseur.id}
-      onComplete={(address) => {
-        console.log("Wallet lié :", address);
-        setShowWallet(false);
-      }}
-    />
-  </div>
-)}
+            <div style={{ borderTop: `0.5px solid ${C.grisBord}` }}>
+              <XamanOnboarding
+                investorId={investisseur?.id ?? user.id}
+                mode={walletMode}
+                onComplete={(address) => {
+                  setWalletSessionActive(true);
+                  setShowWallet(false);
+                  if (investisseur) {
+                    setInvestisseur({ ...investisseur, xrpl_address: address, wallet_verified: true });
+                  }
+                }}
+              />
+            </div>
           </div>
         )}
 
