@@ -12,6 +12,7 @@ import { useRouter, usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import XamanOnboarding from "@/components/wallet/XamanOnboarding";
 import PaiementToken from "@/components/payment/PaiementToken";
+import Portfolio from "@/components/portfolio/Portfolio";
 
 interface Investisseur {
   id: string;
@@ -468,6 +469,16 @@ export default function DashboardPage() {
             )}
           </div>
         )}
+
+{/* ── Portfolio ── */}
+{investisseur && (
+  <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "24px", marginBottom: "20px" }}>
+    <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>
+      Mon Portfolio
+    </div>
+    <Portfolio investorId={investisseur.id} isMobile={isMobile} />
+  </div>
+)}
 
         {/* ── Simulateur ── */}
         <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, ${C.navyL} 100%)`, borderRadius: "12px", padding: isMobile ? "20px" : "28px 32px", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
