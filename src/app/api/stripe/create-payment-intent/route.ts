@@ -22,15 +22,22 @@ export async function POST(req: NextRequest) {
       process.env.SUPABASE_SERVICE_KEY!
     );
 
-    const { data: investisseur, error: dbError } = await supabase
-      .from("investisseurs")
-      .select("id, email, prenom, nom, statut_kyc, wallet_verified")
-      .eq("id", investorId)
-      .single();
+const { data: investisseur, error: dbError } = await supabase
+  .from("investisseurs")
+  .select("id, email, prenom, nom, statut_kyc, wallet_verified")
+  .eq("id", investorId)
+  .single();
 
-    if (dbError || !investisseur) {
-      return NextResponse.json({ error: "Investisseur introuvable" }, { status: 404 });
-    }
+// Retourner le debug directement
+return NextResponse.json({
+  debug: true,
+  investorId,
+  investisseur,
+  dbError,
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY,
+  serviceKeyPrefix: process.env.SUPABASE_SERVICE_KEY?.slice(0, 20),
+});
 
     // ── Créer ou récupérer le Customer Stripe ──
     let stripeCustomerId: string;
