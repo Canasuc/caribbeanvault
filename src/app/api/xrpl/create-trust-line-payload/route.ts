@@ -14,16 +14,12 @@ function getCurrencyCode(actifId: string): string {
   return "CVT";
 }
 
-// ── Convertir currency code 3 lettres en hex 40 chars pour XRPL/XUMM ──
+// ── Convertir currency code en hex 40 chars sans Buffer ──
 function toHexCurrency(code: string): string {
-  // Les codes ISO 3 lettres standard (ex: USD, EUR) sont acceptés tels quels
-  // Les codes custom doivent être en hex 40 caractères
-  if (/^[A-Z]{3}$/.test(code)) {
-    // Encoder en hex quand même pour éviter les ambiguïtés XUMM
-    const hex = Buffer.from(code, "ascii").toString("hex").toUpperCase();
-    return hex.padEnd(40, "0");
+  let hex = "";
+  for (let i = 0; i < code.length; i++) {
+    hex += code.charCodeAt(i).toString(16).toUpperCase().padStart(2, "0");
   }
-  const hex = Buffer.from(code, "ascii").toString("hex").toUpperCase();
   return hex.padEnd(40, "0");
 }
 
@@ -40,7 +36,6 @@ export async function POST(req: NextRequest) {
     }
 
     const currencyCode = getCurrencyCode(actifId);
-    const currencyHex = toHexCurrency(currencyCode);
     const issuerAddress = process.env.XRPL_ADMIN_ADDRESS!;
 
     // ── Créer un payload XUMM pour le TrustSet ──
@@ -56,10 +51,11 @@ export async function POST(req: NextRequest) {
           TransactionType: "TrustSet",
           Account: walletAddress,
           LimitAmount: {
-            currency: currencyHex,
+            currency: currencyCode,
             issuer: issuerAddress,
-            value: "10000000000",
+            value: "1000000",
           },
+          Flags: 131072,
         },
         options: {
           submit: true,
@@ -91,7 +87,6 @@ export async function POST(req: NextRequest) {
       payloadUuid: data.uuid,
       mobileUrl: `https://xumm.app/sign/${data.uuid}`,
       currencyCode,
-      currencyHex,
       issuerAddress,
     });
 
