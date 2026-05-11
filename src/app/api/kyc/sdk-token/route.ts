@@ -61,14 +61,17 @@ const { data: investisseur, error: dbError } = await supabase
   .eq("id", investorId)
   .single();
 
-return NextResponse.json({
-  debug: true,
-  investorId,
-  investisseur,
-  dbError: dbError?.message,
-  hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY,
-  keyPrefix: process.env.SUPABASE_SERVICE_KEY?.slice(0, 15),
-});
+console.log("DEBUG investorId:", investorId);
+console.log("DEBUG investisseur:", investisseur);
+console.log("DEBUG dbError:", dbError?.message);
+console.log("DEBUG hasServiceKey:", !!process.env.SUPABASE_SERVICE_KEY);
+
+if (!investisseur) {
+  return NextResponse.json({ 
+    error: "Investisseur introuvable",
+    debug: { investorId, dbError: dbError?.message, hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY }
+  }, { status: 404 });
+}
     
 
     const externalUserId = `cv-${investorId}`;
