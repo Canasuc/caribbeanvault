@@ -153,11 +153,12 @@ export default function DashboardPage() {
   ];
 
   const ETAPES = [
-    { titre: t("etape1_titre"), desc: t("etape1_desc"), done: true },
-    { titre: t("etape2_titre"), desc: t("etape2_desc"), done: walletVerified },
-    { titre: t("etape3_titre"), desc: t("etape3_desc"), done: false },
-    { titre: t("etape4_titre"), desc: t("etape4_desc"), done: false },
-  ];
+  { titre: t("etape1_titre"), desc: t("etape1_desc"), done: true },
+  { titre: t("etape2_titre"), desc: t("etape2_desc"), done: walletVerified },
+  { titre: t("etape3_titre"), desc: t("etape3_desc"), done: investisseur?.statut_kyc === "approved" },
+  { titre: t("etape4_titre"), desc: t("etape4_desc"), done: (investisseur?.statut_kyc === "approved") },
+];
+
 
   const colsActifs = isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)";
 
@@ -273,7 +274,7 @@ export default function DashboardPage() {
         )}
 
 {/* ── KYC Widget ── */}
-{user && investisseur && investisseur.statut_kyc !== "approved" && (
+{user && investisseur && (
   <div style={{ background: C.blanc, borderRadius: "12px", border: `0.5px solid ${C.grisBord}`, padding: isMobile ? "18px" : "24px", marginBottom: "20px" }}>
     <div style={{ color: C.sable, fontSize: "10px", fontWeight: 700, letterSpacing: ".2em", textTransform: "uppercase", marginBottom: "14px" }}>
       Vérification KYC
