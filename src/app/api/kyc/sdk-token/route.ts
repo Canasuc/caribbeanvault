@@ -55,15 +55,21 @@ export async function POST(req: NextRequest) {
     );
 
     // ── Récupérer l'investisseur ──
-    const { data: investisseur } = await supabase
-      .from("investisseurs")
-      .select("id, email, prenom, nom, statut_kyc")
-      .eq("id", investorId)
-      .single();
+const { data: investisseur, error: dbError } = await supabase
+  .from("investisseurs")
+  .select("id, email, prenom, nom, statut_kyc")
+  .eq("id", investorId)
+  .single();
 
-    if (!investisseur) {
-      return NextResponse.json({ error: "Investisseur introuvable" }, { status: 404 });
-    }
+return NextResponse.json({
+  debug: true,
+  investorId,
+  investisseur,
+  dbError: dbError?.message,
+  hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY,
+  keyPrefix: process.env.SUPABASE_SERVICE_KEY?.slice(0, 15),
+});
+    
 
     const externalUserId = `cv-${investorId}`;
     const levelName = "basic-kyc-level"; // Niveau KYC configuré dans Sumsub
