@@ -118,6 +118,27 @@ export default function DashboardPage() {
     void loadData();
   }, [locale]);
 
+
+  // ── Rafraîchissement statut toutes les 30 secondes ──
+  useEffect(() => {
+    if (!user) return;
+    const interval = setInterval(async () => {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const { data } = await supabase
+        .from("investisseurs")
+        .select("statut, statut_kyc")
+        .eq("email", user.email?.toLowerCase() ?? "")
+        .single();
+      if (data) {
+        setInvestisseur(prev => prev ? { ...prev, statut: data.statut, statut_kyc: data.statut_kyc } : prev);
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
+
   async function handleSignOut() {
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -156,7 +177,7 @@ export default function DashboardPage() {
   { titre: t("etape1_titre"), desc: t("etape1_desc"), done: true },
   { titre: t("etape2_titre"), desc: t("etape2_desc"), done: walletVerified },
   { titre: t("etape3_titre"), desc: t("etape3_desc"), done: investisseur?.statut_kyc === "approved" },
-  { titre: t("etape4_titre"), desc: t("etape4_desc"), done: (investisseur?.statut_kyc === "approved") },
+  { titre: t("etape4_titre"), desc: t("etape4_desc"), done: false },
 ];
 
 
